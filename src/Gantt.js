@@ -37,6 +37,7 @@ export default function Gantt(element, tasks, config) {
 			column_width: 30,
 			step: 24,
 			view_modes: [
+				'Hour',
 				'Quarter Day',
 				'Half Day',
 				'Day',
@@ -51,7 +52,7 @@ export default function Gantt(element, tasks, config) {
 			},
 			padding: 18,
 			view_mode: 'Day',
-			date_format: 'YYYY-MM-DD',
+			date_format: 'YYYY-MM-DD-H',
 			custom_popup_html: null
 		};
 		self.config = Object.assign({}, defaults, config);
@@ -206,7 +207,10 @@ export default function Gantt(element, tasks, config) {
 
 	function set_gantt_dates() {
 
-		if(view_is(['Quarter Day', 'Half Day'])) {
+		if(view_is(['Hour'])) {
+			self.gantt_start = self.gantt_start.clone().subtract(24, 'Hour');
+			self.gantt_end = self.gantt_end.clone().add(7, 'Hour');
+		} else if(view_is(['Quarter Day', 'Half Day'])) {
 			self.gantt_start = self.gantt_start.clone().subtract(7, 'day');
 			self.gantt_end = self.gantt_end.clone().add(7, 'day');
 		} else if(view_is('Month')) {
@@ -247,7 +251,10 @@ export default function Gantt(element, tasks, config) {
 	function set_scale(scale) {
 		self.config.view_mode = scale;
 
-		if(scale === 'Day') {
+		if(scale === 'Hour') {
+			self.config.step = 1;
+			self.config.column_width = 5;
+		} else if(scale === 'Day') {
 			self.config.step = 24;
 			self.config.column_width = 38;
 		} else if(scale === 'Half Day') {
@@ -352,6 +359,9 @@ export default function Gantt(element, tasks, config) {
 		for(let date of self.dates) {
 			let tick_class = 'tick';
 			// thick tick for monday
+			if(view_is('Hour') && date.day() === 1) {
+				tick_class += ' thick';
+			}
 			if(view_is('Day') && date.day() === 1) {
 				tick_class += ' thick';
 			}
@@ -432,12 +442,14 @@ export default function Gantt(element, tasks, config) {
 			last_date = date.clone().add(1, 'year');
 		}
 		const date_text = {
+			'Hour Day_lower': date.format('HH'),
 			'Quarter Day_lower': date.format('HH'),
 			'Half Day_lower': date.format('HH'),
 			'Day_lower': date.date() !== last_date.date() ? date.format('D') : '',
 			'Week_lower': date.month() !== last_date.month() ?
 				date.format('D MMM') : date.format('D'),
 			'Month_lower': date.format('MMMM'),
+			'Hour Day_upper': date.date() !== last_date.date() ? date.format('H D MMM') : '',
 			'Quarter Day_upper': date.date() !== last_date.date() ? date.format('D MMM') : '',
 			'Half Day_upper': date.date() !== last_date.date() ?
 				date.month() !== last_date.month() ?
@@ -454,6 +466,8 @@ export default function Gantt(element, tasks, config) {
 		};
 
 		const x_pos = {
+			'Hour Day_lower': (self.config.column_width) / 2,
+			'Hour Day_upper': 0,
 			'Quarter Day_lower': (self.config.column_width * 4) / 2,
 			'Quarter Day_upper': 0,
 			'Half Day_lower': (self.config.column_width * 2) / 2,

@@ -16,8 +16,14 @@
 			overflow: scroll;
 		}
 		/* custom class */
-		.gantt .bar-milestone .bar-progress {
+		/* .gantt .bar-milestone .bar-progress {
 			fill: tomato;
+		} */
+		.gantt .bar-milestone {
+			fill: tomato;
+			/* -webkit-clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%); */ /* diamond */
+			-webkit-clip-path: polygon(20px 0%, calc(100% - 20px) 0%, 100% 20%, 100% 80%, calc(100% - 20px) 100%, 20px 100%, 0% 80%, 0% 20%);
+			/* https://bennettfeely.com/clippy/ */
 		}
 	</style>
 	<script src="node_modules/moment/min/moment.min.js"></script>
@@ -38,7 +44,7 @@
 			["Apply new styles", [3, 6]],
 			["Review", [7, 7]],
 			["Deploy", [8, 9]],
-			["Go Live!", [10, 10]]
+			["Go Live!", [10, 15]]
 		];
 
 		var tasks = names.map(function(name, i) {
@@ -51,15 +57,15 @@
 				start: start,
 				end: end,
 				name: name[0],
-				id: "Task " + i,
-				progress: parseInt(Math.random() * 100, 10)
+				id: "Task " + i//,
+				//progress: parseInt(Math.random() * 100, 10)
 			}
 		});
 		tasks[1].progress = 0;
 		tasks[1].dependencies = "Task 0"
 		tasks[2].dependencies = "Task 1"
+		tasks[2].dependencies = "Task 5"
 		tasks[3].dependencies = "Task 2"
-		tasks[5].dependencies = "Task 4"
 		tasks[5].custom_class = "bar-milestone";
 
 		var gantt_chart = Gantt("#gantt", tasks, {

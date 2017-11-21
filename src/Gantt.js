@@ -28,6 +28,20 @@ export default function Gantt(element, tasks, config) {
 
 		// initialize with default view mode
 		change_view_mode(self.config.view_mode);
+
+		require('mouse-wheel')(
+			document.getElementById('gc'),
+			function (dx, dy, dz, ev) {
+				// const display = document.getElementById('wheeldata');
+				// display.innerHTML = '<p>Scroll:' + [dx, dy, dz, ev] + '</p>';
+				if (dy > 0) {
+					console.log('zoom in');
+				} else if (dy < 0) {
+					console.log('zoom out');
+				}
+			}/* ,
+			'noScroll' */
+		);
 	}
 
 	function set_defaults() {

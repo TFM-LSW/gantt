@@ -27,11 +27,20 @@
 <body>
 	<div class="container">
 		<h2>Interactive Gantt Chart entirely made in SVG!</h2>
-		<div class="gantt-container">
-			<svg id="gantt" width="400" height="600"></svg>
+		<div class="gantt-container" id="gc">
+			<svg id="gantt" width="400" height="600" onclick="clicked(evt)"></svg>
 		</div>
 	</div>
 	<script>
+		function clicked(evt) {
+			console.log(evt)
+			var e = evt.target;
+			var dim = e.getBoundingClientRect();
+			var x = evt.clientX - dim.left;
+			var y = evt.clientY - dim.top;
+			console.log("x: " + x + " y:" + y);
+		}
+
 		var names = [
 			["Redesign website", [0, 7]],
 			["Write new content", [1, 4]],
@@ -59,7 +68,7 @@
 		tasks[1].dependencies = "Task 0"
 		tasks[2].dependencies = "Task 1"
 		tasks[3].dependencies = "Task 2"
-		tasks[5].dependencies = "Task 4"
+		tasks[5].dependencies = ["Task 4", "Task 2"]
 		tasks[5].custom_class = "bar-milestone";
 
 		var gantt_chart = Gantt("#gantt", tasks, {

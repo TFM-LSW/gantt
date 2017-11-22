@@ -173,53 +173,53 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 				var run_items = run.map(function (item, k) {
 					// momentify
-					run._start = moment(run.start, self.config.date_format);
-					run._end = moment(run.end, self.config.date_format);
+					item._start = moment(item.start, self.config.date_format);
+					item._end = moment(item.end, self.config.date_format);
 	
-					// make run invalid if duration too large
-					if (run._end.diff(run._start, 'years') > 10) {
-						run.end = null;
+					// make item invalid if duration too large
+					if (item._end.diff(item._start, 'years') > 10) {
+						item.end = null;
 					}
 	
 					// cache index
-					run._index = i;
+					item._index = i;
 	
 					// invalid dates
-					if (!run.start && !run.end) {
-						run._start = moment().startOf('day');
-						run._end = moment().startOf('day').add(2, 'days');
+					if (!item.start && !item.end) {
+						item._start = moment().startOf('day');
+						item._end = moment().startOf('day').add(2, 'days');
 					}
-					if (!run.start && run.end) {
-						run._start = run._end.clone().add(-2, 'days');
+					if (!item.start && item.end) {
+						item._start = item._end.clone().add(-2, 'days');
 					}
-					if (run.start && !run.end) {
-						run._end = run._start.clone().add(2, 'days');
+					if (item.start && !item.end) {
+						item._end = item._start.clone().add(2, 'days');
 					}
 	
 					// invalid flag
-					if (!run.start || !run.end) {
-						run.invalid = true;
+					if (!item.start || !item.end) {
+						item.invalid = true;
 					}
 	
 					// dependencies
-					if (typeof run.dependencies === 'string' || !run.dependencies) {
+					if (typeof item.dependencies === 'string' || !item.dependencies) {
 						var deps = [];
-						if (run.dependencies) {
-							deps = run.dependencies.split(',').map(function (d) {
+						if (item.dependencies) {
+							deps = item.dependencies.split(',').map(function (d) {
 								return d.trim();
 							}).filter(function (d) {
 								return d;
 							});
 						}
-						run.dependencies = deps;
+						item.dependencies = deps;
 					}
 	
 					// uids
-					if (!run.id) {
-						run.id = generate_id(run);
+					if (!item.id) {
+						item.id = generate_id(item);
 					}
 	
-					return run;
+					return item;
 				});
 				return run_items;
 			});
@@ -652,7 +652,7 @@ return /******/ (function(modules) { // webpackBootstrap
 		}
 	
 		function make_bars() {
-			self._bars = self.tasks.map(function (run) {
+			self._bars = self.tasks.forEach(function (run) {
 				var run_items = run.map(function (item) {
 					var bar = (0, _Bar2.default)(self, item);
 					self.element_groups.bar.add(bar.group);

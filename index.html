@@ -26,21 +26,22 @@
 </head>
 <body>
 	<div class="container">
-		<h2>Interactive Gantt Chart entirely made in SVG!</h2>
+		<h2>Interactive Gantt Chart (ES6)</h2>
 		<div class="gantt-container" id="gc">
 			<svg id="gantt" width="400" height="600" onclick="clicked(evt)"></svg>
 		</div>
+		<nav>
+			<button onclick="changeView('Minute')">Minutes</button>
+			<button onclick="changeView('Hour')">Hour</button>
+			<button onclick="changeView('Quarter Day')">Quarter Day</button>
+			<button onclick="changeView('Half Day')">Half Day</button>
+			<button onclick="changeView('Day')">Day</button>
+			<button onclick="changeView('Week')">Week</button>
+			<button onclick="changeView('Month')">Month</button>
+			<button oncontextmenu="showContext()">Context menu</button>
+		</nav>
 	</div>
 	<script>
-		function clicked(evt) {
-			console.log(evt)
-			var e = evt.target;
-			var dim = e.getBoundingClientRect();
-			var x = evt.clientX - dim.left;
-			var y = evt.clientY - dim.top;
-			console.log("x: " + x + " y:" + y);
-		}
-
 		var names = [
 			["Redesign website", [0, 7]],
 			["Write new content", [1, 4]],
@@ -86,6 +87,13 @@
 			}
 		});
 		console.log(gantt_chart);
+
+		function changeView(view) {
+			gantt_chart.change_view_mode(view);
+		}
+		function showContext() {
+			console.log('showing context');
+		}
 	</script>
 </body>
 </html>

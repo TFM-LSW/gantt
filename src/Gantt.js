@@ -10,6 +10,7 @@ import './gantt.scss';
 
 import Bar from './Bar';
 import Arrow from './Arrow';
+import { ScrollWheelInit } from './ScrollUtils';
 
 export default function Gantt(element, tasks, config) {
 
@@ -29,19 +30,7 @@ export default function Gantt(element, tasks, config) {
 		// initialize with default view mode
 		change_view_mode(self.config.view_mode);
 
-		require('mouse-wheel')(
-			document.getElementById('gc'),
-			function (dx, dy, dz, ev) {
-				// const display = document.getElementById('wheeldata');
-				// display.innerHTML = '<p>Scroll:' + [dx, dy, dz, ev] + '</p>';
-				if (dy > 0) {
-					console.log('zoom in');
-				} else if (dy < 0) {
-					console.log('zoom out');
-				}
-			}/* ,
-			'noScroll' */
-		);
+		ScrollWheelInit();
 	}
 
 	function set_defaults() {
@@ -51,6 +40,8 @@ export default function Gantt(element, tasks, config) {
 			column_width: 30,
 			step: 24,
 			view_modes: [
+				'Minute',
+				'Hour',
 				'Quarter Day',
 				'Half Day',
 				'Day',
@@ -261,7 +252,10 @@ export default function Gantt(element, tasks, config) {
 	function set_scale(scale) {
 		self.config.view_mode = scale;
 
-		if(scale === 'Day') {
+		if(scale === 'Hour') {
+			self.config.step = 1;
+			self.config.column_width = 18;
+		} else if(scale === 'Day') {
 			self.config.step = 24;
 			self.config.column_width = 38;
 		} else if(scale === 'Half Day') {
@@ -446,12 +440,16 @@ export default function Gantt(element, tasks, config) {
 			last_date = date.clone().add(1, 'year');
 		}
 		const date_text = {
+			'Minute_lower': date.format('HH'),
+			'Hour_lower': date.format('HH'),
 			'Quarter Day_lower': date.format('HH'),
 			'Half Day_lower': date.format('HH'),
 			'Day_lower': date.date() !== last_date.date() ? date.format('D') : '',
 			'Week_lower': date.month() !== last_date.month() ?
 				date.format('D MMM') : date.format('D'),
 			'Month_lower': date.format('MMMM'),
+			'Minute_upper': date.date() !== last_date.date() ? date.format('D MMM') : '',
+			'Hour_upper': date.date() !== last_date.date() ? date.format('D MMM') : '',
 			'Quarter Day_upper': date.date() !== last_date.date() ? date.format('D MMM') : '',
 			'Half Day_upper': date.date() !== last_date.date() ?
 				date.month() !== last_date.month() ?
@@ -468,6 +466,10 @@ export default function Gantt(element, tasks, config) {
 		};
 
 		const x_pos = {
+			'Minute_lower': (self.config.column_width * 1440) / 2,
+			'Minute_upper': 0,
+			'Hour_lower': (self.config.column_width * 24) / 2,
+			'Hour_upper': 0,
 			'Quarter Day_lower': (self.config.column_width * 4) / 2,
 			'Quarter Day_upper': 0,
 			'Half Day_lower': (self.config.column_width * 2) / 2,

@@ -71,8 +71,18 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	var _Arrow2 = _interopRequireDefault(_Arrow);
 	
+	var _ScrollUtils = __webpack_require__(10);
+	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
+	/* global moment, Snap */
+	/**
+	 * Gantt:
+	 * 	element: querySelector string, HTML DOM or SVG DOM element, required
+	 * 	tasks: array of tasks, required
+	 *   task: { id, name, start, end, progress, dependencies, custom_class }
+	 * 	config: configuration options, optional
+	 */
 	function Gantt(element, tasks, config) {
 	
 		var self = {};
@@ -91,17 +101,7 @@ return /******/ (function(modules) { // webpackBootstrap
 			// initialize with default view mode
 			change_view_mode(self.config.view_mode);
 	
-			__webpack_require__(7)(document.getElementById('gc'), function (dx, dy, dz, ev) {
-				// const display = document.getElementById('wheeldata');
-				// display.innerHTML = '<p>Scroll:' + [dx, dy, dz, ev] + '</p>';
-				if (dy > 0) {
-					console.log('zoom in');
-				} else if (dy < 0) {
-					console.log('zoom out');
-				}
-			} /* ,
-	    'noScroll' */
-			);
+			(0, _ScrollUtils.ScrollWheelInit)();
 		}
 	
 		function set_defaults() {
@@ -110,7 +110,7 @@ return /******/ (function(modules) { // webpackBootstrap
 				header_height: 50,
 				column_width: 30,
 				step: 24,
-				view_modes: ['Quarter Day', 'Half Day', 'Day', 'Week', 'Month'],
+				view_modes: ['Minute', 'Hour', 'Quarter Day', 'Half Day', 'Day', 'Week', 'Month'],
 				bar: {
 					height: 20
 				},
@@ -397,7 +397,10 @@ return /******/ (function(modules) { // webpackBootstrap
 		function set_scale(scale) {
 			self.config.view_mode = scale;
 	
-			if (scale === 'Day') {
+			if (scale === 'Hour') {
+				self.config.step = 1;
+				self.config.column_width = 18;
+			} else if (scale === 'Day') {
 				self.config.step = 24;
 				self.config.column_width = 38;
 			} else if (scale === 'Half Day') {
@@ -625,11 +628,15 @@ return /******/ (function(modules) { // webpackBootstrap
 				last_date = date.clone().add(1, 'year');
 			}
 			var date_text = {
+				'Minute_lower': date.format('HH'),
+				'Hour_lower': date.format('HH'),
 				'Quarter Day_lower': date.format('HH'),
 				'Half Day_lower': date.format('HH'),
 				'Day_lower': date.date() !== last_date.date() ? date.format('D') : '',
 				'Week_lower': date.month() !== last_date.month() ? date.format('D MMM') : date.format('D'),
 				'Month_lower': date.format('MMMM'),
+				'Minute_upper': date.date() !== last_date.date() ? date.format('D MMM') : '',
+				'Hour_upper': date.date() !== last_date.date() ? date.format('D MMM') : '',
 				'Quarter Day_upper': date.date() !== last_date.date() ? date.format('D MMM') : '',
 				'Half Day_upper': date.date() !== last_date.date() ? date.month() !== last_date.month() ? date.format('D MMM') : date.format('D') : '',
 				'Day_upper': date.month() !== last_date.month() ? date.format('MMMM') : '',
@@ -644,6 +651,10 @@ return /******/ (function(modules) { // webpackBootstrap
 			};
 	
 			var x_pos = {
+				'Minute_lower': self.config.column_width * 1440 / 2,
+				'Minute_upper': 0,
+				'Hour_lower': self.config.column_width * 24 / 2,
+				'Hour_upper': 0,
 				'Quarter Day_lower': self.config.column_width * 4 / 2,
 				'Quarter Day_upper': 0,
 				'Half Day_lower': self.config.column_width * 2 / 2,
@@ -827,14 +838,7 @@ return /******/ (function(modules) { // webpackBootstrap
 		init();
 	
 		return self;
-	} /* global moment, Snap */
-	/**
-	 * Gantt:
-	 * 	element: querySelector string, HTML DOM or SVG DOM element, required
-	 * 	tasks: array of tasks, required
-	 *   task: { id, name, start, end, progress, dependencies, custom_class }
-	 * 	config: configuration options, optional
-	 */
+	}
 	module.exports = exports['default'];
 
 /***/ },
@@ -1964,6 +1968,45 @@ return /******/ (function(modules) { // webpackBootstrap
 	    out[1] = str.match(/[\d.\-\+]*\s*(.*)/)[1] || ''
 	    return out
 	}
+
+/***/ },
+/* 10 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+	exports.ScrollWheelInit = ScrollWheelInit;
+	function ScrollWheelInit() {
+	    __webpack_require__(7)(document.getElementById('gc'), function (dx, dy, dz, ev) {
+	        // const display = document.getElementById('wheeldata');
+	        // display.innerHTML = '<p>Scroll:' + [dx, dy, dz, ev] + '</p>';
+	        if (dy > 0) {
+	            console.log('zoom in');
+	        } else if (dy < 0) {
+	            console.log('zoom out');
+	        }
+	        // console.dir(ev)
+	        // console.log(`x: ${ev.x} y: ${ev.y}`);
+	        console.log('Gantt mouse, x: ' + ev.offsetX + ' y: ' + ev.offsetY);
+	    } /* ,
+	         'noScroll' */
+	    );
+	}
+	
+	/* 
+	// clicked(evt)
+
+	export function clicked(evt) {
+	    console.log(evt)
+	    var e = evt.target;
+	    var dim = e.getBoundingClientRect();
+	    var x = evt.clientX - dim.left;
+	    var y = evt.clientY - dim.top;
+	    console.log("x: " + x + " y:" + y);
+	} */
 
 /***/ }
 /******/ ])

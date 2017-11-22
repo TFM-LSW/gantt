@@ -10,7 +10,7 @@ import './gantt.scss';
 
 import Bar from './Bar';
 import Arrow from './Arrow';
-import { ScrollWheelInit } from './ScrollUtils';
+import { ScrollWheelInit, ClickChart } from './ScrollUtils';
 
 export default function Gantt(element, tasks, config) {
 
@@ -30,7 +30,8 @@ export default function Gantt(element, tasks, config) {
 		// initialize with default view mode
 		change_view_mode(self.config.view_mode);
 
-		ScrollWheelInit();
+		ScrollWheelInit('gc');
+		ClickChart('gc');
 	}
 
 	function set_defaults() {
@@ -65,7 +66,7 @@ export default function Gantt(element, tasks, config) {
 	}
 
 	function reset_variables(tasks) {
-		if(typeof element === 'string') {
+		if (typeof element === 'string') {
 			self.element = document.querySelector(element);
 		} else if (element instanceof SVGElement) {
 			self.element = element;
@@ -106,87 +107,94 @@ export default function Gantt(element, tasks, config) {
 	function prepare_tasks() {
 
 		// prepare tasks
-		self.tasks = self._tasks.map((task, i) => {
+		self.tasks = self._tasks.map((run, i) => {
 
-			// momentify
-			task._start = moment(task.start, self.config.date_format);
-			task._end = moment(task.end, self.config.date_format);
+			var run_items = run.map(function (item, k) {
+				// momentify
+				run._start = moment(run.start, self.config.date_format);
+				run._end = moment(run.end, self.config.date_format);
 
-			// make task invalid if duration too large
-			if(task._end.diff(task._start, 'years') > 10) {
-				task.end = null;
-			}
-
-			// cache index
-			task._index = i;
-
-			// invalid dates
-			if(!task.start && !task.end) {
-				task._start = moment().startOf('day');
-				task._end = moment().startOf('day').add(2, 'days');
-			}
-			if(!task.start && task.end) {
-				task._start = task._end.clone().add(-2, 'days');
-			}
-			if(task.start && !task.end) {
-				task._end = task._start.clone().add(2, 'days');
-			}
-
-			// invalid flag
-			if(!task.start || !task.end) {
-				task.invalid = true;
-			}
-
-			// dependencies
-			if(typeof task.dependencies === 'string' || !task.dependencies) {
-				let deps = [];
-				if(task.dependencies) {
-					deps = task.dependencies
-						.split(',')
-						.map(d => d.trim())
-						.filter((d) => d);
+				// make run invalid if duration too large
+				if (run._end.diff(run._start, 'years') > 10) {
+					run.end = null;
 				}
-				task.dependencies = deps;
-			}
 
-			// uids
-			if(!task.id) {
-				task.id = generate_id(task);
-			}
+				// cache index
+				run._index = i;
 
-			return task;
+				// invalid dates
+				if (!run.start && !run.end) {
+					run._start = moment().startOf('day');
+					run._end = moment().startOf('day').add(2, 'days');
+				}
+				if (!run.start && run.end) {
+					run._start = run._end.clone().add(-2, 'days');
+				}
+				if (run.start && !run.end) {
+					run._end = run._start.clone().add(2, 'days');
+				}
+
+				// invalid flag
+				if (!run.start || !run.end) {
+					run.invalid = true;
+				}
+
+				// dependencies
+				if (typeof run.dependencies === 'string' || !run.dependencies) {
+					let deps = [];
+					if (run.dependencies) {
+						deps = run.dependencies
+							.split(',')
+							.map(d => d.trim())
+							.filter((d) => d);
+					}
+					run.dependencies = deps;
+				}
+
+				// uids
+				if (!run.id) {
+					run.id = generate_id(run);
+				}
+
+				return run;
+			});
+			return run_items;
 		});
 	}
 
 	function prepare_dependencies() {
 
-		self.dependency_map = {};
-		for(let t of self.tasks) {
-			for(let d of t.dependencies) {
+		/* self.dependency_map = {};
+		for (let t of self.tasks) {
+			for (let d of t.dependencies) {
 				self.dependency_map[d] = self.dependency_map[d] || [];
 				self.dependency_map[d].push(t.id);
 			}
-		}
+		} */
 	}
 
 	function prepare_dates() {
 
 		self.gantt_start = self.gantt_end = null;
-		for(let task of self.tasks) {
-			// set global start and end date
-			if(!self.gantt_start || task._start < self.gantt_start) {
-				self.gantt_start = task._start;
-			}
-			if(!self.gantt_end || task._end > self.gantt_end) {
-				self.gantt_end = task._end;
-			}
-		}
+		// for (let task of self.tasks) {
+		self.tasks.forEach(function (run) {
+			run.forEach(function (item, i) {
+				// set global start and end date
+				if (!self.gantt_start || item._start < self.gantt_start) {
+					self.gantt_start = item._start;
+				}
+				if (!self.gantt_end || item._end > self.gantt_end) {
+					self.gantt_end = item._end;
+				}
+			});
+		});
+
 		set_gantt_dates();
 		setup_dates();
 	}
 
 	function prepare_canvas() {
-		if(self.canvas) return;
+		if (self.canvas) return;
 		self.canvas = Snap(self.element).addClass('gantt');
 	}
 
@@ -196,8 +204,8 @@ export default function Gantt(element, tasks, config) {
 		make_grid();
 		make_dates();
 		make_bars();
-		make_arrows();
-		map_arrows_on_bars();
+		// make_arrows();
+		// map_arrows_on_bars();
 		set_width();
 		set_scroll_position();
 		bind_grid_click();
@@ -211,10 +219,10 @@ export default function Gantt(element, tasks, config) {
 
 	function set_gantt_dates() {
 
-		if(view_is(['Quarter Day', 'Half Day'])) {
+		if (view_is(['Quarter Day', 'Half Day'])) {
 			self.gantt_start = self.gantt_start.clone().subtract(7, 'day');
 			self.gantt_end = self.gantt_end.clone().add(7, 'day');
-		} else if(view_is('Month')) {
+		} else if (view_is('Month')) {
 			self.gantt_start = self.gantt_start.clone().startOf('year');
 			self.gantt_end = self.gantt_end.clone().endOf('month').add(1, 'year');
 		} else {
@@ -228,8 +236,8 @@ export default function Gantt(element, tasks, config) {
 		self.dates = [];
 		let cur_date = null;
 
-		while(cur_date === null || cur_date < self.gantt_end) {
-			if(!cur_date) {
+		while (cur_date === null || cur_date < self.gantt_end) {
+			if (!cur_date) {
 				cur_date = self.gantt_start.clone();
 			} else {
 				cur_date = view_is('Month') ?
@@ -244,30 +252,30 @@ export default function Gantt(element, tasks, config) {
 
 		const groups = ['grid', 'date', 'arrow', 'progress', 'bar', 'details'];
 		// make group layers
-		for(let group of groups) {
-			self.element_groups[group] = self.canvas.group().attr({'id': group});
+		for (let group of groups) {
+			self.element_groups[group] = self.canvas.group().attr({ 'id': group });
 		}
 	}
 
 	function set_scale(scale) {
 		self.config.view_mode = scale;
 
-		if(scale === 'Hour') {
+		if (scale === 'Hour') {
 			self.config.step = 1;
 			self.config.column_width = 18;
-		} else if(scale === 'Day') {
+		} else if (scale === 'Day') {
 			self.config.step = 24;
 			self.config.column_width = 38;
-		} else if(scale === 'Half Day') {
+		} else if (scale === 'Half Day') {
 			self.config.step = 24 / 2;
 			self.config.column_width = 38;
-		} else if(scale === 'Quarter Day') {
+		} else if (scale === 'Quarter Day') {
 			self.config.step = 24 / 4;
 			self.config.column_width = 38;
-		} else if(scale === 'Week') {
+		} else if (scale === 'Week') {
 			self.config.step = 24 * 7;
 			self.config.column_width = 140;
-		} else if(scale === 'Month') {
+		} else if (scale === 'Month') {
 			self.config.step = 24 * 30;
 			self.config.column_width = 120;
 		}
@@ -276,7 +284,7 @@ export default function Gantt(element, tasks, config) {
 	function set_width() {
 		const cur_width = self.canvas.node.getBoundingClientRect().width;
 		const actual_width = self.canvas.select('#grid .grid-row').attr('width');
-		if(cur_width < actual_width) {
+		if (cur_width < actual_width) {
 			self.canvas.attr('width', actual_width);
 		}
 	}
@@ -284,7 +292,7 @@ export default function Gantt(element, tasks, config) {
 	function set_scroll_position() {
 		const parent_element = self.element.parentElement;
 
-		if(!parent_element) return;
+		if (!parent_element) return;
 
 		const scroll_pos = get_min_date().diff(self.gantt_start, 'hours') /
 			self.config.step * self.config.column_width - self.config.column_width;
@@ -293,6 +301,7 @@ export default function Gantt(element, tasks, config) {
 
 	function get_min_date() {
 		const task = self.tasks.reduce((acc, curr) => {
+			console.log(curr[0]);
 			return curr._start.isSameOrBefore(acc._start) ? curr : acc;
 		});
 		return task._start;
@@ -339,8 +348,12 @@ export default function Gantt(element, tasks, config) {
 
 		let row_y = self.config.header_height + self.config.padding / 2;
 
-		for(let task of self.tasks) { // eslint-disable-line
+		console.log(self.tasks);
+
+		// for(let task of self.tasks) { // eslint-disable-line
+		self.tasks.forEach(function (task, i) {
 			self.canvas.rect(0, row_y, row_width, row_height)
+				.attr({ id: i })
 				.addClass('grid-row')
 				.appendTo(rows);
 
@@ -349,7 +362,7 @@ export default function Gantt(element, tasks, config) {
 				.appendTo(lines);
 
 			row_y += self.config.bar.height + self.config.padding;
-		}
+		});
 	}
 
 	function make_grid_ticks() {
@@ -357,18 +370,18 @@ export default function Gantt(element, tasks, config) {
 			tick_y = self.config.header_height + self.config.padding / 2,
 			tick_height = (self.config.bar.height + self.config.padding) * self.tasks.length;
 
-		for(let date of self.dates) {
+		for (let date of self.dates) {
 			let tick_class = 'tick';
 			// thick tick for monday
-			if(view_is('Day') && date.day() === 1) {
+			if (view_is('Day') && date.day() === 1) {
 				tick_class += ' thick';
 			}
 			// thick tick for first week
-			if(view_is('Week') && date.date() >= 1 && date.date() < 8) {
+			if (view_is('Week') && date.date() >= 1 && date.date() < 8) {
 				tick_class += ' thick';
 			}
 			// thick ticks for quarters
-			if(view_is('Month') && date.month() % 3 === 0) {
+			if (view_is('Month') && date.month() % 3 === 0) {
 				tick_class += ' thick';
 			}
 
@@ -377,10 +390,10 @@ export default function Gantt(element, tasks, config) {
 				y: tick_y,
 				height: tick_height
 			}))
-			.addClass(tick_class)
-			.appendTo(self.element_groups.grid);
+				.addClass(tick_class)
+				.appendTo(self.element_groups.grid);
 
-			if(view_is('Month')) {
+			if (view_is('Month')) {
 				tick_x += date.daysInMonth() * self.config.column_width / 30;
 			} else {
 				tick_x += self.config.column_width;
@@ -391,9 +404,9 @@ export default function Gantt(element, tasks, config) {
 	function make_grid_highlights() {
 
 		// highlight today's date
-		if(view_is('Day')) {
+		if (view_is('Day')) {
 			const x = moment().startOf('day').diff(self.gantt_start, 'hours') /
-					self.config.step * self.config.column_width;
+				self.config.step * self.config.column_width;
 			const y = 0;
 			const width = self.config.column_width;
 			const height = (self.config.bar.height + self.config.padding) * self.tasks.length +
@@ -407,18 +420,18 @@ export default function Gantt(element, tasks, config) {
 
 	function make_dates() {
 
-		for(let date of get_dates_to_draw()) {
+		for (let date of get_dates_to_draw()) {
 			self.canvas.text(date.lower_x, date.lower_y, date.lower_text)
 				.addClass('lower-text')
 				.appendTo(self.element_groups.date);
 
-			if(date.upper_text) {
+			if (date.upper_text) {
 				const $upper_text = self.canvas.text(date.upper_x, date.upper_y, date.upper_text)
 					.addClass('upper-text')
 					.appendTo(self.element_groups.date);
 
 				// remove out-of-bound dates
-				if($upper_text.getBBox().x2 > self.element_groups.grid.getBBox().width) {
+				if ($upper_text.getBBox().x2 > self.element_groups.grid.getBBox().width) {
 					$upper_text.remove();
 				}
 			}
@@ -436,7 +449,7 @@ export default function Gantt(element, tasks, config) {
 	}
 
 	function get_date_info(date, last_date, i) {
-		if(!last_date) {
+		if (!last_date) {
 			last_date = date.clone().add(1, 'year');
 		}
 		const date_text = {
@@ -453,7 +466,7 @@ export default function Gantt(element, tasks, config) {
 			'Quarter Day_upper': date.date() !== last_date.date() ? date.format('D MMM') : '',
 			'Half Day_upper': date.date() !== last_date.date() ?
 				date.month() !== last_date.month() ?
-				date.format('D MMM') : date.format('D') : '',
+					date.format('D MMM') : date.format('D') : '',
 			'Day_upper': date.month() !== last_date.month() ? date.format('MMMM') : '',
 			'Week_upper': date.month() !== last_date.month() ? date.format('MMMM') : '',
 			'Month_upper': date.year() !== last_date.year() ? date.format('YYYY') : ''
@@ -494,11 +507,11 @@ export default function Gantt(element, tasks, config) {
 
 	function make_arrows() {
 		self._arrows = [];
-		for(let task of self.tasks) {
+		for (let task of self.tasks) {
 			let arrows = [];
 			arrows = task.dependencies.map(dep => {
 				const dependency = get_task(dep);
-				if(!dependency) return;
+				if (!dependency) return;
 
 				const arrow = Arrow(
 					self, // gt
@@ -513,16 +526,18 @@ export default function Gantt(element, tasks, config) {
 	}
 
 	function make_bars() {
-
-		self._bars = self.tasks.map((task) => {
-			const bar = Bar(self, task);
-			self.element_groups.bar.add(bar.group);
-			return bar;
+		self._bars = self.tasks.map((run) => {
+			var run_items = run.map((item) => {
+				const bar = Bar(self, item);
+				self.element_groups.bar.add(bar.group);
+				return bar;
+			});
+			return run_items;
 		});
 	}
 
 	function map_arrows_on_bars() {
-		for(let bar of self._bars) {
+		for (let bar of self._bars) {
 			bar.arrows = self._arrows.filter(arrow => {
 				return (arrow.from_task.task.id === bar.task.id) ||
 					(arrow.to_task.task.id === bar.task.id);
@@ -548,9 +563,9 @@ export default function Gantt(element, tasks, config) {
 	function view_is(modes) {
 		if (typeof modes === 'string') {
 			return self.config.view_mode === modes;
-		} else if(Array.isArray(modes)) {
+		} else if (Array.isArray(modes)) {
 			for (let mode of modes) {
-				if(self.config.view_mode === mode) return true;
+				if (self.config.view_mode === mode) return true;
 			}
 			return false;
 		}
@@ -573,7 +588,7 @@ export default function Gantt(element, tasks, config) {
 	}
 
 	function trigger_event(event, args) {
-		if(self.config['on_' + event]) {
+		if (self.config['on_' + event]) {
 			self.config['on_' + event].apply(null, args);
 		}
 	}

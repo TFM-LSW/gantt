@@ -71,7 +71,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	var _Arrow2 = _interopRequireDefault(_Arrow);
 	
-	var _ScrollUtils = __webpack_require__(10);
+	var _ScrollUtils = __webpack_require__(7);
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
@@ -101,7 +101,8 @@ return /******/ (function(modules) { // webpackBootstrap
 			// initialize with default view mode
 			change_view_mode(self.config.view_mode);
 	
-			(0, _ScrollUtils.ScrollWheelInit)();
+			(0, _ScrollUtils.ScrollWheelInit)('gc');
+			(0, _ScrollUtils.ClickChart)('gc');
 		}
 	
 		function set_defaults() {
@@ -168,144 +169,88 @@ return /******/ (function(modules) { // webpackBootstrap
 		function prepare_tasks() {
 	
 			// prepare tasks
-			self.tasks = self._tasks.map(function (task, i) {
+			self.tasks = self._tasks.map(function (run, i) {
 	
-				// momentify
-				task._start = moment(task.start, self.config.date_format);
-				task._end = moment(task.end, self.config.date_format);
+				var run_items = run.map(function (item, k) {
+					// momentify
+					run._start = moment(run.start, self.config.date_format);
+					run._end = moment(run.end, self.config.date_format);
 	
-				// make task invalid if duration too large
-				if (task._end.diff(task._start, 'years') > 10) {
-					task.end = null;
-				}
-	
-				// cache index
-				task._index = i;
-	
-				// invalid dates
-				if (!task.start && !task.end) {
-					task._start = moment().startOf('day');
-					task._end = moment().startOf('day').add(2, 'days');
-				}
-				if (!task.start && task.end) {
-					task._start = task._end.clone().add(-2, 'days');
-				}
-				if (task.start && !task.end) {
-					task._end = task._start.clone().add(2, 'days');
-				}
-	
-				// invalid flag
-				if (!task.start || !task.end) {
-					task.invalid = true;
-				}
-	
-				// dependencies
-				if (typeof task.dependencies === 'string' || !task.dependencies) {
-					var deps = [];
-					if (task.dependencies) {
-						deps = task.dependencies.split(',').map(function (d) {
-							return d.trim();
-						}).filter(function (d) {
-							return d;
-						});
+					// make run invalid if duration too large
+					if (run._end.diff(run._start, 'years') > 10) {
+						run.end = null;
 					}
-					task.dependencies = deps;
-				}
 	
-				// uids
-				if (!task.id) {
-					task.id = generate_id(task);
-				}
+					// cache index
+					run._index = i;
 	
-				return task;
+					// invalid dates
+					if (!run.start && !run.end) {
+						run._start = moment().startOf('day');
+						run._end = moment().startOf('day').add(2, 'days');
+					}
+					if (!run.start && run.end) {
+						run._start = run._end.clone().add(-2, 'days');
+					}
+					if (run.start && !run.end) {
+						run._end = run._start.clone().add(2, 'days');
+					}
+	
+					// invalid flag
+					if (!run.start || !run.end) {
+						run.invalid = true;
+					}
+	
+					// dependencies
+					if (typeof run.dependencies === 'string' || !run.dependencies) {
+						var deps = [];
+						if (run.dependencies) {
+							deps = run.dependencies.split(',').map(function (d) {
+								return d.trim();
+							}).filter(function (d) {
+								return d;
+							});
+						}
+						run.dependencies = deps;
+					}
+	
+					// uids
+					if (!run.id) {
+						run.id = generate_id(run);
+					}
+	
+					return run;
+				});
+				return run_items;
 			});
 		}
 	
 		function prepare_dependencies() {
 	
-			self.dependency_map = {};
-			var _iteratorNormalCompletion = true;
-			var _didIteratorError = false;
-			var _iteratorError = undefined;
-	
-			try {
-				for (var _iterator = self.tasks[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
-					var t = _step.value;
-					var _iteratorNormalCompletion2 = true;
-					var _didIteratorError2 = false;
-					var _iteratorError2 = undefined;
-	
-					try {
-						for (var _iterator2 = t.dependencies[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
-							var d = _step2.value;
-	
-							self.dependency_map[d] = self.dependency_map[d] || [];
-							self.dependency_map[d].push(t.id);
-						}
-					} catch (err) {
-						_didIteratorError2 = true;
-						_iteratorError2 = err;
-					} finally {
-						try {
-							if (!_iteratorNormalCompletion2 && _iterator2.return) {
-								_iterator2.return();
-							}
-						} finally {
-							if (_didIteratorError2) {
-								throw _iteratorError2;
-							}
-						}
-					}
-				}
-			} catch (err) {
-				_didIteratorError = true;
-				_iteratorError = err;
-			} finally {
-				try {
-					if (!_iteratorNormalCompletion && _iterator.return) {
-						_iterator.return();
-					}
-				} finally {
-					if (_didIteratorError) {
-						throw _iteratorError;
-					}
-				}
-			}
+			/* self.dependency_map = {};
+	  for (let t of self.tasks) {
+	  	for (let d of t.dependencies) {
+	  		self.dependency_map[d] = self.dependency_map[d] || [];
+	  		self.dependency_map[d].push(t.id);
+	  	}
+	  } */
 		}
 	
 		function prepare_dates() {
 	
 			self.gantt_start = self.gantt_end = null;
-			var _iteratorNormalCompletion3 = true;
-			var _didIteratorError3 = false;
-			var _iteratorError3 = undefined;
-	
-			try {
-				for (var _iterator3 = self.tasks[Symbol.iterator](), _step3; !(_iteratorNormalCompletion3 = (_step3 = _iterator3.next()).done); _iteratorNormalCompletion3 = true) {
-					var task = _step3.value;
-	
+			// for (let task of self.tasks) {
+			self.tasks.forEach(function (run) {
+				run.forEach(function (item, i) {
 					// set global start and end date
-					if (!self.gantt_start || task._start < self.gantt_start) {
-						self.gantt_start = task._start;
+					if (!self.gantt_start || item._start < self.gantt_start) {
+						self.gantt_start = item._start;
 					}
-					if (!self.gantt_end || task._end > self.gantt_end) {
-						self.gantt_end = task._end;
+					if (!self.gantt_end || item._end > self.gantt_end) {
+						self.gantt_end = item._end;
 					}
-				}
-			} catch (err) {
-				_didIteratorError3 = true;
-				_iteratorError3 = err;
-			} finally {
-				try {
-					if (!_iteratorNormalCompletion3 && _iterator3.return) {
-						_iterator3.return();
-					}
-				} finally {
-					if (_didIteratorError3) {
-						throw _iteratorError3;
-					}
-				}
-			}
+				});
+			});
 	
 			set_gantt_dates();
 			setup_dates();
@@ -322,8 +267,8 @@ return /******/ (function(modules) { // webpackBootstrap
 			make_grid();
 			make_dates();
 			make_bars();
-			make_arrows();
-			map_arrows_on_bars();
+			// make_arrows();
+			// map_arrows_on_bars();
 			set_width();
 			set_scroll_position();
 			bind_grid_click();
@@ -368,27 +313,27 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 			var groups = ['grid', 'date', 'arrow', 'progress', 'bar', 'details'];
 			// make group layers
-			var _iteratorNormalCompletion4 = true;
-			var _didIteratorError4 = false;
-			var _iteratorError4 = undefined;
+			var _iteratorNormalCompletion = true;
+			var _didIteratorError = false;
+			var _iteratorError = undefined;
 	
 			try {
-				for (var _iterator4 = groups[Symbol.iterator](), _step4; !(_iteratorNormalCompletion4 = (_step4 = _iterator4.next()).done); _iteratorNormalCompletion4 = true) {
-					var group = _step4.value;
+				for (var _iterator = groups[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+					var group = _step.value;
 	
 					self.element_groups[group] = self.canvas.group().attr({ 'id': group });
 				}
 			} catch (err) {
-				_didIteratorError4 = true;
-				_iteratorError4 = err;
+				_didIteratorError = true;
+				_iteratorError = err;
 			} finally {
 				try {
-					if (!_iteratorNormalCompletion4 && _iterator4.return) {
-						_iterator4.return();
+					if (!_iteratorNormalCompletion && _iterator.return) {
+						_iterator.return();
 					}
 				} finally {
-					if (_didIteratorError4) {
-						throw _iteratorError4;
+					if (_didIteratorError) {
+						throw _iteratorError;
 					}
 				}
 			}
@@ -437,6 +382,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 		function get_min_date() {
 			var task = self.tasks.reduce(function (acc, curr) {
+				console.log(curr[0]);
 				return curr._start.isSameOrBefore(acc._start) ? curr : acc;
 			});
 			return task._start;
@@ -478,34 +424,16 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 			var row_y = self.config.header_height + self.config.padding / 2;
 	
-			var _iteratorNormalCompletion5 = true;
-			var _didIteratorError5 = false;
-			var _iteratorError5 = undefined;
+			console.log(self.tasks);
 	
-			try {
-				for (var _iterator5 = self.tasks[Symbol.iterator](), _step5; !(_iteratorNormalCompletion5 = (_step5 = _iterator5.next()).done); _iteratorNormalCompletion5 = true) {
-					var task = _step5.value;
-					// eslint-disable-line
-					self.canvas.rect(0, row_y, row_width, row_height).addClass('grid-row').appendTo(rows);
+			// for(let task of self.tasks) { // eslint-disable-line
+			self.tasks.forEach(function (task, i) {
+				self.canvas.rect(0, row_y, row_width, row_height).attr({ id: i }).addClass('grid-row').appendTo(rows);
 	
-					self.canvas.line(0, row_y + row_height, row_width, row_y + row_height).addClass('row-line').appendTo(lines);
+				self.canvas.line(0, row_y + row_height, row_width, row_y + row_height).addClass('row-line').appendTo(lines);
 	
-					row_y += self.config.bar.height + self.config.padding;
-				}
-			} catch (err) {
-				_didIteratorError5 = true;
-				_iteratorError5 = err;
-			} finally {
-				try {
-					if (!_iteratorNormalCompletion5 && _iterator5.return) {
-						_iterator5.return();
-					}
-				} finally {
-					if (_didIteratorError5) {
-						throw _iteratorError5;
-					}
-				}
-			}
+				row_y += self.config.bar.height + self.config.padding;
+			});
 		}
 	
 		function make_grid_ticks() {
@@ -513,13 +441,13 @@ return /******/ (function(modules) { // webpackBootstrap
 			    tick_y = self.config.header_height + self.config.padding / 2,
 			    tick_height = (self.config.bar.height + self.config.padding) * self.tasks.length;
 	
-			var _iteratorNormalCompletion6 = true;
-			var _didIteratorError6 = false;
-			var _iteratorError6 = undefined;
+			var _iteratorNormalCompletion2 = true;
+			var _didIteratorError2 = false;
+			var _iteratorError2 = undefined;
 	
 			try {
-				for (var _iterator6 = self.dates[Symbol.iterator](), _step6; !(_iteratorNormalCompletion6 = (_step6 = _iterator6.next()).done); _iteratorNormalCompletion6 = true) {
-					var date = _step6.value;
+				for (var _iterator2 = self.dates[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
+					var date = _step2.value;
 	
 					var tick_class = 'tick';
 					// thick tick for monday
@@ -548,16 +476,16 @@ return /******/ (function(modules) { // webpackBootstrap
 					}
 				}
 			} catch (err) {
-				_didIteratorError6 = true;
-				_iteratorError6 = err;
+				_didIteratorError2 = true;
+				_iteratorError2 = err;
 			} finally {
 				try {
-					if (!_iteratorNormalCompletion6 && _iterator6.return) {
-						_iterator6.return();
+					if (!_iteratorNormalCompletion2 && _iterator2.return) {
+						_iterator2.return();
 					}
 				} finally {
-					if (_didIteratorError6) {
-						throw _iteratorError6;
+					if (_didIteratorError2) {
+						throw _iteratorError2;
 					}
 				}
 			}
@@ -577,14 +505,14 @@ return /******/ (function(modules) { // webpackBootstrap
 		}
 	
 		function make_dates() {
-			var _iteratorNormalCompletion7 = true;
-			var _didIteratorError7 = false;
-			var _iteratorError7 = undefined;
+			var _iteratorNormalCompletion3 = true;
+			var _didIteratorError3 = false;
+			var _iteratorError3 = undefined;
 	
 			try {
 	
-				for (var _iterator7 = get_dates_to_draw()[Symbol.iterator](), _step7; !(_iteratorNormalCompletion7 = (_step7 = _iterator7.next()).done); _iteratorNormalCompletion7 = true) {
-					var date = _step7.value;
+				for (var _iterator3 = get_dates_to_draw()[Symbol.iterator](), _step3; !(_iteratorNormalCompletion3 = (_step3 = _iterator3.next()).done); _iteratorNormalCompletion3 = true) {
+					var date = _step3.value;
 	
 					self.canvas.text(date.lower_x, date.lower_y, date.lower_text).addClass('lower-text').appendTo(self.element_groups.date);
 	
@@ -598,16 +526,16 @@ return /******/ (function(modules) { // webpackBootstrap
 					}
 				}
 			} catch (err) {
-				_didIteratorError7 = true;
-				_iteratorError7 = err;
+				_didIteratorError3 = true;
+				_iteratorError3 = err;
 			} finally {
 				try {
-					if (!_iteratorNormalCompletion7 && _iterator7.return) {
-						_iterator7.return();
+					if (!_iteratorNormalCompletion3 && _iterator3.return) {
+						_iterator3.return();
 					}
 				} finally {
-					if (_didIteratorError7) {
-						throw _iteratorError7;
+					if (_didIteratorError3) {
+						throw _iteratorError3;
 					}
 				}
 			}
@@ -679,13 +607,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 		function make_arrows() {
 			self._arrows = [];
-			var _iteratorNormalCompletion8 = true;
-			var _didIteratorError8 = false;
-			var _iteratorError8 = undefined;
+			var _iteratorNormalCompletion4 = true;
+			var _didIteratorError4 = false;
+			var _iteratorError4 = undefined;
 	
 			try {
 				var _loop = function _loop() {
-					var task = _step8.value;
+					var task = _step4.value;
 	
 					var arrows = [];
 					arrows = task.dependencies.map(function (dep) {
@@ -704,62 +632,64 @@ return /******/ (function(modules) { // webpackBootstrap
 					self._arrows = self._arrows.concat(arrows);
 				};
 	
-				for (var _iterator8 = self.tasks[Symbol.iterator](), _step8; !(_iteratorNormalCompletion8 = (_step8 = _iterator8.next()).done); _iteratorNormalCompletion8 = true) {
+				for (var _iterator4 = self.tasks[Symbol.iterator](), _step4; !(_iteratorNormalCompletion4 = (_step4 = _iterator4.next()).done); _iteratorNormalCompletion4 = true) {
 					_loop();
 				}
 			} catch (err) {
-				_didIteratorError8 = true;
-				_iteratorError8 = err;
+				_didIteratorError4 = true;
+				_iteratorError4 = err;
 			} finally {
 				try {
-					if (!_iteratorNormalCompletion8 && _iterator8.return) {
-						_iterator8.return();
+					if (!_iteratorNormalCompletion4 && _iterator4.return) {
+						_iterator4.return();
 					}
 				} finally {
-					if (_didIteratorError8) {
-						throw _iteratorError8;
+					if (_didIteratorError4) {
+						throw _iteratorError4;
 					}
 				}
 			}
 		}
 	
 		function make_bars() {
-	
-			self._bars = self.tasks.map(function (task) {
-				var bar = (0, _Bar2.default)(self, task);
-				self.element_groups.bar.add(bar.group);
-				return bar;
+			self._bars = self.tasks.map(function (run) {
+				var run_items = run.map(function (item) {
+					var bar = (0, _Bar2.default)(self, item);
+					self.element_groups.bar.add(bar.group);
+					return bar;
+				});
+				return run_items;
 			});
 		}
 	
 		function map_arrows_on_bars() {
-			var _iteratorNormalCompletion9 = true;
-			var _didIteratorError9 = false;
-			var _iteratorError9 = undefined;
+			var _iteratorNormalCompletion5 = true;
+			var _didIteratorError5 = false;
+			var _iteratorError5 = undefined;
 	
 			try {
 				var _loop2 = function _loop2() {
-					var bar = _step9.value;
+					var bar = _step5.value;
 	
 					bar.arrows = self._arrows.filter(function (arrow) {
 						return arrow.from_task.task.id === bar.task.id || arrow.to_task.task.id === bar.task.id;
 					});
 				};
 	
-				for (var _iterator9 = self._bars[Symbol.iterator](), _step9; !(_iteratorNormalCompletion9 = (_step9 = _iterator9.next()).done); _iteratorNormalCompletion9 = true) {
+				for (var _iterator5 = self._bars[Symbol.iterator](), _step5; !(_iteratorNormalCompletion5 = (_step5 = _iterator5.next()).done); _iteratorNormalCompletion5 = true) {
 					_loop2();
 				}
 			} catch (err) {
-				_didIteratorError9 = true;
-				_iteratorError9 = err;
+				_didIteratorError5 = true;
+				_iteratorError5 = err;
 			} finally {
 				try {
-					if (!_iteratorNormalCompletion9 && _iterator9.return) {
-						_iterator9.return();
+					if (!_iteratorNormalCompletion5 && _iterator5.return) {
+						_iterator5.return();
 					}
 				} finally {
-					if (_didIteratorError9) {
-						throw _iteratorError9;
+					if (_didIteratorError5) {
+						throw _iteratorError5;
 					}
 				}
 			}
@@ -784,27 +714,27 @@ return /******/ (function(modules) { // webpackBootstrap
 			if (typeof modes === 'string') {
 				return self.config.view_mode === modes;
 			} else if (Array.isArray(modes)) {
-				var _iteratorNormalCompletion10 = true;
-				var _didIteratorError10 = false;
-				var _iteratorError10 = undefined;
+				var _iteratorNormalCompletion6 = true;
+				var _didIteratorError6 = false;
+				var _iteratorError6 = undefined;
 	
 				try {
-					for (var _iterator10 = modes[Symbol.iterator](), _step10; !(_iteratorNormalCompletion10 = (_step10 = _iterator10.next()).done); _iteratorNormalCompletion10 = true) {
-						var mode = _step10.value;
+					for (var _iterator6 = modes[Symbol.iterator](), _step6; !(_iteratorNormalCompletion6 = (_step6 = _iterator6.next()).done); _iteratorNormalCompletion6 = true) {
+						var mode = _step6.value;
 	
 						if (self.config.view_mode === mode) return true;
 					}
 				} catch (err) {
-					_didIteratorError10 = true;
-					_iteratorError10 = err;
+					_didIteratorError6 = true;
+					_iteratorError6 = err;
 				} finally {
 					try {
-						if (!_iteratorNormalCompletion10 && _iterator10.return) {
-							_iterator10.return();
+						if (!_iteratorNormalCompletion6 && _iterator6.return) {
+							_iterator6.return();
 						}
 					} finally {
-						if (_didIteratorError10) {
-							throw _iteratorError10;
+						if (_didIteratorError6) {
+							throw _iteratorError6;
 						}
 					}
 				}
@@ -876,7 +806,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	
 	// module
-	exports.push([module.id, ".gantt .grid-background {\n  fill: none; }\n\n.gantt .grid-header {\n  fill: #ffffff;\n  stroke: #e0e0e0;\n  stroke-width: 1.4; }\n\n.gantt .grid-row {\n  fill: #ffffff; }\n\n.gantt .grid-row:nth-child(even) {\n  fill: #f5f5f5; }\n\n.gantt .row-line {\n  stroke: #ebeff2; }\n\n.gantt .tick {\n  stroke: #e0e0e0;\n  stroke-width: 0.2; }\n  .gantt .tick.thick {\n    stroke-width: 0.4; }\n\n.gantt .today-highlight {\n  fill: #fcf8e3;\n  opacity: 0.5; }\n\n.gantt #arrow {\n  fill: none;\n  stroke: #666;\n  stroke-width: 1.4; }\n\n.gantt .bar {\n  fill: #b8c2cc;\n  stroke: #8D99A6;\n  stroke-width: 0;\n  transition: stroke-width .3s ease; }\n\n.gantt .bar-progress {\n  fill: #a3a3ff; }\n\n.gantt .bar-invalid {\n  fill: transparent;\n  stroke: #8D99A6;\n  stroke-width: 1;\n  stroke-dasharray: 5; }\n  .gantt .bar-invalid ~ .bar-label {\n    fill: #555; }\n\n.gantt .bar-label {\n  fill: #fff;\n  dominant-baseline: central;\n  text-anchor: middle;\n  font-size: 12px;\n  font-weight: lighter; }\n  .gantt .bar-label.big {\n    fill: #555;\n    text-anchor: start; }\n\n.gantt .handle {\n  fill: #ddd;\n  cursor: ew-resize;\n  opacity: 0;\n  visibility: hidden;\n  transition: opacity .3s ease; }\n\n.gantt .bar-wrapper {\n  cursor: pointer; }\n  .gantt .bar-wrapper:hover .bar {\n    stroke-width: 2; }\n  .gantt .bar-wrapper:hover .handle {\n    visibility: visible;\n    opacity: 1; }\n  .gantt .bar-wrapper.active .bar {\n    stroke-width: 2; }\n\n.gantt .lower-text, .gantt .upper-text {\n  font-size: 12px;\n  text-anchor: middle; }\n\n.gantt .upper-text {\n  fill: #555; }\n\n.gantt .lower-text {\n  fill: #333; }\n\n.gantt #details .details-container {\n  background: #fff;\n  display: inline-block;\n  padding: 12px; }\n  .gantt #details .details-container h5, .gantt #details .details-container p {\n    margin: 0; }\n  .gantt #details .details-container h5 {\n    font-size: 12px;\n    font-weight: bold;\n    margin-bottom: 10px;\n    color: #555; }\n  .gantt #details .details-container p {\n    font-size: 12px;\n    margin-bottom: 6px;\n    color: #666; }\n  .gantt #details .details-container p:last-child {\n    margin-bottom: 0; }\n\n.gantt .hide {\n  display: none; }\n", "", {"version":3,"sources":["C:/Users/walters_l/Documents/Repos/Gantt-frappe/src/src\\gantt.scss"],"names":[],"mappings":"AAYA;EAGE,WAAU,EACV;;AAJF;EAME,cAAa;EACb,gBAjBoB;EAkBpB,kBAAiB,EACjB;;AATF;EAWE,cAAa,EACb;;AAZF;EAcE,cAvBgB,EAwBhB;;AAfF;EAiBE,gBAzB0B,EA0B1B;;AAlBF;EAoBE,gBA9BoB;EA+BpB,kBAAiB,EAIjB;EAzBF;IAuBG,kBAAiB,EACjB;;AAxBH;EA2BE,cAlCoB;EAmCpB,aAAY,EACZ;;AA7BF;EAgCE,WAAU;EACV,aAvCe;EAwCf,kBAAiB,EACjB;;AAnCF;EAsCE,cAlDiB;EAmDjB,gBAlDkB;EAmDlB,gBAAe;EACf,kCAAiC,EACjC;;AA1CF;EA4CE,cA/CY,EAgDZ;;AA7CF;EA+CE,kBAAiB;EACjB,gBA3DkB;EA4DlB,gBAAe;EACf,oBAAmB,EAKnB;EAvDF;IAqDG,WA1Dc,EA2Dd;;AAtDH;EAyDE,WAAU;EACV,2BAA0B;EAC1B,oBAAmB;EACnB,gBAAe;EACf,qBAAoB,EAMpB;EAnEF;IAgEG,WArEc;IAsEd,mBAAkB,EAClB;;AAlEH;EAsEE,WAxEiB;EAyEjB,kBAAiB;EACjB,WAAU;EACV,mBAAkB;EAClB,6BAA4B,EAC5B;;AA3EF;EA8EE,gBAAe,EAkBf;EAhGF;IAkFI,gBAAe,EACf;EAnFJ;IAsFI,oBAAmB;IACnB,WAAU,EACV;EAxFJ;IA6FI,gBAAe,EACf;;AA9FJ;EAmGE,gBAAe;EACf,oBAAmB,EACnB;;AArGF;EAuGE,WA5Ge,EA6Gf;;AAxGF;EA0GE,WA9Ge,EA+Gf;;AA3GF;EA8GE,iBAAgB;EAChB,sBAAqB;EACrB,cAAa,EAsBb;EAtIF;IAmHG,UAAS,EACT;EApHH;IAuHG,gBAAe;IACf,kBAAiB;IACjB,oBAAmB;IACnB,YA/Hc,EAgId;EA3HH;IA8HG,gBAAe;IACf,mBAAkB;IAClB,YAtIc,EAuId;EAjIH;IAoIG,iBAAgB,EAChB;;AArIH;EAyIE,cAAa,EACb","file":"gantt.scss","sourcesContent":["$bar-color: #b8c2cc;\r\n$bar-stroke: #8D99A6;\r\n$border-color: #e0e0e0;\r\n$light-bg: #f5f5f5;\r\n$light-border-color: #ebeff2;\r\n$light-yellow: #fcf8e3;\r\n$text-muted: #666;\r\n$text-light: #555;\r\n$text-color: #333;\r\n$blue: #a3a3ff;\r\n$handle-color: #ddd;\r\n\r\n.gantt {\r\n\r\n\t.grid-background {\r\n\t\tfill: none;\r\n\t}\r\n\t.grid-header {\r\n\t\tfill: #ffffff;\r\n\t\tstroke: $border-color;\r\n\t\tstroke-width: 1.4;\r\n\t}\r\n\t.grid-row {\r\n\t\tfill: #ffffff;\r\n\t}\r\n\t.grid-row:nth-child(even) {\r\n\t\tfill: $light-bg;\r\n\t}\r\n\t.row-line {\r\n\t\tstroke: $light-border-color;\r\n\t}\r\n\t.tick {\r\n\t\tstroke: $border-color;\r\n\t\tstroke-width: 0.2;\r\n\t\t&.thick {\r\n\t\t\tstroke-width: 0.4;\r\n\t\t}\r\n\t}\r\n\t.today-highlight {\r\n\t\tfill: $light-yellow;\r\n\t\topacity: 0.5;\r\n\t}\r\n\r\n\t#arrow {\r\n\t\tfill: none;\r\n\t\tstroke: $text-muted;\r\n\t\tstroke-width: 1.4;\r\n\t}\r\n\r\n\t.bar {\r\n\t\tfill: $bar-color;\r\n\t\tstroke: $bar-stroke;\r\n\t\tstroke-width: 0;\r\n\t\ttransition: stroke-width .3s ease;\r\n\t}\r\n\t.bar-progress {\r\n\t\tfill: $blue;\r\n\t}\r\n\t.bar-invalid {\r\n\t\tfill: transparent;\r\n\t\tstroke: $bar-stroke;\r\n\t\tstroke-width: 1;\r\n\t\tstroke-dasharray: 5;\r\n\r\n\t\t&~.bar-label {\r\n\t\t\tfill: $text-light;\r\n\t\t}\r\n\t}\r\n\t.bar-label {\r\n\t\tfill: #fff;\r\n\t\tdominant-baseline: central;\r\n\t\ttext-anchor: middle;\r\n\t\tfont-size: 12px;\r\n\t\tfont-weight: lighter;\r\n\r\n\t\t&.big {\r\n\t\t\tfill: $text-light;\r\n\t\t\ttext-anchor: start;\r\n\t\t}\r\n\t}\r\n\r\n\t.handle {\r\n\t\tfill: $handle-color;\r\n\t\tcursor: ew-resize;\r\n\t\topacity: 0;\r\n\t\tvisibility: hidden;\r\n\t\ttransition: opacity .3s ease;\r\n\t}\r\n\r\n\t.bar-wrapper {\r\n\t\tcursor: pointer;\r\n\r\n\t\t&:hover {\r\n\t\t\t.bar {\r\n\t\t\t\tstroke-width: 2;\r\n\t\t\t}\r\n\r\n\t\t\t.handle {\r\n\t\t\t\tvisibility: visible;\r\n\t\t\t\topacity: 1;\r\n\t\t\t}\r\n\t\t}\r\n\r\n\t\t&.active {\r\n\t\t\t.bar {\r\n\t\t\t\tstroke-width: 2;\r\n\t\t\t}\r\n\t\t}\r\n\t}\r\n\r\n\t.lower-text, .upper-text {\r\n\t\tfont-size: 12px;\r\n\t\ttext-anchor: middle;\r\n\t}\r\n\t.upper-text {\r\n\t\tfill: $text-light;\r\n\t}\r\n\t.lower-text {\r\n\t\tfill: $text-color;\r\n\t}\r\n\r\n\t#details .details-container {\r\n\t\tbackground: #fff;\r\n\t\tdisplay: inline-block;\r\n\t\tpadding: 12px;\r\n\r\n\t\th5, p {\r\n\t\t\tmargin: 0;\r\n\t\t}\r\n\r\n\t\th5 {\r\n\t\t\tfont-size: 12px;\r\n\t\t\tfont-weight: bold;\r\n\t\t\tmargin-bottom: 10px;\r\n\t\t\tcolor: $text-light;\r\n\t\t}\r\n\r\n\t\tp {\r\n\t\t\tfont-size: 12px;\r\n\t\t\tmargin-bottom: 6px;\r\n\t\t\tcolor: $text-muted;\r\n\t\t}\r\n\r\n\t\tp:last-child {\r\n\t\t\tmargin-bottom: 0;\r\n\t\t}\r\n\t}\r\n\r\n\t.hide {\r\n\t\tdisplay: none;\r\n\t}\r\n}\r\n"],"sourceRoot":""}]);
+	exports.push([module.id, ".gantt .grid-background {\n  fill: none; }\n\n.gantt .grid-header {\n  fill: #ffffff;\n  stroke: #e0e0e0;\n  stroke-width: 1.4; }\n\n.gantt .grid-row {\n  fill: #ffffff; }\n\n.gantt .grid-row:nth-child(even) {\n  fill: #f5f5f5; }\n\n.gantt .row-line {\n  stroke: #ebeff2; }\n\n.gantt .tick {\n  stroke: #e0e0e0;\n  stroke-width: 0.2; }\n  .gantt .tick.thick {\n    stroke-width: 0.4; }\n\n.gantt .today-highlight {\n  fill: yellow;\n  opacity: 0.5; }\n\n.gantt #arrow {\n  fill: none;\n  stroke: #666;\n  stroke-width: 1.4; }\n\n.gantt .bar {\n  fill: #b8c2cc;\n  stroke: #8D99A6;\n  stroke-width: 0;\n  transition: stroke-width .3s ease; }\n\n.gantt .bar-progress {\n  fill: #a3a3ff; }\n\n.gantt .bar-invalid {\n  fill: transparent;\n  stroke: #8D99A6;\n  stroke-width: 1;\n  stroke-dasharray: 5; }\n  .gantt .bar-invalid ~ .bar-label {\n    fill: #555; }\n\n.gantt .bar-label {\n  fill: #fff;\n  dominant-baseline: central;\n  text-anchor: middle;\n  font-size: 12px;\n  font-weight: lighter; }\n  .gantt .bar-label.big {\n    fill: #555;\n    text-anchor: start; }\n\n.gantt .handle {\n  fill: #ddd;\n  cursor: ew-resize;\n  opacity: 0;\n  visibility: hidden;\n  transition: opacity .3s ease; }\n\n.gantt .bar-wrapper {\n  cursor: pointer; }\n  .gantt .bar-wrapper:hover .bar {\n    stroke-width: 2; }\n  .gantt .bar-wrapper:hover .handle {\n    visibility: visible;\n    opacity: 1; }\n  .gantt .bar-wrapper.active .bar {\n    stroke-width: 2; }\n\n.gantt .lower-text, .gantt .upper-text {\n  font-size: 12px;\n  text-anchor: middle; }\n\n.gantt .upper-text {\n  fill: #555; }\n\n.gantt .lower-text {\n  fill: #333; }\n\n.gantt #details .details-container {\n  background: #fff;\n  display: inline-block;\n  padding: 12px; }\n  .gantt #details .details-container h5, .gantt #details .details-container p {\n    margin: 0; }\n  .gantt #details .details-container h5 {\n    font-size: 12px;\n    font-weight: bold;\n    margin-bottom: 10px;\n    color: #555; }\n  .gantt #details .details-container p {\n    font-size: 12px;\n    margin-bottom: 6px;\n    color: #666; }\n  .gantt #details .details-container p:last-child {\n    margin-bottom: 0; }\n\n.gantt .hide {\n  display: none; }\n", "", {"version":3,"sources":["C:/Users/walters_l/Documents/Repos/Gantt-frappe/src/src\\gantt.scss"],"names":[],"mappings":"AAYA;EAGE,WAAU,EACV;;AAJF;EAME,cAAa;EACb,gBAjBoB;EAkBpB,kBAAiB,EACjB;;AATF;EAWE,cAAa,EACb;;AAZF;EAcE,cAvBgB,EAwBhB;;AAfF;EAiBE,gBAzB0B,EA0B1B;;AAlBF;EAoBE,gBA9BoB;EA+BpB,kBAAiB,EAIjB;EAzBF;IAuBG,kBAAiB,EACjB;;AAxBH;EA2BE,aAlCmB;EAmCnB,aAAY,EACZ;;AA7BF;EAgCE,WAAU;EACV,aAvCe;EAwCf,kBAAiB,EACjB;;AAnCF;EAsCE,cAlDiB;EAmDjB,gBAlDkB;EAmDlB,gBAAe;EACf,kCAAiC,EACjC;;AA1CF;EA4CE,cA/CY,EAgDZ;;AA7CF;EA+CE,kBAAiB;EACjB,gBA3DkB;EA4DlB,gBAAe;EACf,oBAAmB,EAKnB;EAvDF;IAqDG,WA1Dc,EA2Dd;;AAtDH;EAyDE,WAAU;EACV,2BAA0B;EAC1B,oBAAmB;EACnB,gBAAe;EACf,qBAAoB,EAMpB;EAnEF;IAgEG,WArEc;IAsEd,mBAAkB,EAClB;;AAlEH;EAsEE,WAxEiB;EAyEjB,kBAAiB;EACjB,WAAU;EACV,mBAAkB;EAClB,6BAA4B,EAC5B;;AA3EF;EA8EE,gBAAe,EAkBf;EAhGF;IAkFI,gBAAe,EACf;EAnFJ;IAsFI,oBAAmB;IACnB,WAAU,EACV;EAxFJ;IA6FI,gBAAe,EACf;;AA9FJ;EAmGE,gBAAe;EACf,oBAAmB,EACnB;;AArGF;EAuGE,WA5Ge,EA6Gf;;AAxGF;EA0GE,WA9Ge,EA+Gf;;AA3GF;EA8GE,iBAAgB;EAChB,sBAAqB;EACrB,cAAa,EAsBb;EAtIF;IAmHG,UAAS,EACT;EApHH;IAuHG,gBAAe;IACf,kBAAiB;IACjB,oBAAmB;IACnB,YA/Hc,EAgId;EA3HH;IA8HG,gBAAe;IACf,mBAAkB;IAClB,YAtIc,EAuId;EAjIH;IAoIG,iBAAgB,EAChB;;AArIH;EAyIE,cAAa,EACb","file":"gantt.scss","sourcesContent":["$bar-color: #b8c2cc;\r\n$bar-stroke: #8D99A6;\r\n$border-color: #e0e0e0;\r\n$light-bg: #f5f5f5;\r\n$light-border-color: #ebeff2;\r\n$light-yellow: yellow;\r\n$text-muted: #666;\r\n$text-light: #555;\r\n$text-color: #333;\r\n$blue: #a3a3ff;\r\n$handle-color: #ddd;\r\n\r\n.gantt {\r\n\r\n\t.grid-background {\r\n\t\tfill: none;\r\n\t}\r\n\t.grid-header {\r\n\t\tfill: #ffffff;\r\n\t\tstroke: $border-color;\r\n\t\tstroke-width: 1.4;\r\n\t}\r\n\t.grid-row {\r\n\t\tfill: #ffffff;\r\n\t}\r\n\t.grid-row:nth-child(even) {\r\n\t\tfill: $light-bg;\r\n\t}\r\n\t.row-line {\r\n\t\tstroke: $light-border-color;\r\n\t}\r\n\t.tick {\r\n\t\tstroke: $border-color;\r\n\t\tstroke-width: 0.2;\r\n\t\t&.thick {\r\n\t\t\tstroke-width: 0.4;\r\n\t\t}\r\n\t}\r\n\t.today-highlight {\r\n\t\tfill: $light-yellow;\r\n\t\topacity: 0.5;\r\n\t}\r\n\r\n\t#arrow {\r\n\t\tfill: none;\r\n\t\tstroke: $text-muted;\r\n\t\tstroke-width: 1.4;\r\n\t}\r\n\r\n\t.bar {\r\n\t\tfill: $bar-color;\r\n\t\tstroke: $bar-stroke;\r\n\t\tstroke-width: 0;\r\n\t\ttransition: stroke-width .3s ease;\r\n\t}\r\n\t.bar-progress {\r\n\t\tfill: $blue;\r\n\t}\r\n\t.bar-invalid {\r\n\t\tfill: transparent;\r\n\t\tstroke: $bar-stroke;\r\n\t\tstroke-width: 1;\r\n\t\tstroke-dasharray: 5;\r\n\r\n\t\t&~.bar-label {\r\n\t\t\tfill: $text-light;\r\n\t\t}\r\n\t}\r\n\t.bar-label {\r\n\t\tfill: #fff;\r\n\t\tdominant-baseline: central;\r\n\t\ttext-anchor: middle;\r\n\t\tfont-size: 12px;\r\n\t\tfont-weight: lighter;\r\n\r\n\t\t&.big {\r\n\t\t\tfill: $text-light;\r\n\t\t\ttext-anchor: start;\r\n\t\t}\r\n\t}\r\n\r\n\t.handle {\r\n\t\tfill: $handle-color;\r\n\t\tcursor: ew-resize;\r\n\t\topacity: 0;\r\n\t\tvisibility: hidden;\r\n\t\ttransition: opacity .3s ease;\r\n\t}\r\n\r\n\t.bar-wrapper {\r\n\t\tcursor: pointer;\r\n\r\n\t\t&:hover {\r\n\t\t\t.bar {\r\n\t\t\t\tstroke-width: 2;\r\n\t\t\t}\r\n\r\n\t\t\t.handle {\r\n\t\t\t\tvisibility: visible;\r\n\t\t\t\topacity: 1;\r\n\t\t\t}\r\n\t\t}\r\n\r\n\t\t&.active {\r\n\t\t\t.bar {\r\n\t\t\t\tstroke-width: 2;\r\n\t\t\t}\r\n\t\t}\r\n\t}\r\n\r\n\t.lower-text, .upper-text {\r\n\t\tfont-size: 12px;\r\n\t\ttext-anchor: middle;\r\n\t}\r\n\t.upper-text {\r\n\t\tfill: $text-light;\r\n\t}\r\n\t.lower-text {\r\n\t\tfill: $text-color;\r\n\t}\r\n\r\n\t#details .details-container {\r\n\t\tbackground: #fff;\r\n\t\tdisplay: inline-block;\r\n\t\tpadding: 12px;\r\n\r\n\t\th5, p {\r\n\t\t\tmargin: 0;\r\n\t\t}\r\n\r\n\t\th5 {\r\n\t\t\tfont-size: 12px;\r\n\t\t\tfont-weight: bold;\r\n\t\t\tmargin-bottom: 10px;\r\n\t\t\tcolor: $text-light;\r\n\t\t}\r\n\r\n\t\tp {\r\n\t\t\tfont-size: 12px;\r\n\t\t\tmargin-bottom: 6px;\r\n\t\t\tcolor: $text-muted;\r\n\t\t}\r\n\r\n\t\tp:last-child {\r\n\t\t\tmargin-bottom: 0;\r\n\t\t}\r\n\t}\r\n\r\n\t.hide {\r\n\t\tdisplay: none;\r\n\t}\r\n}\r\n"],"sourceRoot":""}]);
 	
 	// exports
 
@@ -1847,9 +1777,58 @@ return /******/ (function(modules) { // webpackBootstrap
 /* 7 */
 /***/ function(module, exports, __webpack_require__) {
 
+	'use strict';
+	
+	Object.defineProperty(exports, "__esModule", {
+		value: true
+	});
+	exports.ScrollWheelInit = ScrollWheelInit;
+	exports.ClickChart = ClickChart;
+	function ScrollWheelInit(element) {
+		var display = document.getElementById(element);
+		__webpack_require__(8)(display, function (dx, dy, dz, ev) {
+			// const display = document.getElementById('wheeldata');
+			// display.innerHTML = '<p>Scroll:' + [dx, dy, dz, ev] + '</p>';
+			if (dy > 0) {
+				console.log('zoom in');
+			} else if (dy < 0) {
+				console.log('zoom out');
+			}
+			// console.dir(ev)
+			console.log('Scroll left: ' + display.scrollLeft);
+			// console.log(`Scroll pos, x: ${ev.screenX} y: ${ev.screenY}`);
+			console.log('Gantt mouse, x: ' + ev.offsetX + ' y: ' + ev.offsetY);
+		} /* ,
+	            'noScroll' */
+		);
+	}
+	
+	function ClickChart(element) {
+		var display = document.getElementById(element);
+		display.addEventListener('click', clicked);
+	
+		function clicked(evt) {
+			var e = evt.target;
+			var dim = e.getBoundingClientRect();
+			var x = evt.clientX - dim.left;
+			var y = evt.clientY - dim.top;
+			console.log(evt);
+			// console.log($(this).attr('id'));
+			console.log('--------------------');
+			console.log(evt.target.getAttribute('id'));
+			console.log(evt.currentTarget);
+			// console.log(evt.target.id);
+			console.log('x: ' + x + ' y:' + y);
+		}
+	}
+
+/***/ },
+/* 8 */
+/***/ function(module, exports, __webpack_require__) {
+
 	'use strict'
 	
-	var toPX = __webpack_require__(8)
+	var toPX = __webpack_require__(9)
 	
 	module.exports = mouseWheelListen
 	
@@ -1890,12 +1869,12 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 8 */
+/* 9 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict'
 	
-	var parseUnit = __webpack_require__(9)
+	var parseUnit = __webpack_require__(10)
 	
 	module.exports = toPX
 	
@@ -1955,7 +1934,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	}
 
 /***/ },
-/* 9 */
+/* 10 */
 /***/ function(module, exports) {
 
 	module.exports = function parseUnit(str, out) {
@@ -1968,45 +1947,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	    out[1] = str.match(/[\d.\-\+]*\s*(.*)/)[1] || ''
 	    return out
 	}
-
-/***/ },
-/* 10 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-	
-	Object.defineProperty(exports, "__esModule", {
-	    value: true
-	});
-	exports.ScrollWheelInit = ScrollWheelInit;
-	function ScrollWheelInit() {
-	    __webpack_require__(7)(document.getElementById('gc'), function (dx, dy, dz, ev) {
-	        // const display = document.getElementById('wheeldata');
-	        // display.innerHTML = '<p>Scroll:' + [dx, dy, dz, ev] + '</p>';
-	        if (dy > 0) {
-	            console.log('zoom in');
-	        } else if (dy < 0) {
-	            console.log('zoom out');
-	        }
-	        // console.dir(ev)
-	        // console.log(`x: ${ev.x} y: ${ev.y}`);
-	        console.log('Gantt mouse, x: ' + ev.offsetX + ' y: ' + ev.offsetY);
-	    } /* ,
-	         'noScroll' */
-	    );
-	}
-	
-	/* 
-	// clicked(evt)
-
-	export function clicked(evt) {
-	    console.log(evt)
-	    var e = evt.target;
-	    var dim = e.getBoundingClientRect();
-	    var x = evt.clientX - dim.left;
-	    var y = evt.clientY - dim.top;
-	    console.log("x: " + x + " y:" + y);
-	} */
 
 /***/ }
 /******/ ])

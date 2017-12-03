@@ -16,6 +16,30 @@ export default function Gantt(element, tasks, config) {
 
 	const self = {};
 
+	function clicked(evt) {
+		var e = evt.target;
+		var dim = e.getBoundingClientRect();
+		var x = evt.clientX - dim.left;
+		var y = evt.clientY - dim.top;
+		// console.log(evt);
+		// console.log($(this).attr('id'));
+		// console.log('--------------------');
+		// console.log(evt.target.getAttribute('id'));
+		// console.log(evt.currentTarget);
+		// console.log(evt.target.id);
+		// console.log(evt.target.width.baseVal.value/self.dates.length);
+		const xPercent = ((x / evt.target.width.baseVal.value) * 100);
+		//console.log(xPercent);
+		//console.log(Math.round((self.dates.length/100) * xPercent));
+		const datePosition = Math.round((self.dates.length/100) * xPercent)
+		console.log(self.dates[datePosition]._d.getDate());
+		console.log(self.dates[datePosition]._d.getMonth());
+		console.log(self.dates[datePosition]._d.getFullYear());
+		// console.log(self.dates[datePosition]._d.getMinutes());
+		//console.log('x: ' + x + ' y:' + y);
+		//self.dates
+	}
+
 	function init() {
 		set_defaults();
 
@@ -30,7 +54,13 @@ export default function Gantt(element, tasks, config) {
 		// initialize with default view mode
 		change_view_mode(self.config.view_mode);
 
-		ScrollWheelInit();
+		// ScrollWheelInit();
+		//ClickChart('gc');
+	
+		
+
+		const display = document.getElementById('gc');
+		display.addEventListener('click', clicked);
 	}
 
 	function set_defaults() {
@@ -356,6 +386,9 @@ export default function Gantt(element, tasks, config) {
 		let tick_x = 0,
 			tick_y = self.config.header_height + self.config.padding / 2,
 			tick_height = (self.config.bar.height + self.config.padding) * self.tasks.length;
+
+			console.log('self.dates:');
+			console.log(self.dates);
 
 		for(let date of self.dates) {
 			let tick_class = 'tick';

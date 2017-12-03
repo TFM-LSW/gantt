@@ -71,7 +71,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	var _Arrow2 = _interopRequireDefault(_Arrow);
 	
-	var _ScrollUtils = __webpack_require__(10);
+	var _ScrollUtils = __webpack_require__(7);
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
@@ -87,6 +87,30 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 		var self = {};
 	
+		function clicked(evt) {
+			var e = evt.target;
+			var dim = e.getBoundingClientRect();
+			var x = evt.clientX - dim.left;
+			var y = evt.clientY - dim.top;
+			// console.log(evt);
+			// console.log($(this).attr('id'));
+			// console.log('--------------------');
+			// console.log(evt.target.getAttribute('id'));
+			// console.log(evt.currentTarget);
+			// console.log(evt.target.id);
+			// console.log(evt.target.width.baseVal.value/self.dates.length);
+			var xPercent = x / evt.target.width.baseVal.value * 100;
+			//console.log(xPercent);
+			//console.log(Math.round((self.dates.length/100) * xPercent));
+			var datePosition = Math.round(self.dates.length / 100 * xPercent);
+			console.log(self.dates[datePosition]._d.getDate());
+			console.log(self.dates[datePosition]._d.getMonth());
+			console.log(self.dates[datePosition]._d.getFullYear());
+			// console.log(self.dates[datePosition]._d.getMinutes());
+			//console.log('x: ' + x + ' y:' + y);
+			//self.dates
+		}
+	
 		function init() {
 			set_defaults();
 	
@@ -101,7 +125,12 @@ return /******/ (function(modules) { // webpackBootstrap
 			// initialize with default view mode
 			change_view_mode(self.config.view_mode);
 	
-			(0, _ScrollUtils.ScrollWheelInit)();
+			// ScrollWheelInit();
+			//ClickChart('gc');
+	
+	
+			var display = document.getElementById('gc');
+			display.addEventListener('click', clicked);
 		}
 	
 		function set_defaults() {
@@ -512,6 +541,9 @@ return /******/ (function(modules) { // webpackBootstrap
 			var tick_x = 0,
 			    tick_y = self.config.header_height + self.config.padding / 2,
 			    tick_height = (self.config.bar.height + self.config.padding) * self.tasks.length;
+	
+			console.log('self.dates:');
+			console.log(self.dates);
 	
 			var _iteratorNormalCompletion6 = true;
 			var _didIteratorError6 = false;
@@ -1847,9 +1879,68 @@ return /******/ (function(modules) { // webpackBootstrap
 /* 7 */
 /***/ function(module, exports, __webpack_require__) {
 
+	'use strict';
+	
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+	exports.ScrollWheelInit = ScrollWheelInit;
+	exports.ClickChart = ClickChart;
+	function ScrollWheelInit() {
+	    __webpack_require__(8)(document.getElementById('gc'), function (dx, dy, dz, ev) {
+	        // const display = document.getElementById('wheeldata');
+	        // display.innerHTML = '<p>Scroll:' + [dx, dy, dz, ev] + '</p>';
+	        if (dy > 0) {
+	            console.log('zoom in');
+	        } else if (dy < 0) {
+	            console.log('zoom out');
+	        }
+	        // console.dir(ev)
+	        // console.log(`x: ${ev.x} y: ${ev.y}`);
+	        console.log('Gantt mouse, x: ' + ev.offsetX + ' y: ' + ev.offsetY);
+	    } /* ,
+	         'noScroll' */
+	    );
+	}
+	
+	function ClickChart(element) {
+	    var display = document.getElementById(element);
+	    display.addEventListener('click', clicked);
+	
+	    function clicked(evt) {
+	        var e = evt.target;
+	        var dim = e.getBoundingClientRect();
+	        var x = evt.clientX - dim.left;
+	        var y = evt.clientY - dim.top;
+	        console.log(evt);
+	        // console.log($(this).attr('id'));
+	        console.log('--------------------');
+	        console.log(evt.target.getAttribute('id'));
+	        console.log(evt.currentTarget);
+	        // console.log(evt.target.id);
+	        console.log('x: ' + x + ' y:' + y);
+	    }
+	}
+	
+	/* 
+	// clicked(evt)
+
+	export function clicked(evt) {
+	    console.log(evt)
+	    var e = evt.target;
+	    var dim = e.getBoundingClientRect();
+	    var x = evt.clientX - dim.left;
+	    var y = evt.clientY - dim.top;
+	    console.log("x: " + x + " y:" + y);
+	} */
+
+/***/ },
+/* 8 */
+/***/ function(module, exports, __webpack_require__) {
+
 	'use strict'
 	
-	var toPX = __webpack_require__(8)
+	var toPX = __webpack_require__(9)
 	
 	module.exports = mouseWheelListen
 	
@@ -1890,12 +1981,12 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 8 */
+/* 9 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict'
 	
-	var parseUnit = __webpack_require__(9)
+	var parseUnit = __webpack_require__(10)
 	
 	module.exports = toPX
 	
@@ -1955,7 +2046,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	}
 
 /***/ },
-/* 9 */
+/* 10 */
 /***/ function(module, exports) {
 
 	module.exports = function parseUnit(str, out) {
@@ -1968,45 +2059,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	    out[1] = str.match(/[\d.\-\+]*\s*(.*)/)[1] || ''
 	    return out
 	}
-
-/***/ },
-/* 10 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-	
-	Object.defineProperty(exports, "__esModule", {
-	    value: true
-	});
-	exports.ScrollWheelInit = ScrollWheelInit;
-	function ScrollWheelInit() {
-	    __webpack_require__(7)(document.getElementById('gc'), function (dx, dy, dz, ev) {
-	        // const display = document.getElementById('wheeldata');
-	        // display.innerHTML = '<p>Scroll:' + [dx, dy, dz, ev] + '</p>';
-	        if (dy > 0) {
-	            console.log('zoom in');
-	        } else if (dy < 0) {
-	            console.log('zoom out');
-	        }
-	        // console.dir(ev)
-	        // console.log(`x: ${ev.x} y: ${ev.y}`);
-	        console.log('Gantt mouse, x: ' + ev.offsetX + ' y: ' + ev.offsetY);
-	    } /* ,
-	         'noScroll' */
-	    );
-	}
-	
-	/* 
-	// clicked(evt)
-
-	export function clicked(evt) {
-	    console.log(evt)
-	    var e = evt.target;
-	    var dim = e.getBoundingClientRect();
-	    var x = evt.clientX - dim.left;
-	    var y = evt.clientY - dim.top;
-	    console.log("x: " + x + " y:" + y);
-	} */
 
 /***/ }
 /******/ ])

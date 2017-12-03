@@ -18,6 +18,25 @@ export function ScrollWheelInit () {
     );
 }
 
+export function ClickChart(element) {
+	const display = document.getElementById(element);
+	display.addEventListener('click', clicked);
+
+	function clicked(evt) {
+		var e = evt.target;
+		var dim = e.getBoundingClientRect();
+		var x = evt.clientX - dim.left;
+		var y = evt.clientY - dim.top;
+		console.log(evt);
+		// console.log($(this).attr('id'));
+		console.log('--------------------');
+		console.log(evt.target.getAttribute('id'));
+		console.log(evt.currentTarget);
+		// console.log(evt.target.id);
+		console.log('x: ' + x + ' y:' + y);
+	}
+}
+
 
 /* 
 // clicked(evt)

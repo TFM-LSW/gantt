@@ -300,8 +300,10 @@ export default function Gantt(element, tasks, config) {
 	}
 
 	function get_min_date() {
-		const task = self.tasks.reduce((acc, curr) => {
-			console.log(curr[0]);
+		var flattenTasks = [].concat(...self.tasks); // flatten multi-dimensional array
+
+		const task = flattenTasks.reduce((acc, curr) => {
+			// console.log(curr[0]);
 			return curr._start.isSameOrBefore(acc._start) ? curr : acc;
 		});
 		return task._start;

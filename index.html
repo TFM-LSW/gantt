@@ -49,13 +49,12 @@
 		];
 
 		var tasks = runs.map(function(run, i) {
-
 			var run_items = run.map(function(item, k){
 				var today = new Date();
 				var start = new Date(today.getFullYear(), today.getMonth(), today.getDate());
 				var end = new Date(today.getFullYear(), today.getMonth(), today.getDate());
-				start.setDate(today.getDate() + item.range[1][0]);
-				end.setDate(today.getDate() + item.range[1][1]);
+				start.setDate(today.getDate() + item.range[0]);
+				end.setDate(today.getDate() + item.range[1]);
 				return {
 					start: start,
 					end: end,

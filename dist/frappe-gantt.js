@@ -1435,6 +1435,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 		function run_method_for_dependencies(fn, args) {
 			var dm = gt.dependency_map;
+			console.log(self.task.id);
 			if (dm[self.task.id]) {
 				var _iteratorNormalCompletion = true;
 				var _didIteratorError = false;

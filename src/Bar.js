@@ -334,6 +334,7 @@ export default function Bar(gt, task) {
 
 	function run_method_for_dependencies(fn, args) {
 		const dm = gt.dependency_map;
+		console.log(self.task.id);
 		if (dm[self.task.id]) {
 			for (let deptask of dm[self.task.id]) {
 				const dt = gt.get_bar(deptask);

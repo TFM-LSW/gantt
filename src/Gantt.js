@@ -121,6 +121,7 @@ export default function Gantt(element, tasks, config) {
 
 				// cache index
 				item._index = i;
+				item._index_sub = k;
 
 				// invalid dates
 				if (!item.start && !item.end) {
@@ -207,7 +208,7 @@ export default function Gantt(element, tasks, config) {
 		make_dates();
 		make_bars();
 		make_arrows();
-		// map_arrows_on_bars();
+		map_arrows_on_bars();
 		set_width();
 		set_scroll_position();
 		bind_grid_click();
@@ -508,32 +509,31 @@ export default function Gantt(element, tasks, config) {
 	}
 
 	function make_arrows() {
-		/* var flattenTasks = [].concat(...self.tasks); // flatten multi-dimensional array
+		var flattenTasks = [].concat(...self.tasks); // flatten multi-dimensional array
 		self._arrows = [];
 		for (let task of flattenTasks) {
 			// console.log(task);
 			let arrows = [];
 			arrows = task.dependencies.map(dep => {
 				const dependency = get_task(dep);
-				console.log(dependency);
+				console.log(self._bars);
 				if (!dependency) return;
 
-				//LSW TODO - self._bars
 				const arrow = Arrow(
 					self, // gt
-					self._bars[dependency._index], // from_task
-					self._bars[task._index] // to_task
+					self._bars[dependency._index][dependency._index_sub], // from_task
+					self._bars[task._index][dependency._index_sub] // to_task
 				);
 				self.element_groups.arrow.add(arrow.element);
 				return arrow; // eslint-disable-line
 			}).filter(arr => arr); // filter falsy values
 			self._arrows = self._arrows.concat(arrows);
 		}
-		console.log(self._arrows); */
+		console.log(self._arrows);
 	}
 
 	function make_bars() {
-		self._bars = self.tasks.forEach((run) => {
+		self._bars = self.tasks.map((run) => {
 			var run_items = run.map((item) => {
 				const bar = Bar(self, item);
 				self.element_groups.bar.add(bar.group);
@@ -544,12 +544,14 @@ export default function Gantt(element, tasks, config) {
 	}
 
 	function map_arrows_on_bars() {
-		/* for (let bar of self._bars) {
+		var flattenBars = [].concat(...self._bars);
+		for (let bar of flattenBars) {
 			bar.arrows = self._arrows.filter(arrow => {
+				console.log(bar);
 				return (arrow.from_task.task.id === bar.task.id) ||
 					(arrow.to_task.task.id === bar.task.id);
 			});
-		} */
+		}
 	}
 
 	function bind_grid_click() {
@@ -586,7 +588,9 @@ export default function Gantt(element, tasks, config) {
 	}
 
 	function get_bar(id) {
-		return self._bars.find((bar) => {
+		var flattenBars = [].concat(...self._bars);
+		return flattenBars.find((bar) => {
+			console.log(bar)
 			return bar.task.id === id;
 		});
 	}

@@ -185,6 +185,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 					// cache index
 					item._index = i;
+					item._index_sub = k;
 	
 					// invalid dates
 					if (!item.start && !item.end) {
@@ -316,7 +317,7 @@ return /******/ (function(modules) { // webpackBootstrap
 			make_dates();
 			make_bars();
 			make_arrows();
-			// map_arrows_on_bars();
+			map_arrows_on_bars();
 			set_width();
 			set_scroll_position();
 			bind_grid_click();
@@ -656,31 +657,60 @@ return /******/ (function(modules) { // webpackBootstrap
 		}
 	
 		function make_arrows() {
-			/* var flattenTasks = [].concat(...self.tasks); // flatten multi-dimensional array
-	  self._arrows = [];
-	  for (let task of flattenTasks) {
-	  	// console.log(task);
-	  	let arrows = [];
-	  	arrows = task.dependencies.map(dep => {
-	  		const dependency = get_task(dep);
-	  		console.log(dependency);
-	  		if (!dependency) return;
-	  			//LSW TODO - self._bars
-	  		const arrow = Arrow(
-	  			self, // gt
-	  			self._bars[dependency._index], // from_task
-	  			self._bars[task._index] // to_task
-	  		);
-	  		self.element_groups.arrow.add(arrow.element);
-	  		return arrow; // eslint-disable-line
-	  	}).filter(arr => arr); // filter falsy values
-	  	self._arrows = self._arrows.concat(arrows);
-	  }
-	  console.log(self._arrows); */
+			var _ref3;
+	
+			var flattenTasks = (_ref3 = []).concat.apply(_ref3, _toConsumableArray(self.tasks)); // flatten multi-dimensional array
+			self._arrows = [];
+			var _iteratorNormalCompletion6 = true;
+			var _didIteratorError6 = false;
+			var _iteratorError6 = undefined;
+	
+			try {
+				var _loop = function _loop() {
+					var task = _step6.value;
+	
+					// console.log(task);
+					var arrows = [];
+					arrows = task.dependencies.map(function (dep) {
+						var dependency = get_task(dep);
+						console.log(self._bars);
+						if (!dependency) return;
+	
+						var arrow = (0, _Arrow2.default)(self, // gt
+						self._bars[dependency._index][dependency._index_sub], // from_task
+						self._bars[task._index][dependency._index_sub] // to_task
+						);
+						self.element_groups.arrow.add(arrow.element);
+						return arrow; // eslint-disable-line
+					}).filter(function (arr) {
+						return arr;
+					}); // filter falsy values
+					self._arrows = self._arrows.concat(arrows);
+				};
+	
+				for (var _iterator6 = flattenTasks[Symbol.iterator](), _step6; !(_iteratorNormalCompletion6 = (_step6 = _iterator6.next()).done); _iteratorNormalCompletion6 = true) {
+					_loop();
+				}
+			} catch (err) {
+				_didIteratorError6 = true;
+				_iteratorError6 = err;
+			} finally {
+				try {
+					if (!_iteratorNormalCompletion6 && _iterator6.return) {
+						_iterator6.return();
+					}
+				} finally {
+					if (_didIteratorError6) {
+						throw _iteratorError6;
+					}
+				}
+			}
+	
+			console.log(self._arrows);
 		}
 	
 		function make_bars() {
-			self._bars = self.tasks.forEach(function (run) {
+			self._bars = self.tasks.map(function (run) {
 				var run_items = run.map(function (item) {
 					var bar = (0, _Bar2.default)(self, item);
 					self.element_groups.bar.add(bar.group);
@@ -691,12 +721,40 @@ return /******/ (function(modules) { // webpackBootstrap
 		}
 	
 		function map_arrows_on_bars() {
-			/* for (let bar of self._bars) {
-	  	bar.arrows = self._arrows.filter(arrow => {
-	  		return (arrow.from_task.task.id === bar.task.id) ||
-	  			(arrow.to_task.task.id === bar.task.id);
-	  	});
-	  } */
+			var _ref4;
+	
+			var flattenBars = (_ref4 = []).concat.apply(_ref4, _toConsumableArray(self._bars));
+			var _iteratorNormalCompletion7 = true;
+			var _didIteratorError7 = false;
+			var _iteratorError7 = undefined;
+	
+			try {
+				var _loop2 = function _loop2() {
+					var bar = _step7.value;
+	
+					bar.arrows = self._arrows.filter(function (arrow) {
+						console.log(bar);
+						return arrow.from_task.task.id === bar.task.id || arrow.to_task.task.id === bar.task.id;
+					});
+				};
+	
+				for (var _iterator7 = flattenBars[Symbol.iterator](), _step7; !(_iteratorNormalCompletion7 = (_step7 = _iterator7.next()).done); _iteratorNormalCompletion7 = true) {
+					_loop2();
+				}
+			} catch (err) {
+				_didIteratorError7 = true;
+				_iteratorError7 = err;
+			} finally {
+				try {
+					if (!_iteratorNormalCompletion7 && _iterator7.return) {
+						_iterator7.return();
+					}
+				} finally {
+					if (_didIteratorError7) {
+						throw _iteratorError7;
+					}
+				}
+			}
 		}
 	
 		function bind_grid_click() {
@@ -718,27 +776,27 @@ return /******/ (function(modules) { // webpackBootstrap
 			if (typeof modes === 'string') {
 				return self.config.view_mode === modes;
 			} else if (Array.isArray(modes)) {
-				var _iteratorNormalCompletion6 = true;
-				var _didIteratorError6 = false;
-				var _iteratorError6 = undefined;
+				var _iteratorNormalCompletion8 = true;
+				var _didIteratorError8 = false;
+				var _iteratorError8 = undefined;
 	
 				try {
-					for (var _iterator6 = modes[Symbol.iterator](), _step6; !(_iteratorNormalCompletion6 = (_step6 = _iterator6.next()).done); _iteratorNormalCompletion6 = true) {
-						var mode = _step6.value;
+					for (var _iterator8 = modes[Symbol.iterator](), _step8; !(_iteratorNormalCompletion8 = (_step8 = _iterator8.next()).done); _iteratorNormalCompletion8 = true) {
+						var mode = _step8.value;
 	
 						if (self.config.view_mode === mode) return true;
 					}
 				} catch (err) {
-					_didIteratorError6 = true;
-					_iteratorError6 = err;
+					_didIteratorError8 = true;
+					_iteratorError8 = err;
 				} finally {
 					try {
-						if (!_iteratorNormalCompletion6 && _iterator6.return) {
-							_iterator6.return();
+						if (!_iteratorNormalCompletion8 && _iterator8.return) {
+							_iterator8.return();
 						}
 					} finally {
-						if (_didIteratorError6) {
-							throw _iteratorError6;
+						if (_didIteratorError8) {
+							throw _iteratorError8;
 						}
 					}
 				}
@@ -748,16 +806,20 @@ return /******/ (function(modules) { // webpackBootstrap
 		}
 	
 		function get_task(id) {
-			var _ref3;
+			var _ref5;
 	
-			var flattenTasks = (_ref3 = []).concat.apply(_ref3, _toConsumableArray(self.tasks)); // flatten multi-dimensional array
+			var flattenTasks = (_ref5 = []).concat.apply(_ref5, _toConsumableArray(self.tasks)); // flatten multi-dimensional array
 			return flattenTasks.find(function (task) {
 				return task.id === id;
 			});
 		}
 	
 		function get_bar(id) {
-			return self._bars.find(function (bar) {
+			var _ref6;
+	
+			var flattenBars = (_ref6 = []).concat.apply(_ref6, _toConsumableArray(self._bars));
+			return flattenBars.find(function (bar) {
+				console.log(bar);
 				return bar.task.id === id;
 			});
 		}

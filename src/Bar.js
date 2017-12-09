@@ -291,6 +291,7 @@ export default function Bar(gt, task) {
 		bar.ox = bar.getX();
 		bar.oy = bar.getY();
 		bar.owidth = bar.getWidth();
+		console.log(bar.owidth);
 		bar.finaldx = 0;
 		run_method_for_dependencies('onstart');
 	}
@@ -299,6 +300,7 @@ export default function Bar(gt, task) {
 	function onmove(dx, dy) {
 		const bar = self.$bar;
 		bar.finaldx = get_snap_position(dx);
+		console.log(dx)
 		update_bar_position({x: bar.ox + bar.finaldx});
 		run_method_for_dependencies('onmove', [dx, dy]);
 	}
@@ -356,6 +358,7 @@ export default function Bar(gt, task) {
 	}
 
 	function update_bar_position({x = null, width = null}) {
+		console.log(x, width)
 		const bar = self.$bar;
 		if (x) {
 			// get all x values of parent task

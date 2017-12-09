@@ -561,7 +561,6 @@ return /******/ (function(modules) { // webpackBootstrap
 			var _iteratorError5 = undefined;
 	
 			try {
-	
 				for (var _iterator5 = get_dates_to_draw()[Symbol.iterator](), _step5; !(_iteratorNormalCompletion5 = (_step5 = _iterator5.next()).done); _iteratorNormalCompletion5 = true) {
 					var date = _step5.value;
 	
@@ -819,7 +818,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 			var flattenBars = (_ref6 = []).concat.apply(_ref6, _toConsumableArray(self._bars));
 			return flattenBars.find(function (bar) {
-				console.log(bar);
 				return bar.task.id === id;
 			});
 		}
@@ -1455,6 +1453,7 @@ return /******/ (function(modules) { // webpackBootstrap
 			bar.ox = bar.getX();
 			bar.oy = bar.getY();
 			bar.owidth = bar.getWidth();
+			console.log(bar.owidth);
 			bar.finaldx = 0;
 			run_method_for_dependencies('onstart');
 		}
@@ -1463,6 +1462,7 @@ return /******/ (function(modules) { // webpackBootstrap
 		function onmove(dx, dy) {
 			var bar = self.$bar;
 			bar.finaldx = get_snap_position(dx);
+			console.log(dx);
 			update_bar_position({ x: bar.ox + bar.finaldx });
 			run_method_for_dependencies('onmove', [dx, dy]);
 		}
@@ -1546,6 +1546,7 @@ return /******/ (function(modules) { // webpackBootstrap
 			    _ref$width = _ref.width,
 			    width = _ref$width === undefined ? null : _ref$width;
 	
+			console.log(x, width);
 			var bar = self.$bar;
 			if (x) {
 				// get all x values of parent task

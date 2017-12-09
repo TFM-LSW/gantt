@@ -422,7 +422,6 @@ export default function Gantt(element, tasks, config) {
 	}
 
 	function make_dates() {
-
 		for (let date of get_dates_to_draw()) {
 			self.canvas.text(date.lower_x, date.lower_y, date.lower_text)
 				.addClass('lower-text')
@@ -590,7 +589,6 @@ export default function Gantt(element, tasks, config) {
 	function get_bar(id) {
 		var flattenBars = [].concat(...self._bars);
 		return flattenBars.find((bar) => {
-			console.log(bar)
 			return bar.task.id === id;
 		});
 	}

@@ -1453,7 +1453,6 @@ return /******/ (function(modules) { // webpackBootstrap
 			bar.ox = bar.getX();
 			bar.oy = bar.getY();
 			bar.owidth = bar.getWidth();
-			console.log(bar.owidth);
 			bar.finaldx = 0;
 			run_method_for_dependencies('onstart');
 		}
@@ -1462,7 +1461,6 @@ return /******/ (function(modules) { // webpackBootstrap
 		function onmove(dx, dy) {
 			var bar = self.$bar;
 			bar.finaldx = get_snap_position(dx);
-			console.log(dx);
 			update_bar_position({ x: bar.ox + bar.finaldx });
 			run_method_for_dependencies('onmove', [dx, dy]);
 		}
@@ -1498,7 +1496,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 		function run_method_for_dependencies(fn, args) {
 			var dm = gt.dependency_map;
-			console.log(self.task.id);
 			if (dm[self.task.id]) {
 				var _iteratorNormalCompletion = true;
 				var _didIteratorError = false;
@@ -1546,7 +1543,6 @@ return /******/ (function(modules) { // webpackBootstrap
 			    _ref$width = _ref.width,
 			    width = _ref$width === undefined ? null : _ref$width;
 	
-			console.log(x, width);
 			var bar = self.$bar;
 			if (x) {
 				// get all x values of parent task
@@ -1673,7 +1669,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 		function update_progressbar_position() {
 			self.$bar_progress.attr('x', self.$bar.getX());
-			self.$bar_progress.attr('width', self.$bar.getWidth() * (self.task.progress / 100));
+			if (self.task.progress) {
+				self.$bar_progress.attr('width', self.$bar.getWidth() * (self.task.progress / 100));
+			}
 		}
 	
 		function update_label_position() {
@@ -1879,17 +1877,17 @@ return /******/ (function(modules) { // webpackBootstrap
 		display.addEventListener('click', clicked);
 	
 		function clicked(evt) {
-			var e = evt.target;
-			var dim = e.getBoundingClientRect();
-			var x = evt.clientX - dim.left;
-			var y = evt.clientY - dim.top;
-			console.log(evt);
+			// var e = evt.target;
+			// var dim = e.getBoundingClientRect();
+			// var x = evt.clientX - dim.left;
+			// var y = evt.clientY - dim.top;
+			// console.log(evt);
 			// console.log($(this).attr('id'));
-			console.log('--------------------');
-			console.log(evt.target.getAttribute('id'));
-			console.log(evt.currentTarget);
+			// console.log('--------------------');
+			// console.log(evt.target.getAttribute('id'));
+			// console.log(evt.currentTarget);
 			// console.log(evt.target.id);
-			console.log('x: ' + x + ' y:' + y);
+			// console.log('x: ' + x + ' y:' + y);
 		}
 	}
 

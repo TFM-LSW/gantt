@@ -291,7 +291,6 @@ export default function Bar(gt, task) {
 		bar.ox = bar.getX();
 		bar.oy = bar.getY();
 		bar.owidth = bar.getWidth();
-		console.log(bar.owidth);
 		bar.finaldx = 0;
 		run_method_for_dependencies('onstart');
 	}
@@ -300,7 +299,6 @@ export default function Bar(gt, task) {
 	function onmove(dx, dy) {
 		const bar = self.$bar;
 		bar.finaldx = get_snap_position(dx);
-		console.log(dx)
 		update_bar_position({x: bar.ox + bar.finaldx});
 		run_method_for_dependencies('onmove', [dx, dy]);
 	}
@@ -336,7 +334,6 @@ export default function Bar(gt, task) {
 
 	function run_method_for_dependencies(fn, args) {
 		const dm = gt.dependency_map;
-		console.log(self.task.id);
 		if (dm[self.task.id]) {
 			for (let deptask of dm[self.task.id]) {
 				const dt = gt.get_bar(deptask);
@@ -358,7 +355,6 @@ export default function Bar(gt, task) {
 	}
 
 	function update_bar_position({x = null, width = null}) {
-		console.log(x, width)
 		const bar = self.$bar;
 		if (x) {
 			// get all x values of parent task
@@ -486,7 +482,9 @@ export default function Bar(gt, task) {
 
 	function update_progressbar_position() {
 		self.$bar_progress.attr('x', self.$bar.getX());
-		self.$bar_progress.attr('width', self.$bar.getWidth() * (self.task.progress / 100));
+		if (self.task.progress) {
+			self.$bar_progress.attr('width', self.$bar.getWidth() * (self.task.progress / 100));
+		}
 	}
 
 	function update_label_position() {

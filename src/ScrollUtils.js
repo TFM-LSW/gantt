@@ -25,16 +25,16 @@ export function ClickChart(element) {
 	display.addEventListener('click', clicked);
 
 	function clicked(evt) {
-		var e = evt.target;
-		var dim = e.getBoundingClientRect();
-		var x = evt.clientX - dim.left;
-		var y = evt.clientY - dim.top;
-		console.log(evt);
+		// var e = evt.target;
+		// var dim = e.getBoundingClientRect();
+		// var x = evt.clientX - dim.left;
+		// var y = evt.clientY - dim.top;
+		// console.log(evt);
 		// console.log($(this).attr('id'));
-		console.log('--------------------');
-		console.log(evt.target.getAttribute('id'));
-		console.log(evt.currentTarget);
+		// console.log('--------------------');
+		// console.log(evt.target.getAttribute('id'));
+		// console.log(evt.currentTarget);
 		// console.log(evt.target.id);
-		console.log('x: ' + x + ' y:' + y);
+		// console.log('x: ' + x + ' y:' + y);
 	}
 }

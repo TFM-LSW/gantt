@@ -67,14 +67,14 @@
 		});
 
 		console.log(tasks);
-		tasks[0][0].progress = 20;
+		// tasks[0][0].progress = 20;
 		// tasks[0][1].progress = 20;
-		tasks[1][0].progress = 20;
-		tasks[2][0].progress = 20;
-		tasks[2][0].dependencies = "Task 1_0";          
-		/*tasks[3].dependencies = "Task 2"*/
-		//tasks[5].dependencies = ["Task 4", "Task 2"]
-		//tasks[5].custom_class = "bar-milestone"; 
+		// tasks[1][0].progress = 20;
+		// tasks[2][0].progress = 20;
+		// tasks[2][0].dependencies = "Task 1_0";          
+		/* tasks[3].dependencies = "Task 2"*/
+		// tasks[5].dependencies = ["Task 4", "Task 2"]
+		// tasks[5].custom_class = "bar-milestone"; 
 
 		var gantt_chart = Gantt("#gantt", tasks, {
 			on_click: function (task) {

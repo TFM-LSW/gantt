@@ -46,16 +46,31 @@ export default function Octogon(gt, task) {
 		self.handle_group = gt.canvas.group().addClass('handle-group').appendTo(self.group);
 
 		self.join = 10;
-		console.log(self.height);
-		oct.x1 = self.x;
-		oct.y1 = self.y + self.join;
+		self.joinheight = self.height - (self.join*2);
+	}
+
+	function setPolygonRelative(pWidth) {
+		oct.x1 = 0;
+		oct.y1 = self.join;
 		oct.x2 = self.x + self.join;
 		oct.y2 = self.y;
-		oct.x3 = self.x + (self.width - (self.join * 1));
-		oct.x4 = self.x + self.width;
+		oct.x3 = self.x + (pWidth - (self.join * 1));
+		oct.x4 = self.x + pWidth;
 		oct.y4 = self.y + self.join;
-		oct.y5 = self.y + self.height + self.join;
-		oct.y6 = self.y + self.height + (self.join * 2);
+		oct.y5 = self.y + self.joinheight + self.join;
+		oct.y6 = self.y + self.joinheight + (self.join * 2);
+	}
+
+	function setPolygon(pWidth) {
+		oct.x1 = 0;
+		oct.y1 = self.join;
+		oct.x2 = self.join;
+		oct.y2 = 0;
+		oct.x3 = (pWidth - (self.join * 1));
+		oct.x4 = pWidth;
+		oct.y4 = self.join;
+		oct.y5 = self.joinheight + self.join;
+		oct.y6 = self.joinheight + (self.join * 2);
 	}
 
 	function prepare_plugins() {
@@ -85,15 +100,33 @@ export default function Octogon(gt, task) {
 		draw_resize_handles();
 	}
 
+	function drawInnerOctogon() {
+		setPolygon(self.width);
+		self.$barOct = gt.canvas.polygon(Snap.format("{oct.x1},{oct.y1} {oct.x2},{oct.y2} {oct.x3},{oct.y2} {oct.x4},{oct.y4} {oct.x4},{oct.y5} {oct.x3},{oct.y6} {oct.x2},{oct.y6} {oct.x1},{oct.y5}", oct))
+			.addClass('bar')
+			.appendTo(self.$bar);
+	}
+
+	function updateInnerOctogon(w) {
+		setPolygon(w);
+		const pts = Snap.format("{oct.x1},{oct.y1} {oct.x2},{oct.y2} {oct.x3},{oct.y2} {oct.x4},{oct.y4} {oct.x4},{oct.y5} {oct.x3},{oct.y6} {oct.x2},{oct.y6} {oct.x1},{oct.y5}", oct).replace(/ /g, ',').split(',');
+		// const ptNums = pts.map(Number); //convert all array strings to numbers
+		self.$barOct.animate({ 'points': pts }, 0);
+	}
+
 	function draw_bar() {
-		self.$bar = gt.canvas.rect(self.x, self.y,
+		/* self.$bar = gt.canvas.rect(self.x, self.y,
 			self.width, self.height,
 			self.corner_radius, self.corner_radius)
 			.addClass('bar')
-			.appendTo(self.bar_group);
-		self.$barOct = gt.canvas.polygon(Snap.format("{oct.x1},{oct.y1} {oct.x2},{oct.y2} {oct.x3},{oct.y2} {oct.x4},{oct.y4} {oct.x4},{oct.y5} {oct.x3},{oct.y6} {oct.x2},{oct.y6} {oct.x1},{oct.y5}", oct))
+			.appendTo(self.bar_group); */
+
+		self.$bar = gt.canvas.svg(self.x, self.y, self.width, self.height)
 			//.addClass('bar')
 			.appendTo(self.bar_group);
+
+		drawInnerOctogon();
+
 		if (self.invalid) {
 			self.$bar.addClass('bar-invalid');
 		}
@@ -391,13 +424,14 @@ export default function Octogon(gt, task) {
 				width = null;
 				return;
 			}
-			console.log('update bar position ----------')
+			//console.log('update bar position ----------')
 			update_attr(bar, 'x', x);
 			// TO LSW >>>>>>>>>>>>>>>>>>>
 			// update polygon - redraw
 		}
 		if (width && width >= gt.config.column_width) {
 			update_attr(bar, 'width', width);
+			updateInnerOctogon(width);
 		}
 		update_label_position();
 		update_handle_position();

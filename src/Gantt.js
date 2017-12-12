@@ -8,7 +8,7 @@
  */
 import './gantt.scss';
 
-import Bar from './Bar';
+// import Bar from './Bar';
 import Octogon from './Octogon';
 import Arrow from './Arrow';
 import { ScrollWheelInit, ClickChart } from './ScrollUtils';

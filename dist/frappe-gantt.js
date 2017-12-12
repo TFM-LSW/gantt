@@ -116,11 +116,7 @@ return /******/ (function(modules) { // webpackBootstrap
 				header_height: 50,
 				column_width: 30,
 				step: 24,
-<<<<<<< HEAD
-				view_modes: ['Hour', 'Quarter Day', 'Half Day', 'Day', 'Week', 'Month'],
-=======
 				view_modes: ['Minute', 'Hour', 'Quarter Day', 'Half Day', 'Day', 'Week', 'Month'],
->>>>>>> multi-dimensional
 				bar: {
 					height: 20
 				},
@@ -129,11 +125,7 @@ return /******/ (function(modules) { // webpackBootstrap
 				},
 				padding: 18,
 				view_mode: 'Day',
-<<<<<<< HEAD
-				date_format: 'YYYY-MM-DD-H',
-=======
 				date_format: 'YYYY-MM-DD HH:mm:ss',
->>>>>>> multi-dimensional
 				custom_popup_html: null
 			};
 			self.config = Object.assign({}, defaults, config);
@@ -189,20 +181,10 @@ return /******/ (function(modules) { // webpackBootstrap
 					item._start = moment(item.start, self.config.date_format);
 					item._end = moment(item.end, self.config.date_format);
 	
-<<<<<<< HEAD
-				// make task invalid if duration too large
-				if (task._end.diff(task._start, 'years') > 10) {
-					task.end = null;
-				}
-	
-				// cache index
-				task._index = i;
-=======
 					// make item invalid if duration too large
 					if (item._end.diff(item._start, 'years') > 10) {
 						item.end = null;
 					}
->>>>>>> multi-dimensional
 	
 					// cache index
 					item._index = i;
@@ -302,8 +284,6 @@ return /******/ (function(modules) { // webpackBootstrap
 					}
 				}
 			}
-	
-			console.log(self.dependency_map);
 		}
 	
 		function prepare_dates() {
@@ -352,10 +332,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 		function set_gantt_dates() {
 	
-			if (view_is(['Hour'])) {
-				self.gantt_start = self.gantt_start.clone().subtract(24, 'Hour');
-				self.gantt_end = self.gantt_end.clone().add(7, 'Hour');
-			} else if (view_is(['Quarter Day', 'Half Day'])) {
+			if (view_is(['Quarter Day', 'Half Day'])) {
 				self.gantt_start = self.gantt_start.clone().subtract(7, 'day');
 				self.gantt_end = self.gantt_end.clone().add(7, 'day');
 			} else if (view_is('Month')) {
@@ -417,11 +394,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 			if (scale === 'Hour') {
 				self.config.step = 1;
-<<<<<<< HEAD
-				self.config.column_width = 5;
-=======
 				self.config.column_width = 18;
->>>>>>> multi-dimensional
 			} else if (scale === 'Day') {
 				self.config.step = 24;
 				self.config.column_width = 38;
@@ -530,9 +503,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 					var tick_class = 'tick';
 					// thick tick for monday
-					if (view_is('Hour') && date.day() === 1) {
-						tick_class += ' thick';
-					}
 					if (view_is('Day') && date.day() === 1) {
 						tick_class += ' thick';
 					}
@@ -637,23 +607,15 @@ return /******/ (function(modules) { // webpackBootstrap
 				last_date = date.clone().add(1, 'year');
 			}
 			var date_text = {
-<<<<<<< HEAD
-				'Hour Day_lower': date.format('HH'),
-=======
 				'Minute_lower': date.format('HH'),
 				'Hour_lower': date.format('HH'),
->>>>>>> multi-dimensional
 				'Quarter Day_lower': date.format('HH'),
 				'Half Day_lower': date.format('HH'),
 				'Day_lower': date.date() !== last_date.date() ? date.format('D') : '',
 				'Week_lower': date.month() !== last_date.month() ? date.format('D MMM') : date.format('D'),
 				'Month_lower': date.format('MMMM'),
-<<<<<<< HEAD
-				'Hour Day_upper': date.date() !== last_date.date() ? date.format('H D MMM') : '',
-=======
 				'Minute_upper': date.date() !== last_date.date() ? date.format('D MMM') : '',
 				'Hour_upper': date.date() !== last_date.date() ? date.format('D MMM') : '',
->>>>>>> multi-dimensional
 				'Quarter Day_upper': date.date() !== last_date.date() ? date.format('D MMM') : '',
 				'Half Day_upper': date.date() !== last_date.date() ? date.month() !== last_date.month() ? date.format('D MMM') : date.format('D') : '',
 				'Day_upper': date.month() !== last_date.month() ? date.format('MMMM') : '',
@@ -668,15 +630,10 @@ return /******/ (function(modules) { // webpackBootstrap
 			};
 	
 			var x_pos = {
-<<<<<<< HEAD
-				'Hour Day_lower': self.config.column_width / 2,
-				'Hour Day_upper': 0,
-=======
 				'Minute_lower': self.config.column_width * 1440 / 2,
 				'Minute_upper': 0,
 				'Hour_lower': self.config.column_width * 24 / 2,
 				'Hour_upper': 0,
->>>>>>> multi-dimensional
 				'Quarter Day_lower': self.config.column_width * 4 / 2,
 				'Quarter Day_upper': 0,
 				'Half Day_lower': self.config.column_width * 2 / 2,
@@ -716,7 +673,6 @@ return /******/ (function(modules) { // webpackBootstrap
 					var arrows = [];
 					arrows = task.dependencies.map(function (dep) {
 						var dependency = get_task(dep);
-						console.log(self._bars);
 						if (!dependency) return;
 	
 						var arrow = (0, _Arrow2.default)(self, // gt
@@ -748,8 +704,6 @@ return /******/ (function(modules) { // webpackBootstrap
 					}
 				}
 			}
-	
-			console.log(self._arrows);
 		}
 	
 		function make_bars() {
@@ -776,7 +730,6 @@ return /******/ (function(modules) { // webpackBootstrap
 					var bar = _step7.value;
 	
 					bar.arrows = self._arrows.filter(function (arrow) {
-						console.log(bar);
 						return arrow.from_task.task.id === bar.task.id || arrow.to_task.task.id === bar.task.id;
 					});
 				};
@@ -802,6 +755,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 		function bind_grid_click() {
 			self.element_groups.grid.click(function () {
+				console.log('bind_grid_click');
 				unselect_all();
 				self.element_groups.details.selectAll('.details-wrapper').forEach(function (el) {
 					return el.addClass('hide');
@@ -879,18 +833,7 @@ return /******/ (function(modules) { // webpackBootstrap
 		init();
 	
 		return self;
-<<<<<<< HEAD
-	} /* global moment, Snap */
-	/**
-	 * Gantt:
-	 * 	element: querySelector string, HTML DOM or SVG DOM element, required
-	 * 	tasks: array of tasks, required
-	 *   task: { id, name, start, end, progress, dependencies, custom_class }
-	 * 	config: configuration options, optional
-	 */
-=======
 	}
->>>>>>> multi-dimensional
 	module.exports = exports['default'];
 
 /***/ },
@@ -928,11 +871,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	
 	// module
-<<<<<<< HEAD
-	exports.push([module.id, ".gantt .grid-background {\n  fill: none; }\n\n.gantt .grid-header {\n  fill: #ffffff;\n  stroke: #e0e0e0;\n  stroke-width: 1.4; }\n\n.gantt .grid-row {\n  fill: #ffffff; }\n\n.gantt .grid-row:nth-child(even) {\n  fill: #f5f5f5; }\n\n.gantt .row-line {\n  stroke: #ebeff2; }\n\n.gantt .tick {\n  stroke: #e0e0e0;\n  stroke-width: 0.2; }\n  .gantt .tick.thick {\n    stroke-width: 0.4; }\n\n.gantt .today-highlight {\n  fill: #fcf8e3;\n  opacity: 0.5; }\n\n.gantt #arrow {\n  fill: none;\n  stroke: #666;\n  stroke-width: 1.4; }\n\n.gantt .bar {\n  fill: #b8c2cc;\n  stroke: #8D99A6;\n  stroke-width: 0;\n  transition: stroke-width .3s ease; }\n\n.gantt .bar-progress {\n  fill: #a3a3ff; }\n\n.gantt .bar-invalid {\n  fill: transparent;\n  stroke: #8D99A6;\n  stroke-width: 1;\n  stroke-dasharray: 5; }\n  .gantt .bar-invalid ~ .bar-label {\n    fill: #555; }\n\n.gantt .bar-label {\n  fill: #fff;\n  dominant-baseline: central;\n  text-anchor: middle;\n  font-size: 12px;\n  font-weight: lighter; }\n  .gantt .bar-label.big {\n    fill: #555;\n    text-anchor: start; }\n\n.gantt .handle {\n  fill: #ddd;\n  cursor: ew-resize;\n  opacity: 0;\n  visibility: hidden;\n  transition: opacity .3s ease; }\n\n.gantt .bar-wrapper {\n  cursor: pointer; }\n  .gantt .bar-wrapper:hover .bar {\n    stroke-width: 2; }\n  .gantt .bar-wrapper:hover .handle {\n    visibility: visible;\n    opacity: 1; }\n  .gantt .bar-wrapper.active .bar {\n    stroke-width: 2; }\n\n.gantt .lower-text, .gantt .upper-text {\n  font-size: 12px;\n  text-anchor: middle; }\n\n.gantt .upper-text {\n  fill: #555; }\n\n.gantt .lower-text {\n  fill: #333; }\n\n.gantt #details .details-container {\n  background: #fff;\n  display: inline-block;\n  padding: 12px; }\n  .gantt #details .details-container h5, .gantt #details .details-container p {\n    margin: 0; }\n  .gantt #details .details-container h5 {\n    font-size: 12px;\n    font-weight: bold;\n    margin-bottom: 10px;\n    color: #555; }\n  .gantt #details .details-container p {\n    font-size: 12px;\n    margin-bottom: 6px;\n    color: #666; }\n  .gantt #details .details-container p:last-child {\n    margin-bottom: 0; }\n\n.gantt .hide {\n  display: none; }\n", "", {"version":3,"sources":["/Users/leewalters/Github/tfm.gantt/src/src/gantt.scss"],"names":[],"mappings":"AAYA;EAGE,WAAU,EACV;;AAJF;EAME,cAAa;EACb,gBAjBoB;EAkBpB,kBAAiB,EACjB;;AATF;EAWE,cAAa,EACb;;AAZF;EAcE,cAvBgB,EAwBhB;;AAfF;EAiBE,gBAzB0B,EA0B1B;;AAlBF;EAoBE,gBA9BoB;EA+BpB,kBAAiB,EAIjB;EAzBF;IAuBG,kBAAiB,EACjB;;AAxBH;EA2BE,cAlCoB;EAmCpB,aAAY,EACZ;;AA7BF;EAgCE,WAAU;EACV,aAvCe;EAwCf,kBAAiB,EACjB;;AAnCF;EAsCE,cAlDiB;EAmDjB,gBAlDkB;EAmDlB,gBAAe;EACf,kCAAiC,EACjC;;AA1CF;EA4CE,cA/CY,EAgDZ;;AA7CF;EA+CE,kBAAiB;EACjB,gBA3DkB;EA4DlB,gBAAe;EACf,oBAAmB,EAKnB;EAvDF;IAqDG,WA1Dc,EA2Dd;;AAtDH;EAyDE,WAAU;EACV,2BAA0B;EAC1B,oBAAmB;EACnB,gBAAe;EACf,qBAAoB,EAMpB;EAnEF;IAgEG,WArEc;IAsEd,mBAAkB,EAClB;;AAlEH;EAsEE,WAxEiB;EAyEjB,kBAAiB;EACjB,WAAU;EACV,mBAAkB;EAClB,6BAA4B,EAC5B;;AA3EF;EA8EE,gBAAe,EAkBf;EAhGF;IAkFI,gBAAe,EACf;EAnFJ;IAsFI,oBAAmB;IACnB,WAAU,EACV;EAxFJ;IA6FI,gBAAe,EACf;;AA9FJ;EAmGE,gBAAe;EACf,oBAAmB,EACnB;;AArGF;EAuGE,WA5Ge,EA6Gf;;AAxGF;EA0GE,WA9Ge,EA+Gf;;AA3GF;EA8GE,iBAAgB;EAChB,sBAAqB;EACrB,cAAa,EAsBb;EAtIF;IAmHG,UAAS,EACT;EApHH;IAuHG,gBAAe;IACf,kBAAiB;IACjB,oBAAmB;IACnB,YA/Hc,EAgId;EA3HH;IA8HG,gBAAe;IACf,mBAAkB;IAClB,YAtIc,EAuId;EAjIH;IAoIG,iBAAgB,EAChB;;AArIH;EAyIE,cAAa,EACb","file":"gantt.scss","sourcesContent":["$bar-color: #b8c2cc;\n$bar-stroke: #8D99A6;\n$border-color: #e0e0e0;\n$light-bg: #f5f5f5;\n$light-border-color: #ebeff2;\n$light-yellow: #fcf8e3;\n$text-muted: #666;\n$text-light: #555;\n$text-color: #333;\n$blue: #a3a3ff;\n$handle-color: #ddd;\n\n.gantt {\n\n\t.grid-background {\n\t\tfill: none;\n\t}\n\t.grid-header {\n\t\tfill: #ffffff;\n\t\tstroke: $border-color;\n\t\tstroke-width: 1.4;\n\t}\n\t.grid-row {\n\t\tfill: #ffffff;\n\t}\n\t.grid-row:nth-child(even) {\n\t\tfill: $light-bg;\n\t}\n\t.row-line {\n\t\tstroke: $light-border-color;\n\t}\n\t.tick {\n\t\tstroke: $border-color;\n\t\tstroke-width: 0.2;\n\t\t&.thick {\n\t\t\tstroke-width: 0.4;\n\t\t}\n\t}\n\t.today-highlight {\n\t\tfill: $light-yellow;\n\t\topacity: 0.5;\n\t}\n\n\t#arrow {\n\t\tfill: none;\n\t\tstroke: $text-muted;\n\t\tstroke-width: 1.4;\n\t}\n\n\t.bar {\n\t\tfill: $bar-color;\n\t\tstroke: $bar-stroke;\n\t\tstroke-width: 0;\n\t\ttransition: stroke-width .3s ease;\n\t}\n\t.bar-progress {\n\t\tfill: $blue;\n\t}\n\t.bar-invalid {\n\t\tfill: transparent;\n\t\tstroke: $bar-stroke;\n\t\tstroke-width: 1;\n\t\tstroke-dasharray: 5;\n\n\t\t&~.bar-label {\n\t\t\tfill: $text-light;\n\t\t}\n\t}\n\t.bar-label {\n\t\tfill: #fff;\n\t\tdominant-baseline: central;\n\t\ttext-anchor: middle;\n\t\tfont-size: 12px;\n\t\tfont-weight: lighter;\n\n\t\t&.big {\n\t\t\tfill: $text-light;\n\t\t\ttext-anchor: start;\n\t\t}\n\t}\n\n\t.handle {\n\t\tfill: $handle-color;\n\t\tcursor: ew-resize;\n\t\topacity: 0;\n\t\tvisibility: hidden;\n\t\ttransition: opacity .3s ease;\n\t}\n\n\t.bar-wrapper {\n\t\tcursor: pointer;\n\n\t\t&:hover {\n\t\t\t.bar {\n\t\t\t\tstroke-width: 2;\n\t\t\t}\n\n\t\t\t.handle {\n\t\t\t\tvisibility: visible;\n\t\t\t\topacity: 1;\n\t\t\t}\n\t\t}\n\n\t\t&.active {\n\t\t\t.bar {\n\t\t\t\tstroke-width: 2;\n\t\t\t}\n\t\t}\n\t}\n\n\t.lower-text, .upper-text {\n\t\tfont-size: 12px;\n\t\ttext-anchor: middle;\n\t}\n\t.upper-text {\n\t\tfill: $text-light;\n\t}\n\t.lower-text {\n\t\tfill: $text-color;\n\t}\n\n\t#details .details-container {\n\t\tbackground: #fff;\n\t\tdisplay: inline-block;\n\t\tpadding: 12px;\n\n\t\th5, p {\n\t\t\tmargin: 0;\n\t\t}\n\n\t\th5 {\n\t\t\tfont-size: 12px;\n\t\t\tfont-weight: bold;\n\t\t\tmargin-bottom: 10px;\n\t\t\tcolor: $text-light;\n\t\t}\n\n\t\tp {\n\t\t\tfont-size: 12px;\n\t\t\tmargin-bottom: 6px;\n\t\t\tcolor: $text-muted;\n\t\t}\n\n\t\tp:last-child {\n\t\t\tmargin-bottom: 0;\n\t\t}\n\t}\n\n\t.hide {\n\t\tdisplay: none;\n\t}\n}\n"],"sourceRoot":""}]);
-=======
 	exports.push([module.id, ".gantt .grid-background {\n  fill: none; }\n\n.gantt .grid-header {\n  fill: #ffffff;\n  stroke: #e0e0e0;\n  stroke-width: 1.4; }\n\n.gantt .grid-row {\n  fill: #ffffff; }\n\n.gantt .grid-row:nth-child(even) {\n  fill: #f5f5f5; }\n\n.gantt .row-line {\n  stroke: #ebeff2; }\n\n.gantt .tick {\n  stroke: #e0e0e0;\n  stroke-width: 0.2; }\n  .gantt .tick.thick {\n    stroke-width: 0.4; }\n\n.gantt .today-highlight {\n  fill: yellow;\n  opacity: 0.5; }\n\n.gantt #arrow {\n  fill: none;\n  stroke: #666;\n  stroke-width: 1.4; }\n\n.gantt .bar {\n  fill: #b8c2cc;\n  stroke: #8D99A6;\n  stroke-width: 0;\n  transition: stroke-width .3s ease; }\n\n.gantt .bar-progress {\n  fill: #a3a3ff; }\n\n.gantt .bar-invalid {\n  fill: transparent;\n  stroke: #8D99A6;\n  stroke-width: 1;\n  stroke-dasharray: 5; }\n  .gantt .bar-invalid ~ .bar-label {\n    fill: #555; }\n\n.gantt .bar-label {\n  fill: #fff;\n  dominant-baseline: central;\n  text-anchor: middle;\n  font-size: 12px;\n  font-weight: lighter; }\n  .gantt .bar-label.big {\n    fill: #555;\n    text-anchor: start; }\n\n.gantt .handle {\n  fill: #ddd;\n  cursor: ew-resize;\n  opacity: 0;\n  visibility: hidden;\n  transition: opacity .3s ease; }\n\n.gantt .bar-wrapper {\n  cursor: pointer; }\n  .gantt .bar-wrapper:hover .bar {\n    stroke-width: 2; }\n  .gantt .bar-wrapper:hover .handle {\n    visibility: visible;\n    opacity: 1; }\n  .gantt .bar-wrapper.active .bar {\n    stroke-width: 2; }\n\n.gantt .lower-text, .gantt .upper-text {\n  font-size: 12px;\n  text-anchor: middle; }\n\n.gantt .upper-text {\n  fill: #555; }\n\n.gantt .lower-text {\n  fill: #333; }\n\n.gantt #details .details-container {\n  background: #fff;\n  display: inline-block;\n  padding: 12px; }\n  .gantt #details .details-container h5, .gantt #details .details-container p {\n    margin: 0; }\n  .gantt #details .details-container h5 {\n    font-size: 12px;\n    font-weight: bold;\n    margin-bottom: 10px;\n    color: #555; }\n  .gantt #details .details-container p {\n    font-size: 12px;\n    margin-bottom: 6px;\n    color: #666; }\n  .gantt #details .details-container p:last-child {\n    margin-bottom: 0; }\n\n.gantt .hide {\n  display: none; }\n", "", {"version":3,"sources":["C:/Users/walters_l/Documents/Repos/Gantt-frappe/src/src\\gantt.scss"],"names":[],"mappings":"AAYA;EAGE,WAAU,EACV;;AAJF;EAME,cAAa;EACb,gBAjBoB;EAkBpB,kBAAiB,EACjB;;AATF;EAWE,cAAa,EACb;;AAZF;EAcE,cAvBgB,EAwBhB;;AAfF;EAiBE,gBAzB0B,EA0B1B;;AAlBF;EAoBE,gBA9BoB;EA+BpB,kBAAiB,EAIjB;EAzBF;IAuBG,kBAAiB,EACjB;;AAxBH;EA2BE,aAlCmB;EAmCnB,aAAY,EACZ;;AA7BF;EAgCE,WAAU;EACV,aAvCe;EAwCf,kBAAiB,EACjB;;AAnCF;EAsCE,cAlDiB;EAmDjB,gBAlDkB;EAmDlB,gBAAe;EACf,kCAAiC,EACjC;;AA1CF;EA4CE,cA/CY,EAgDZ;;AA7CF;EA+CE,kBAAiB;EACjB,gBA3DkB;EA4DlB,gBAAe;EACf,oBAAmB,EAKnB;EAvDF;IAqDG,WA1Dc,EA2Dd;;AAtDH;EAyDE,WAAU;EACV,2BAA0B;EAC1B,oBAAmB;EACnB,gBAAe;EACf,qBAAoB,EAMpB;EAnEF;IAgEG,WArEc;IAsEd,mBAAkB,EAClB;;AAlEH;EAsEE,WAxEiB;EAyEjB,kBAAiB;EACjB,WAAU;EACV,mBAAkB;EAClB,6BAA4B,EAC5B;;AA3EF;EA8EE,gBAAe,EAkBf;EAhGF;IAkFI,gBAAe,EACf;EAnFJ;IAsFI,oBAAmB;IACnB,WAAU,EACV;EAxFJ;IA6FI,gBAAe,EACf;;AA9FJ;EAmGE,gBAAe;EACf,oBAAmB,EACnB;;AArGF;EAuGE,WA5Ge,EA6Gf;;AAxGF;EA0GE,WA9Ge,EA+Gf;;AA3GF;EA8GE,iBAAgB;EAChB,sBAAqB;EACrB,cAAa,EAsBb;EAtIF;IAmHG,UAAS,EACT;EApHH;IAuHG,gBAAe;IACf,kBAAiB;IACjB,oBAAmB;IACnB,YA/Hc,EAgId;EA3HH;IA8HG,gBAAe;IACf,mBAAkB;IAClB,YAtIc,EAuId;EAjIH;IAoIG,iBAAgB,EAChB;;AArIH;EAyIE,cAAa,EACb","file":"gantt.scss","sourcesContent":["$bar-color: #b8c2cc;\r\n$bar-stroke: #8D99A6;\r\n$border-color: #e0e0e0;\r\n$light-bg: #f5f5f5;\r\n$light-border-color: #ebeff2;\r\n$light-yellow: yellow;\r\n$text-muted: #666;\r\n$text-light: #555;\r\n$text-color: #333;\r\n$blue: #a3a3ff;\r\n$handle-color: #ddd;\r\n\r\n.gantt {\r\n\r\n\t.grid-background {\r\n\t\tfill: none;\r\n\t}\r\n\t.grid-header {\r\n\t\tfill: #ffffff;\r\n\t\tstroke: $border-color;\r\n\t\tstroke-width: 1.4;\r\n\t}\r\n\t.grid-row {\r\n\t\tfill: #ffffff;\r\n\t}\r\n\t.grid-row:nth-child(even) {\r\n\t\tfill: $light-bg;\r\n\t}\r\n\t.row-line {\r\n\t\tstroke: $light-border-color;\r\n\t}\r\n\t.tick {\r\n\t\tstroke: $border-color;\r\n\t\tstroke-width: 0.2;\r\n\t\t&.thick {\r\n\t\t\tstroke-width: 0.4;\r\n\t\t}\r\n\t}\r\n\t.today-highlight {\r\n\t\tfill: $light-yellow;\r\n\t\topacity: 0.5;\r\n\t}\r\n\r\n\t#arrow {\r\n\t\tfill: none;\r\n\t\tstroke: $text-muted;\r\n\t\tstroke-width: 1.4;\r\n\t}\r\n\r\n\t.bar {\r\n\t\tfill: $bar-color;\r\n\t\tstroke: $bar-stroke;\r\n\t\tstroke-width: 0;\r\n\t\ttransition: stroke-width .3s ease;\r\n\t}\r\n\t.bar-progress {\r\n\t\tfill: $blue;\r\n\t}\r\n\t.bar-invalid {\r\n\t\tfill: transparent;\r\n\t\tstroke: $bar-stroke;\r\n\t\tstroke-width: 1;\r\n\t\tstroke-dasharray: 5;\r\n\r\n\t\t&~.bar-label {\r\n\t\t\tfill: $text-light;\r\n\t\t}\r\n\t}\r\n\t.bar-label {\r\n\t\tfill: #fff;\r\n\t\tdominant-baseline: central;\r\n\t\ttext-anchor: middle;\r\n\t\tfont-size: 12px;\r\n\t\tfont-weight: lighter;\r\n\r\n\t\t&.big {\r\n\t\t\tfill: $text-light;\r\n\t\t\ttext-anchor: start;\r\n\t\t}\r\n\t}\r\n\r\n\t.handle {\r\n\t\tfill: $handle-color;\r\n\t\tcursor: ew-resize;\r\n\t\topacity: 0;\r\n\t\tvisibility: hidden;\r\n\t\ttransition: opacity .3s ease;\r\n\t}\r\n\r\n\t.bar-wrapper {\r\n\t\tcursor: pointer;\r\n\r\n\t\t&:hover {\r\n\t\t\t.bar {\r\n\t\t\t\tstroke-width: 2;\r\n\t\t\t}\r\n\r\n\t\t\t.handle {\r\n\t\t\t\tvisibility: visible;\r\n\t\t\t\topacity: 1;\r\n\t\t\t}\r\n\t\t}\r\n\r\n\t\t&.active {\r\n\t\t\t.bar {\r\n\t\t\t\tstroke-width: 2;\r\n\t\t\t}\r\n\t\t}\r\n\t}\r\n\r\n\t.lower-text, .upper-text {\r\n\t\tfont-size: 12px;\r\n\t\ttext-anchor: middle;\r\n\t}\r\n\t.upper-text {\r\n\t\tfill: $text-light;\r\n\t}\r\n\t.lower-text {\r\n\t\tfill: $text-color;\r\n\t}\r\n\r\n\t#details .details-container {\r\n\t\tbackground: #fff;\r\n\t\tdisplay: inline-block;\r\n\t\tpadding: 12px;\r\n\r\n\t\th5, p {\r\n\t\t\tmargin: 0;\r\n\t\t}\r\n\r\n\t\th5 {\r\n\t\t\tfont-size: 12px;\r\n\t\t\tfont-weight: bold;\r\n\t\t\tmargin-bottom: 10px;\r\n\t\t\tcolor: $text-light;\r\n\t\t}\r\n\r\n\t\tp {\r\n\t\t\tfont-size: 12px;\r\n\t\t\tmargin-bottom: 6px;\r\n\t\t\tcolor: $text-muted;\r\n\t\t}\r\n\r\n\t\tp:last-child {\r\n\t\t\tmargin-bottom: 0;\r\n\t\t}\r\n\t}\r\n\r\n\t.hide {\r\n\t\tdisplay: none;\r\n\t}\r\n}\r\n"],"sourceRoot":""}]);
->>>>>>> multi-dimensional
 	
 	// exports
 
@@ -1537,8 +1476,6 @@ return /******/ (function(modules) { // webpackBootstrap
 			bar.ox = bar.getX();
 			bar.oy = bar.getY();
 			bar.owidth = bar.getWidth();
-			console.log('bar.owidth - redraw the polygon ');
-			console.log(bar);
 			bar.finaldx = 0;
 			run_method_for_dependencies('onstart');
 		}
@@ -1547,7 +1484,6 @@ return /******/ (function(modules) { // webpackBootstrap
 		function onmove(dx, dy) {
 			var bar = self.$bar;
 			bar.finaldx = get_snap_position(dx);
-			console.log(bar);
 			update_bar_position({ x: bar.ox + bar.finaldx });
 			run_method_for_dependencies('onmove', [dx, dy]);
 		}
@@ -1644,10 +1580,7 @@ return /******/ (function(modules) { // webpackBootstrap
 					width = null;
 					return;
 				}
-				// console.log('update bar position ----------')
 				update_attr(bar, 'x', x);
-				// TO LSW >>>>>>>>>>>>>>>>>>>
-				// update polygon - redraw
 			}
 			if (width && width >= gt.config.column_width) {
 				update_attr(bar, 'width', width);

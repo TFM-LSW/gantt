@@ -329,8 +329,6 @@ export default function Octogon(gt, task) {
 		bar.ox = bar.getX();
 		bar.oy = bar.getY();
 		bar.owidth = bar.getWidth();
-		console.log('bar.owidth - redraw the polygon ');
-		console.log(bar);
 		bar.finaldx = 0;
 		run_method_for_dependencies('onstart');
 	}
@@ -339,7 +337,6 @@ export default function Octogon(gt, task) {
 	function onmove(dx, dy) {
 		const bar = self.$bar;
 		bar.finaldx = get_snap_position(dx);
-		console.log(bar);
 		update_bar_position({ x: bar.ox + bar.finaldx });
 		run_method_for_dependencies('onmove', [dx, dy]);
 	}
@@ -410,10 +407,7 @@ export default function Octogon(gt, task) {
 				width = null;
 				return;
 			}
-			// console.log('update bar position ----------')
 			update_attr(bar, 'x', x);
-			// TO LSW >>>>>>>>>>>>>>>>>>>
-			// update polygon - redraw
 		}
 		if (width && width >= gt.config.column_width) {
 			update_attr(bar, 'width', width);

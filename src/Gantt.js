@@ -42,10 +42,7 @@ export default function Gantt(element, tasks, config) {
 			column_width: 30,
 			step: 24,
 			view_modes: [
-<<<<<<< HEAD
-=======
 				'Minute',
->>>>>>> multi-dimensional
 				'Hour',
 				'Quarter Day',
 				'Half Day',
@@ -61,11 +58,7 @@ export default function Gantt(element, tasks, config) {
 			},
 			padding: 18,
 			view_mode: 'Day',
-<<<<<<< HEAD
-			date_format: 'YYYY-MM-DD-H',
-=======
 			date_format: 'YYYY-MM-DD HH:mm:ss',
->>>>>>> multi-dimensional
 			custom_popup_html: null
 		};
 		self.config = Object.assign({}, defaults, config);
@@ -181,7 +174,6 @@ export default function Gantt(element, tasks, config) {
 				self.dependency_map[d].push(t.id);
 			}
 		}
-		console.log(self.dependency_map);
 	}
 
 	function prepare_dates() {
@@ -230,14 +222,7 @@ export default function Gantt(element, tasks, config) {
 
 	function set_gantt_dates() {
 
-<<<<<<< HEAD
-		if(view_is(['Hour'])) {
-			self.gantt_start = self.gantt_start.clone().subtract(24, 'Hour');
-			self.gantt_end = self.gantt_end.clone().add(7, 'Hour');
-		} else if(view_is(['Quarter Day', 'Half Day'])) {
-=======
 		if (view_is(['Quarter Day', 'Half Day'])) {
->>>>>>> multi-dimensional
 			self.gantt_start = self.gantt_start.clone().subtract(7, 'day');
 			self.gantt_end = self.gantt_end.clone().add(7, 'day');
 		} else if (view_is('Month')) {
@@ -278,17 +263,10 @@ export default function Gantt(element, tasks, config) {
 	function set_scale(scale) {
 		self.config.view_mode = scale;
 
-<<<<<<< HEAD
-		if(scale === 'Hour') {
-			self.config.step = 1;
-			self.config.column_width = 5;
-		} else if(scale === 'Day') {
-=======
 		if (scale === 'Hour') {
 			self.config.step = 1;
 			self.config.column_width = 18;
 		} else if (scale === 'Day') {
->>>>>>> multi-dimensional
 			self.config.step = 24;
 			self.config.column_width = 38;
 		} else if (scale === 'Half Day') {
@@ -398,14 +376,7 @@ export default function Gantt(element, tasks, config) {
 		for (let date of self.dates) {
 			let tick_class = 'tick';
 			// thick tick for monday
-<<<<<<< HEAD
-			if(view_is('Hour') && date.day() === 1) {
-				tick_class += ' thick';
-			}
-			if(view_is('Day') && date.day() === 1) {
-=======
 			if (view_is('Day') && date.day() === 1) {
->>>>>>> multi-dimensional
 				tick_class += ' thick';
 			}
 			// thick tick for first week
@@ -484,24 +455,16 @@ export default function Gantt(element, tasks, config) {
 			last_date = date.clone().add(1, 'year');
 		}
 		const date_text = {
-<<<<<<< HEAD
-			'Hour Day_lower': date.format('HH'),
-=======
 			'Minute_lower': date.format('HH'),
 			'Hour_lower': date.format('HH'),
->>>>>>> multi-dimensional
 			'Quarter Day_lower': date.format('HH'),
 			'Half Day_lower': date.format('HH'),
 			'Day_lower': date.date() !== last_date.date() ? date.format('D') : '',
 			'Week_lower': date.month() !== last_date.month() ?
 				date.format('D MMM') : date.format('D'),
 			'Month_lower': date.format('MMMM'),
-<<<<<<< HEAD
-			'Hour Day_upper': date.date() !== last_date.date() ? date.format('H D MMM') : '',
-=======
 			'Minute_upper': date.date() !== last_date.date() ? date.format('D MMM') : '',
 			'Hour_upper': date.date() !== last_date.date() ? date.format('D MMM') : '',
->>>>>>> multi-dimensional
 			'Quarter Day_upper': date.date() !== last_date.date() ? date.format('D MMM') : '',
 			'Half Day_upper': date.date() !== last_date.date() ?
 				date.month() !== last_date.month() ?
@@ -518,15 +481,10 @@ export default function Gantt(element, tasks, config) {
 		};
 
 		const x_pos = {
-<<<<<<< HEAD
-			'Hour Day_lower': (self.config.column_width) / 2,
-			'Hour Day_upper': 0,
-=======
 			'Minute_lower': (self.config.column_width * 1440) / 2,
 			'Minute_upper': 0,
 			'Hour_lower': (self.config.column_width * 24) / 2,
 			'Hour_upper': 0,
->>>>>>> multi-dimensional
 			'Quarter Day_lower': (self.config.column_width * 4) / 2,
 			'Quarter Day_upper': 0,
 			'Half Day_lower': (self.config.column_width * 2) / 2,
@@ -557,7 +515,6 @@ export default function Gantt(element, tasks, config) {
 			let arrows = [];
 			arrows = task.dependencies.map(dep => {
 				const dependency = get_task(dep);
-				console.log(self._bars);
 				if (!dependency) return;
 
 				const arrow = Arrow(
@@ -570,7 +527,6 @@ export default function Gantt(element, tasks, config) {
 			}).filter(arr => arr); // filter falsy values
 			self._arrows = self._arrows.concat(arrows);
 		}
-		console.log(self._arrows);
 	}
 
 	function make_bars() {
@@ -588,7 +544,6 @@ export default function Gantt(element, tasks, config) {
 		var flattenBars = [].concat(...self._bars);
 		for (let bar of flattenBars) {
 			bar.arrows = self._arrows.filter(arrow => {
-				console.log(bar);
 				return (arrow.from_task.task.id === bar.task.id) ||
 					(arrow.to_task.task.id === bar.task.id);
 			});
@@ -597,6 +552,7 @@ export default function Gantt(element, tasks, config) {
 
 	function bind_grid_click() {
 		self.element_groups.grid.click(() => {
+			console.log('bind_grid_click');
 			unselect_all();
 			self.element_groups.details
 				.selectAll('.details-wrapper')

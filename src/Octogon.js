@@ -1,15 +1,21 @@
 /* global Snap */
 /*
-	Class: Bar
+	Class: Octogon
 
 	Opts:
 		gt: Gantt object
 		task: task object
 */
 
-export default function Bar(gt, task) {
+
+// https://codepen.io/anon/pen/OOKqPW?editors=0010
+
+import { debounce } from './Utils';
+
+export default function Octogon(gt, task) {
 
 	const self = {};
+	const oct = {};
 
 	function init() {
 		set_defaults();
@@ -40,6 +46,21 @@ export default function Bar(gt, task) {
 		self.group = gt.canvas.group().addClass('bar-wrapper').addClass(self.task.custom_class || '');
 		self.bar_group = gt.canvas.group().addClass('bar-group').appendTo(self.group);
 		self.handle_group = gt.canvas.group().addClass('handle-group').appendTo(self.group);
+
+		self.join = 10;
+		self.joinheight = self.height - (self.join * 2);
+	}
+
+	function setPolygon(pWidth) {
+		oct.x1 = 0;
+		oct.y1 = self.join;
+		oct.x2 = self.join;
+		oct.y2 = 0;
+		oct.x3 = (pWidth - (self.join * 1));
+		oct.x4 = pWidth;
+		oct.y4 = self.join;
+		oct.y5 = self.joinheight + self.join;
+		oct.y6 = self.joinheight + (self.join * 2);
 	}
 
 	function prepare_plugins() {
@@ -69,12 +90,29 @@ export default function Bar(gt, task) {
 		draw_resize_handles();
 	}
 
-	function draw_bar() {
-		self.$bar = gt.canvas.rect(self.x, self.y,
-			self.width, self.height,
-			self.corner_radius, self.corner_radius)
+	function drawInnerOctogon() {
+		setPolygon(self.width);
+		self.$barOct = gt.canvas.polygon(
+			Snap.format(`{oct.x1},{oct.y1} {oct.x2},{oct.y2} {oct.x3},{oct.y2} {oct.x4},{oct.y4}
+			{oct.x4},{oct.y5} {oct.x3},{oct.y6} {oct.x2},{oct.y6} {oct.x1},{oct.y5}`, oct))
 			.addClass('bar')
+			.appendTo(self.$bar);
+	}
+
+	function updateInnerOctogon(w) {
+		setPolygon(w);
+		const pts = Snap.format(`{oct.x1},{oct.y1} {oct.x2},{oct.y2} {oct.x3},{oct.y2} {oct.x4},{oct.y4}
+		{oct.x4},{oct.y5} {oct.x3},{oct.y6} {oct.x2},{oct.y6} {oct.x1},{oct.y5}`, oct).replace(/ /g, ',').split(',');
+		// const ptNums = pts.map(Number); // convert all array strings to numbers
+		self.$barOct.animate({ 'points': pts }, 1); // 0 duration breaks on FF62
+	}
+
+	function draw_bar() {
+		self.$bar = gt.canvas.svg(self.x, self.y, self.width, self.height)
 			.appendTo(self.bar_group);
+
+		drawInnerOctogon();
+
 		if (self.invalid) {
 			self.$bar.addClass('bar-invalid');
 		}
@@ -170,7 +208,7 @@ export default function Bar(gt, task) {
 	}
 
 	function render_details() {
-		const {x, y} = get_details_position();
+		const { x, y } = get_details_position();
 		self.details_box.transform(`t${x},${y}`);
 		self.details_box.clear();
 
@@ -187,12 +225,12 @@ export default function Bar(gt, task) {
 	function get_details_html() {
 
 		// custom html in config
-		if(gt.config.custom_popup_html) {
+		if (gt.config.custom_popup_html) {
 			const html = gt.config.custom_popup_html;
-			if(typeof html === 'string') {
+			if (typeof html === 'string') {
 				return html;
 			}
-			if(isFunction(html)) {
+			if (isFunction(html)) {
 				return html(task);
 			}
 		}
@@ -209,8 +247,8 @@ export default function Bar(gt, task) {
 				<h5>${heading}</h5>
 				<p>${line_1}</p>
 				${
-					line_2 ? `<p>${line_2}</p>` : ''
-				}
+			line_2 ? `<p>${line_2}</p>` : ''
+			}
 			</div>
 		`;
 		return html;
@@ -291,6 +329,8 @@ export default function Bar(gt, task) {
 		bar.ox = bar.getX();
 		bar.oy = bar.getY();
 		bar.owidth = bar.getWidth();
+		console.log('bar.owidth - redraw the polygon ');
+		console.log(bar);
 		bar.finaldx = 0;
 		run_method_for_dependencies('onstart');
 	}
@@ -299,7 +339,8 @@ export default function Bar(gt, task) {
 	function onmove(dx, dy) {
 		const bar = self.$bar;
 		bar.finaldx = get_snap_position(dx);
-		update_bar_position({x: bar.ox + bar.finaldx});
+		console.log(bar);
+		update_bar_position({ x: bar.ox + bar.finaldx });
 		run_method_for_dependencies('onmove', [dx, dy]);
 	}
 	self.onmove = onmove;
@@ -345,7 +386,7 @@ export default function Bar(gt, task) {
 	function onmove_handle_right(dx, dy) {
 		const bar = self.$bar;
 		bar.finaldx = get_snap_position(dx);
-		update_bar_position({width: bar.owidth + bar.finaldx});
+		update_bar_position({ width: bar.owidth + bar.finaldx });
 	}
 
 	function onstop_handle_right() {
@@ -354,7 +395,7 @@ export default function Bar(gt, task) {
 		set_action_completed();
 	}
 
-	function update_bar_position({x = null, width = null}) {
+	function update_bar_position({ x = null, width = null }) {
 		const bar = self.$bar;
 		if (x) {
 			// get all x values of parent task
@@ -365,15 +406,18 @@ export default function Bar(gt, task) {
 			const valid_x = xs.reduce((prev, curr) => {
 				return x >= curr;
 			}, x);
-			if(!valid_x) {
+			if (!valid_x) {
 				width = null;
 				return;
 			}
-			console.log(bar)
+			// console.log('update bar position ----------')
 			update_attr(bar, 'x', x);
+			// TO LSW >>>>>>>>>>>>>>>>>>>
+			// update polygon - redraw
 		}
 		if (width && width >= gt.config.column_width) {
 			update_attr(bar, 'width', width);
+			debounce(updateInnerOctogon(width), 250);
 		}
 		update_label_position();
 		update_handle_position();
@@ -517,7 +561,7 @@ export default function Bar(gt, task) {
 	}
 
 	function update_details_position() {
-		const {x, y} = get_details_position();
+		const { x, y } = get_details_position();
 		self.details_box && self.details_box.transform(`t${x},${y}`);
 	}
 

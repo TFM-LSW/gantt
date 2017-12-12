@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
 	<meta charset="UTF-8">
 	<title>Simple Gantt</title>
@@ -8,81 +9,127 @@
 			font-family: sans-serif;
 			background: #ccc;
 		}
+
 		.container {
 			width: 80%;
 			margin: 0 auto;
 		}
+
 		.gantt-container {
 			overflow: scroll;
 		}
+
 		/* custom class */
-		/* .gantt .bar-milestone .bar-progress {
+
+		.gantt .bar-milestone .bar-progress {
 			fill: tomato;
-		} */
-		.gantt .bar-milestone {
-			fill: tomato;
-			/* -webkit-clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%); */ /* diamond */
-			-webkit-clip-path: polygon(20px 0%, calc(100% - 20px) 0%, 100% 20%, 100% 80%, calc(100% - 20px) 100%, 20px 100%, 0% 80%, 0% 20%);
-			/* https://bennettfeely.com/clippy/ */
+		}
+
+		nav {
+			margin-top: 30px;
+		}
+
+		button {
+			margin-right: 10px;
 		}
 	</style>
 	<script src="node_modules/moment/min/moment.min.js"></script>
 	<script src="node_modules/snapsvg/dist/snap.svg-min.js"></script>
 	<script src="dist/frappe-gantt.js"></script>
 </head>
+
 <body>
 	<div class="container">
-		<h2>Interactive Gantt Chart entirely made in SVG!</h2>
-		<div class="gantt-container">
+		<h2>Interactive Gantt Chart (ES6)</h2>
+		<div class="gantt-container" id="gc">
 			<svg id="gantt" width="400" height="600"></svg>
 		</div>
+		<nav>
+			<button onclick="changeView('Minute')">Minutes</button>
+			<button onclick="changeView('Hour')">Hour</button>
+			<button onclick="changeView('Quarter Day')">Quarter Day</button>
+			<button onclick="changeView('Half Day')">Half Day</button>
+			<button onclick="changeView('Day')">Day</button>
+			<button onclick="changeView('Week')">Week</button>
+			<button onclick="changeView('Month')">Month</button>
+			<!-- <button oncontextmenu="showContext()">Context menu</button> -->
+		</nav>
 	</div>
 	<script>
-		var names = [
-			["Redesign website", [0, 7]],
-			["Write new content", [1, 4]],
-			["Apply new styles", [3, 6]],
-			["Review", [7, 7]],
-			["Deploy", [8, 9]],
-			["Go Live!", [10, 15]]
+		var runs = [
+			[{
+				title: "Redesign website",
+				date: {
+					start: 'Tue, 12 Sep 2017 03:30:00 GMT',
+					end: 'Tue, 12 Sep 2017 16:35:00 GMT'
+				}
+			},{
+				title: "Redesign website 2",
+				date: {
+					start: 'Thu, 14 Sep 2017 11:30:00 GMT',
+					end: 'Thu, 14 Sep 2017 16:35:00 GMT'
+				}
+			}]
+			/* [{ title: "Redesign website", range: [0, 1], date: { start: '',  end: '' }}, { title: "Redesign website 2", range: [5, 7]} ],
+			[{ title: "Write new content", range: [1, 4]} ] */
+			/* ,
+			[{ title: "Apply new styles", range: [3, 6]} ] */
 		];
 
-		var tasks = names.map(function(name, i) {
-			var today = new Date();
-			var start = new Date(today.getFullYear(), today.getMonth(), today.getDate());
-			var end = new Date(today.getFullYear(), today.getMonth(), today.getDate());
-			start.setDate(today.getDate() + name[1][0]);
-			end.setDate(today.getDate() + name[1][1]);
-			return {
-				start: start,
-				end: end,
-				name: name[0],
-				id: "Task " + i//,
-				//progress: parseInt(Math.random() * 100, 10)
-			}
+		var tasks = runs.map(function (run, i) {
+			var run_items = run.map(function (item, k) {
+				//var today = new Date();
+				var start = new Date(item.date.start);
+				var end = new Date(item.date.end);
+
+				/* var start = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+				var end = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+				start.setDate(today.getDate() + item.range[0]);
+				end.setDate(today.getDate() + item.range[1]); */
+				return {
+					start: start,
+					end: end,
+					name: item.title,
+					id: 'Task ' + i + '_' + k/* ,
+					progress: parseInt(Math.random() * 100, 10) */
+				}
+			})
+			return run_items;
 		});
-		tasks[1].progress = 0;
-		tasks[1].dependencies = "Task 0"
-		tasks[2].dependencies = "Task 1"
-		tasks[2].dependencies = "Task 5"
-		tasks[3].dependencies = "Task 2"
-		tasks[5].custom_class = "bar-milestone";
+
+		console.log(tasks);
+		// tasks[0][0].progress = 20;
+		// tasks[0][1].progress = 20;
+		// tasks[1][0].progress = 20;
+		// tasks[2][0].progress = 20;
+		// tasks[2][0].dependencies = "Task 1_0";          
+		/* tasks[3].dependencies = "Task 2"*/
+		// tasks[5].dependencies = ["Task 4", "Task 2"]
+		// tasks[5].custom_class = "bar-milestone"; 
 
 		var gantt_chart = Gantt("#gantt", tasks, {
 			on_click: function (task) {
 				console.log(task);
 			},
-			on_date_change: function(task, start, end) {
+			on_date_change: function (task, start, end) {
 				console.log(task, start, end);
 			},
-			on_progress_change: function(task, progress) {
+			on_progress_change: function (task, progress) {
 				console.log(task, progress);
 			},
-			on_view_change: function(mode) {
+			on_view_change: function (mode) {
 				console.log(mode);
 			}
 		});
 		console.log(gantt_chart);
+
+		function changeView(view) {
+			gantt_chart.change_view_mode(view);
+		}
+		function showContext() {
+			console.log('showing context');
+		}
 	</script>
 </body>
+
 </html>

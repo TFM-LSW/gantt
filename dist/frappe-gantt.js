@@ -125,7 +125,7 @@ return /******/ (function(modules) { // webpackBootstrap
 				},
 				padding: 18,
 				view_mode: 'Day',
-				date_format: 'YYYY-MM-DD',
+				date_format: 'YYYY-MM-DD HH:mm:ss',
 				custom_popup_html: null
 			};
 			self.config = Object.assign({}, defaults, config);

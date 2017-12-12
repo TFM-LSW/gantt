@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
 	<meta charset="UTF-8">
 	<title>Simple Gantt</title>
@@ -8,22 +9,35 @@
 			font-family: sans-serif;
 			background: #ccc;
 		}
+
 		.container {
 			width: 80%;
 			margin: 0 auto;
 		}
+
 		.gantt-container {
 			overflow: scroll;
 		}
+
 		/* custom class */
+
 		.gantt .bar-milestone .bar-progress {
 			fill: tomato;
+		}
+
+		nav {
+			margin-top: 30px;
+		}
+
+		button {
+			margin-right: 10px;
 		}
 	</style>
 	<script src="node_modules/moment/min/moment.min.js"></script>
 	<script src="node_modules/snapsvg/dist/snap.svg-min.js"></script>
 	<script src="dist/frappe-gantt.js"></script>
 </head>
+
 <body>
 	<div class="container">
 		<h2>Interactive Gantt Chart (ES6)</h2>
@@ -38,23 +52,40 @@
 			<button onclick="changeView('Day')">Day</button>
 			<button onclick="changeView('Week')">Week</button>
 			<button onclick="changeView('Month')">Month</button>
-			<button oncontextmenu="showContext()">Context menu</button>
+			<!-- <button oncontextmenu="showContext()">Context menu</button> -->
 		</nav>
 	</div>
 	<script>
 		var runs = [
-			[{ title: "Redesign website", range: [0, 2]}, { title: "Redesign website 2", range: [5, 10]} ],
-			[{ title: "Write new content", range: [1, 4]} ],
-			[{ title: "Apply new styles", range: [3, 6]} ]
+			[{
+				title: "Redesign website",
+				date: {
+					start: 'Tue, 12 Sep 2017 03:30:00 GMT',
+					end: 'Tue, 12 Sep 2017 16:35:00 GMT'
+				}
+			},{
+				title: "Redesign website 2",
+				date: {
+					start: 'Thu, 14 Sep 2017 11:30:00 GMT',
+					end: 'Thu, 14 Sep 2017 16:35:00 GMT'
+				}
+			}]
+			/* [{ title: "Redesign website", range: [0, 1], date: { start: '',  end: '' }}, { title: "Redesign website 2", range: [5, 7]} ],
+			[{ title: "Write new content", range: [1, 4]} ] */
+			/* ,
+			[{ title: "Apply new styles", range: [3, 6]} ] */
 		];
 
-		var tasks = runs.map(function(run, i) {
-			var run_items = run.map(function(item, k){
-				var today = new Date();
-				var start = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+		var tasks = runs.map(function (run, i) {
+			var run_items = run.map(function (item, k) {
+				//var today = new Date();
+				var start = new Date(item.date.start);
+				var end = new Date(item.date.end);
+
+				/* var start = new Date(today.getFullYear(), today.getMonth(), today.getDate());
 				var end = new Date(today.getFullYear(), today.getMonth(), today.getDate());
 				start.setDate(today.getDate() + item.range[0]);
-				end.setDate(today.getDate() + item.range[1]);
+				end.setDate(today.getDate() + item.range[1]); */
 				return {
 					start: start,
 					end: end,
@@ -80,13 +111,13 @@
 			on_click: function (task) {
 				console.log(task);
 			},
-			on_date_change: function(task, start, end) {
+			on_date_change: function (task, start, end) {
 				console.log(task, start, end);
 			},
-			on_progress_change: function(task, progress) {
+			on_progress_change: function (task, progress) {
 				console.log(task, progress);
 			},
-			on_view_change: function(mode) {
+			on_view_change: function (mode) {
 				console.log(mode);
 			}
 		});
@@ -100,4 +131,5 @@
 		}
 	</script>
 </body>
+
 </html>

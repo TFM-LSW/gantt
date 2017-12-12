@@ -58,16 +58,16 @@
 	<script>
 		var runs = [
 			[{
-				title: "Redesign website",
+				title: "Period 1",
 				date: {
-					start: 'Tue, 12 Sep 2017 03:30:00 GMT',
-					end: 'Tue, 12 Sep 2017 16:35:00 GMT'
+					start: '2017-09-12 11:31:23',
+					end: '2017-09-12 18:31:23'
 				}
-			},{
-				title: "Redesign website 2",
+			}, {
+				title: "Period 2",
 				date: {
-					start: 'Thu, 14 Sep 2017 11:30:00 GMT',
-					end: 'Thu, 14 Sep 2017 16:35:00 GMT'
+					start: '2017-09-15 11:31:23',
+					end: '2017-09-15 8:31:23'
 				}
 			}]
 			/* [{ title: "Redesign website", range: [0, 1], date: { start: '',  end: '' }}, { title: "Redesign website 2", range: [5, 7]} ],
@@ -119,7 +119,19 @@
 			},
 			on_view_change: function (mode) {
 				console.log(mode);
-			}
+			}/* ,
+			custom_popup_html: function (task) {
+				// the task object will contain the updated
+				// dates and progress value
+				const end_date = task._end.format('MMM D');
+				return `
+					<div class="details-container">
+					<h5>${task.name}</h5>
+					<p>Expected to finish by ${end_date}</p>
+					<p>${task.progress}% completed!</p>
+					</div>
+				`;
+			} */
 		});
 		console.log(gantt_chart);
 

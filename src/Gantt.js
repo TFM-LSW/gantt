@@ -112,8 +112,8 @@ export default function Gantt(element, tasks, config) {
 
 			var run_items = run.map(function (item, k) {
 				// momentify
-				item._start = moment(item.start, self.config.date_format);
-				item._end = moment(item.end, self.config.date_format);
+				item._start = moment(item.start, self.config.date_format, true); // strict true
+				item._end = moment(item.end, self.config.date_format, true);
 
 				// make item invalid if duration too large
 				if (item._end.diff(item._start, 'years') > 10) {
@@ -125,7 +125,7 @@ export default function Gantt(element, tasks, config) {
 				item._index_sub = k;
 
 				// invalid dates
-				if (!item.start && !item.end) {
+				/* if (!item.start && !item.end) {
 					item._start = moment().startOf('day');
 					item._end = moment().startOf('day').add(2, 'days');
 				}
@@ -134,7 +134,7 @@ export default function Gantt(element, tasks, config) {
 				}
 				if (item.start && !item.end) {
 					item._end = item._start.clone().add(2, 'days');
-				}
+				} */
 
 				// invalid flag
 				if (!item.start || !item.end) {
@@ -265,7 +265,7 @@ export default function Gantt(element, tasks, config) {
 
 		if (scale === 'Hour') {
 			self.config.step = 1;
-			self.config.column_width = 18;
+			self.config.column_width = 58;
 		} else if (scale === 'Day') {
 			self.config.step = 24;
 			self.config.column_width = 38;

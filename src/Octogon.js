@@ -41,6 +41,7 @@ export default function Octogon(gt, task) {
 		self.y = compute_y();
 		self.corner_radius = 3;
 		self.duration = (self.task._end.diff(self.task._start, 'hours') + 24) / gt.config.step;
+		console.log(self.duration);
 		self.width = gt.config.column_width * self.duration;
 		self.progress_width = gt.config.column_width * self.duration * (self.task.progress / 100) || 0;
 		self.group = gt.canvas.group().addClass('bar-wrapper').addClass(self.task.custom_class || '');

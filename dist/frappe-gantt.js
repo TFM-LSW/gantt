@@ -629,9 +629,9 @@ return /******/ (function(modules) { // webpackBootstrap
 				last_date = date.clone().add(1, 'year').endOf('year');
 			}
 			var date_text = {
-				'Minute_lower': date.format('mm'),
-				'Hour Sixth_lower': date.format('mm'),
-				'Hour Half_lower': date.format('mm'),
+				'Minute_lower': date.format('mm\''),
+				'Hour Sixth_lower': date.format('mm\''),
+				'Hour Half_lower': date.format('mm\''),
 				'Hour_lower': date.format('HH'),
 				'Quarter Day_lower': date.format('HH'),
 				'Half Day_lower': date.format('HH'),

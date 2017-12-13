@@ -43,6 +43,8 @@ export default function Gantt(element, tasks, config) {
 			step: 24,
 			view_modes: [
 				'Minute',
+				'Hour Sixth',
+				'Hour Half',
 				'Hour',
 				'Quarter Day',
 				'Half Day',
@@ -218,10 +220,10 @@ export default function Gantt(element, tasks, config) {
 	/*
 		TODO:
 		Sets the time padding to the first and last items to create a gantt range
-		We need to set this via 'Open Task Planner'
+		We need to set this via 'Open Task Planner'...
 	*/
 	function set_gantt_dates() {
-		if (view_is(['Hour Sixth'])) {
+		/* if (view_is(['Hour Sixth'])) {
 			self.gantt_start = self.gantt_start.clone().startOf('day').subtract(7, 'day');
 			self.gantt_end = self.gantt_end.clone().endOf('day').add(7, 'day');
 		} else if (view_is(['Hour Half'])) {
@@ -245,7 +247,10 @@ export default function Gantt(element, tasks, config) {
 		} else {
 			self.gantt_start = self.gantt_start.clone().startOf('month').subtract(1, 'month');
 			self.gantt_end = self.gantt_end.clone().endOf('month').add(1, 'month');
-		}
+		} */
+
+		self.gantt_start = self.gantt_start.clone().startOf('month').subtract(1, 'month');
+		self.gantt_end = self.gantt_end.clone().endOf('month').add(1, 'month');
 	}
 	/*
 		Creates all hours, days or months for tick layout etc
@@ -280,8 +285,8 @@ export default function Gantt(element, tasks, config) {
 		self.config.view_mode = scale;
 
 		if (scale === 'Minute') {
-			self.config.step = 1;
-			self.config.column_width = 20;
+			self.config.step = 1 / 1440;
+			self.config.column_width = 30;
 		} else if (scale === 'Hour Sixth') {
 			self.config.step = 1 / 6;
 			self.config.column_width = 20;
@@ -316,7 +321,6 @@ export default function Gantt(element, tasks, config) {
 			self.canvas.attr('width', actual_width);
 		}
 	}
-
 	function set_scroll_position() {
 		const parent_element = self.element.parentElement;
 
@@ -478,7 +482,7 @@ export default function Gantt(element, tasks, config) {
 			last_date = date.clone().add(1, 'year').endOf('year');
 		}
 		const date_text = {
-			'Minute_lower': date.format('mm\''),
+			'Minute_lower': date.format('ss\''),
 			'Hour Sixth_lower': date.format('mm\''),
 			'Hour Half_lower': date.format('mm\''),
 			'Hour_lower': date.format('HH'),
@@ -488,11 +492,10 @@ export default function Gantt(element, tasks, config) {
 			'Week_lower': date.month() !== last_date.month() ?
 				date.format('D MMM') : date.format('D'),
 			'Month_lower': date.format('MMMM'),
-
-			'Minute_upper': date.hour() !== last_date.hour() ? date.format('HH') : '',
+			'Minute_upper': date.minute() !== last_date.minute() ? date.format('mm') : '',
 			'Hour Sixth_upper': date.hour() !== last_date.hour() ? date.format('HH') : '',
 			'Hour Half_upper': date.hour() !== last_date.hour() ? date.format('HH') : '',
-			'Hour_upper': date.hour() !== last_date.hour() ? date.format('D MMM') : '',
+			'Hour_upper': date.date() !== last_date.date() ? date.format('D MMM') : '',
 			'Quarter Day_upper': date.date() !== last_date.date() ? date.format('D MMM') : '',
 			'Half Day_upper': date.date() !== last_date.date() ?
 				date.month() !== last_date.month() ?

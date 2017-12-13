@@ -110,7 +110,8 @@ $handle-color: #ddd;
 
 	.lower-text, .upper-text {
 		font-size: 12px;
-		text-anchor: middle;
+		//text-anchor: middle;
+		// text-align: left;
 	}
 	.upper-text {
 		fill: $text-light;

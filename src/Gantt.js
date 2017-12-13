@@ -234,10 +234,9 @@ export default function Gantt(element, tasks, config) {
 		}
 	}
 	/*
-		Some
+		Creates all hours, days or months for tick layout etc
 	*/
 	function setup_dates() {
-
 		self.dates = [];
 		let cur_date = null;
 
@@ -251,6 +250,7 @@ export default function Gantt(element, tasks, config) {
 			}
 			self.dates.push(cur_date);
 		}
+		console.log(self.dates);
 	}
 
 	function setup_groups() {
@@ -423,7 +423,8 @@ export default function Gantt(element, tasks, config) {
 
 	function make_dates() {
 		for (let date of get_dates_to_draw()) {
-			self.canvas.text(date.lower_x, date.lower_y, date.lower_text)
+			const xPos = date.lower_x - (self.config.column_width / 2);
+			self.canvas.text(xPos, date.lower_y, date.lower_text)
 				.addClass('lower-text')
 				.appendTo(self.element_groups.date);
 

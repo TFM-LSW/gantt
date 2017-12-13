@@ -63,19 +63,19 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	__webpack_require__(1);
 	
-	var _Bar = __webpack_require__(12);
+	var _Bar = __webpack_require__(5);
 	
 	var _Bar2 = _interopRequireDefault(_Bar);
 	
-	var _Octogon = __webpack_require__(5);
+	var _Octogon = __webpack_require__(6);
 	
 	var _Octogon2 = _interopRequireDefault(_Octogon);
 	
-	var _Arrow = __webpack_require__(7);
+	var _Arrow = __webpack_require__(8);
 	
 	var _Arrow2 = _interopRequireDefault(_Arrow);
 	
-	var _ScrollUtils = __webpack_require__(8);
+	var _ScrollUtils = __webpack_require__(9);
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
@@ -345,10 +345,9 @@ return /******/ (function(modules) { // webpackBootstrap
 			}
 		}
 		/*
-	 	Some
+	 	Creates all hours, days or months for tick layout etc
 	 */
 		function setup_dates() {
-	
 			self.dates = [];
 			var cur_date = null;
 	
@@ -360,6 +359,7 @@ return /******/ (function(modules) { // webpackBootstrap
 				}
 				self.dates.push(cur_date);
 			}
+			console.log(self.dates);
 		}
 	
 		function setup_groups() {
@@ -564,7 +564,8 @@ return /******/ (function(modules) { // webpackBootstrap
 				for (var _iterator5 = get_dates_to_draw()[Symbol.iterator](), _step5; !(_iteratorNormalCompletion5 = (_step5 = _iterator5.next()).done); _iteratorNormalCompletion5 = true) {
 					var date = _step5.value;
 	
-					self.canvas.text(date.lower_x, date.lower_y, date.lower_text).addClass('lower-text').appendTo(self.element_groups.date);
+					var xPos = date.lower_x - self.config.column_width / 2;
+					self.canvas.text(xPos, date.lower_y, date.lower_text).addClass('lower-text').appendTo(self.element_groups.date);
 	
 					if (date.upper_text) {
 						var $upper_text = self.canvas.text(date.upper_x, date.upper_y, date.upper_text).addClass('upper-text').appendTo(self.element_groups.date);
@@ -864,7 +865,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	
 	// module
-	exports.push([module.id, ".gantt .grid-background {\n  fill: none; }\n\n.gantt .grid-header {\n  fill: #ffffff;\n  stroke: #e0e0e0;\n  stroke-width: 1.4; }\n\n.gantt .grid-row {\n  fill: #ffffff; }\n\n.gantt .grid-row:nth-child(even) {\n  fill: #f5f5f5; }\n\n.gantt .row-line {\n  stroke: #ebeff2; }\n\n.gantt .tick {\n  stroke: #e0e0e0;\n  stroke-width: 0.2; }\n  .gantt .tick.thick {\n    stroke-width: 0.4; }\n\n.gantt .today-highlight {\n  fill: yellow;\n  opacity: 0.5; }\n\n.gantt #arrow {\n  fill: none;\n  stroke: #666;\n  stroke-width: 1.4; }\n\n.gantt .bar {\n  fill: #b8c2cc;\n  stroke: #8D99A6;\n  stroke-width: 0;\n  transition: stroke-width .3s ease; }\n\n.gantt .bar-progress {\n  fill: #a3a3ff; }\n\n.gantt .bar-invalid {\n  fill: transparent;\n  stroke: #8D99A6;\n  stroke-width: 1;\n  stroke-dasharray: 5; }\n  .gantt .bar-invalid ~ .bar-label {\n    fill: #555; }\n\n.gantt .bar-label {\n  fill: #fff;\n  dominant-baseline: central;\n  text-anchor: middle;\n  font-size: 12px;\n  font-weight: lighter; }\n  .gantt .bar-label.big {\n    fill: #555;\n    text-anchor: start; }\n\n.gantt .handle {\n  fill: #ddd;\n  cursor: ew-resize;\n  opacity: 0;\n  visibility: hidden;\n  transition: opacity .3s ease; }\n\n.gantt .bar-wrapper {\n  cursor: pointer; }\n  .gantt .bar-wrapper:hover .bar {\n    stroke-width: 2; }\n  .gantt .bar-wrapper:hover .handle {\n    visibility: visible;\n    opacity: 1; }\n  .gantt .bar-wrapper.active .bar {\n    stroke-width: 2; }\n\n.gantt .lower-text, .gantt .upper-text {\n  font-size: 12px;\n  text-anchor: middle; }\n\n.gantt .upper-text {\n  fill: #555; }\n\n.gantt .lower-text {\n  fill: #333; }\n\n.gantt #details .details-container {\n  background: #fff;\n  display: inline-block;\n  padding: 12px; }\n  .gantt #details .details-container h5, .gantt #details .details-container p {\n    margin: 0; }\n  .gantt #details .details-container h5 {\n    font-size: 12px;\n    font-weight: bold;\n    margin-bottom: 10px;\n    color: #555; }\n  .gantt #details .details-container p {\n    font-size: 12px;\n    margin-bottom: 6px;\n    color: #666; }\n  .gantt #details .details-container p:last-child {\n    margin-bottom: 0; }\n\n.gantt .hide {\n  display: none; }\n", "", {"version":3,"sources":["C:/Users/walters_l/Documents/Repos/Gantt-frappe/src/src\\gantt.scss"],"names":[],"mappings":"AAYA;EAGE,WAAU,EACV;;AAJF;EAME,cAAa;EACb,gBAjBoB;EAkBpB,kBAAiB,EACjB;;AATF;EAWE,cAAa,EACb;;AAZF;EAcE,cAvBgB,EAwBhB;;AAfF;EAiBE,gBAzB0B,EA0B1B;;AAlBF;EAoBE,gBA9BoB;EA+BpB,kBAAiB,EAIjB;EAzBF;IAuBG,kBAAiB,EACjB;;AAxBH;EA2BE,aAlCmB;EAmCnB,aAAY,EACZ;;AA7BF;EAgCE,WAAU;EACV,aAvCe;EAwCf,kBAAiB,EACjB;;AAnCF;EAsCE,cAlDiB;EAmDjB,gBAlDkB;EAmDlB,gBAAe;EACf,kCAAiC,EACjC;;AA1CF;EA4CE,cA/CY,EAgDZ;;AA7CF;EA+CE,kBAAiB;EACjB,gBA3DkB;EA4DlB,gBAAe;EACf,oBAAmB,EAKnB;EAvDF;IAqDG,WA1Dc,EA2Dd;;AAtDH;EAyDE,WAAU;EACV,2BAA0B;EAC1B,oBAAmB;EACnB,gBAAe;EACf,qBAAoB,EAMpB;EAnEF;IAgEG,WArEc;IAsEd,mBAAkB,EAClB;;AAlEH;EAsEE,WAxEiB;EAyEjB,kBAAiB;EACjB,WAAU;EACV,mBAAkB;EAClB,6BAA4B,EAC5B;;AA3EF;EA8EE,gBAAe,EAkBf;EAhGF;IAkFI,gBAAe,EACf;EAnFJ;IAsFI,oBAAmB;IACnB,WAAU,EACV;EAxFJ;IA6FI,gBAAe,EACf;;AA9FJ;EAmGE,gBAAe;EACf,oBAAmB,EACnB;;AArGF;EAuGE,WA5Ge,EA6Gf;;AAxGF;EA0GE,WA9Ge,EA+Gf;;AA3GF;EA8GE,iBAAgB;EAChB,sBAAqB;EACrB,cAAa,EAsBb;EAtIF;IAmHG,UAAS,EACT;EApHH;IAuHG,gBAAe;IACf,kBAAiB;IACjB,oBAAmB;IACnB,YA/Hc,EAgId;EA3HH;IA8HG,gBAAe;IACf,mBAAkB;IAClB,YAtIc,EAuId;EAjIH;IAoIG,iBAAgB,EAChB;;AArIH;EAyIE,cAAa,EACb","file":"gantt.scss","sourcesContent":["$bar-color: #b8c2cc;\r\n$bar-stroke: #8D99A6;\r\n$border-color: #e0e0e0;\r\n$light-bg: #f5f5f5;\r\n$light-border-color: #ebeff2;\r\n$light-yellow: yellow;\r\n$text-muted: #666;\r\n$text-light: #555;\r\n$text-color: #333;\r\n$blue: #a3a3ff;\r\n$handle-color: #ddd;\r\n\r\n.gantt {\r\n\r\n\t.grid-background {\r\n\t\tfill: none;\r\n\t}\r\n\t.grid-header {\r\n\t\tfill: #ffffff;\r\n\t\tstroke: $border-color;\r\n\t\tstroke-width: 1.4;\r\n\t}\r\n\t.grid-row {\r\n\t\tfill: #ffffff;\r\n\t}\r\n\t.grid-row:nth-child(even) {\r\n\t\tfill: $light-bg;\r\n\t}\r\n\t.row-line {\r\n\t\tstroke: $light-border-color;\r\n\t}\r\n\t.tick {\r\n\t\tstroke: $border-color;\r\n\t\tstroke-width: 0.2;\r\n\t\t&.thick {\r\n\t\t\tstroke-width: 0.4;\r\n\t\t}\r\n\t}\r\n\t.today-highlight {\r\n\t\tfill: $light-yellow;\r\n\t\topacity: 0.5;\r\n\t}\r\n\r\n\t#arrow {\r\n\t\tfill: none;\r\n\t\tstroke: $text-muted;\r\n\t\tstroke-width: 1.4;\r\n\t}\r\n\r\n\t.bar {\r\n\t\tfill: $bar-color;\r\n\t\tstroke: $bar-stroke;\r\n\t\tstroke-width: 0;\r\n\t\ttransition: stroke-width .3s ease;\r\n\t}\r\n\t.bar-progress {\r\n\t\tfill: $blue;\r\n\t}\r\n\t.bar-invalid {\r\n\t\tfill: transparent;\r\n\t\tstroke: $bar-stroke;\r\n\t\tstroke-width: 1;\r\n\t\tstroke-dasharray: 5;\r\n\r\n\t\t&~.bar-label {\r\n\t\t\tfill: $text-light;\r\n\t\t}\r\n\t}\r\n\t.bar-label {\r\n\t\tfill: #fff;\r\n\t\tdominant-baseline: central;\r\n\t\ttext-anchor: middle;\r\n\t\tfont-size: 12px;\r\n\t\tfont-weight: lighter;\r\n\r\n\t\t&.big {\r\n\t\t\tfill: $text-light;\r\n\t\t\ttext-anchor: start;\r\n\t\t}\r\n\t}\r\n\r\n\t.handle {\r\n\t\tfill: $handle-color;\r\n\t\tcursor: ew-resize;\r\n\t\topacity: 0;\r\n\t\tvisibility: hidden;\r\n\t\ttransition: opacity .3s ease;\r\n\t}\r\n\r\n\t.bar-wrapper {\r\n\t\tcursor: pointer;\r\n\r\n\t\t&:hover {\r\n\t\t\t.bar {\r\n\t\t\t\tstroke-width: 2;\r\n\t\t\t}\r\n\r\n\t\t\t.handle {\r\n\t\t\t\tvisibility: visible;\r\n\t\t\t\topacity: 1;\r\n\t\t\t}\r\n\t\t}\r\n\r\n\t\t&.active {\r\n\t\t\t.bar {\r\n\t\t\t\tstroke-width: 2;\r\n\t\t\t}\r\n\t\t}\r\n\t}\r\n\r\n\t.lower-text, .upper-text {\r\n\t\tfont-size: 12px;\r\n\t\ttext-anchor: middle;\r\n\t}\r\n\t.upper-text {\r\n\t\tfill: $text-light;\r\n\t}\r\n\t.lower-text {\r\n\t\tfill: $text-color;\r\n\t}\r\n\r\n\t#details .details-container {\r\n\t\tbackground: #fff;\r\n\t\tdisplay: inline-block;\r\n\t\tpadding: 12px;\r\n\r\n\t\th5, p {\r\n\t\t\tmargin: 0;\r\n\t\t}\r\n\r\n\t\th5 {\r\n\t\t\tfont-size: 12px;\r\n\t\t\tfont-weight: bold;\r\n\t\t\tmargin-bottom: 10px;\r\n\t\t\tcolor: $text-light;\r\n\t\t}\r\n\r\n\t\tp {\r\n\t\t\tfont-size: 12px;\r\n\t\t\tmargin-bottom: 6px;\r\n\t\t\tcolor: $text-muted;\r\n\t\t}\r\n\r\n\t\tp:last-child {\r\n\t\t\tmargin-bottom: 0;\r\n\t\t}\r\n\t}\r\n\r\n\t.hide {\r\n\t\tdisplay: none;\r\n\t}\r\n}\r\n"],"sourceRoot":""}]);
+	exports.push([module.id, ".gantt .grid-background {\n  fill: none; }\n\n.gantt .grid-header {\n  fill: #ffffff;\n  stroke: #e0e0e0;\n  stroke-width: 1.4; }\n\n.gantt .grid-row {\n  fill: #ffffff; }\n\n.gantt .grid-row:nth-child(even) {\n  fill: #f5f5f5; }\n\n.gantt .row-line {\n  stroke: #ebeff2; }\n\n.gantt .tick {\n  stroke: #e0e0e0;\n  stroke-width: 0.2; }\n  .gantt .tick.thick {\n    stroke-width: 0.4; }\n\n.gantt .today-highlight {\n  fill: yellow;\n  opacity: 0.5; }\n\n.gantt #arrow {\n  fill: none;\n  stroke: #666;\n  stroke-width: 1.4; }\n\n.gantt .bar {\n  fill: #b8c2cc;\n  stroke: #8D99A6;\n  stroke-width: 0;\n  transition: stroke-width .3s ease; }\n\n.gantt .bar-progress {\n  fill: #a3a3ff; }\n\n.gantt .bar-invalid {\n  fill: transparent;\n  stroke: #8D99A6;\n  stroke-width: 1;\n  stroke-dasharray: 5; }\n  .gantt .bar-invalid ~ .bar-label {\n    fill: #555; }\n\n.gantt .bar-label {\n  fill: #fff;\n  dominant-baseline: central;\n  text-anchor: middle;\n  font-size: 12px;\n  font-weight: lighter; }\n  .gantt .bar-label.big {\n    fill: #555;\n    text-anchor: start; }\n\n.gantt .handle {\n  fill: #ddd;\n  cursor: ew-resize;\n  opacity: 0;\n  visibility: hidden;\n  transition: opacity .3s ease; }\n\n.gantt .bar-wrapper {\n  cursor: pointer; }\n  .gantt .bar-wrapper:hover .bar {\n    stroke-width: 2; }\n  .gantt .bar-wrapper:hover .handle {\n    visibility: visible;\n    opacity: 1; }\n  .gantt .bar-wrapper.active .bar {\n    stroke-width: 2; }\n\n.gantt .lower-text, .gantt .upper-text {\n  font-size: 12px; }\n\n.gantt .upper-text {\n  fill: #555; }\n\n.gantt .lower-text {\n  fill: #333; }\n\n.gantt #details .details-container {\n  background: #fff;\n  display: inline-block;\n  padding: 12px; }\n  .gantt #details .details-container h5, .gantt #details .details-container p {\n    margin: 0; }\n  .gantt #details .details-container h5 {\n    font-size: 12px;\n    font-weight: bold;\n    margin-bottom: 10px;\n    color: #555; }\n  .gantt #details .details-container p {\n    font-size: 12px;\n    margin-bottom: 6px;\n    color: #666; }\n  .gantt #details .details-container p:last-child {\n    margin-bottom: 0; }\n\n.gantt .hide {\n  display: none; }\n", "", {"version":3,"sources":["C:/Users/walters_l/Documents/Repos/Gantt-frappe/src/src\\gantt.scss"],"names":[],"mappings":"AAYA;EAGE,WAAU,EACV;;AAJF;EAME,cAAa;EACb,gBAjBoB;EAkBpB,kBAAiB,EACjB;;AATF;EAWE,cAAa,EACb;;AAZF;EAcE,cAvBgB,EAwBhB;;AAfF;EAiBE,gBAzB0B,EA0B1B;;AAlBF;EAoBE,gBA9BoB;EA+BpB,kBAAiB,EAIjB;EAzBF;IAuBG,kBAAiB,EACjB;;AAxBH;EA2BE,aAlCmB;EAmCnB,aAAY,EACZ;;AA7BF;EAgCE,WAAU;EACV,aAvCe;EAwCf,kBAAiB,EACjB;;AAnCF;EAsCE,cAlDiB;EAmDjB,gBAlDkB;EAmDlB,gBAAe;EACf,kCAAiC,EACjC;;AA1CF;EA4CE,cA/CY,EAgDZ;;AA7CF;EA+CE,kBAAiB;EACjB,gBA3DkB;EA4DlB,gBAAe;EACf,oBAAmB,EAKnB;EAvDF;IAqDG,WA1Dc,EA2Dd;;AAtDH;EAyDE,WAAU;EACV,2BAA0B;EAC1B,oBAAmB;EACnB,gBAAe;EACf,qBAAoB,EAMpB;EAnEF;IAgEG,WArEc;IAsEd,mBAAkB,EAClB;;AAlEH;EAsEE,WAxEiB;EAyEjB,kBAAiB;EACjB,WAAU;EACV,mBAAkB;EAClB,6BAA4B,EAC5B;;AA3EF;EA8EE,gBAAe,EAkBf;EAhGF;IAkFI,gBAAe,EACf;EAnFJ;IAsFI,oBAAmB;IACnB,WAAU,EACV;EAxFJ;IA6FI,gBAAe,EACf;;AA9FJ;EAmGE,gBAAe,EAGf;;AAtGF;EAwGE,WA7Ge,EA8Gf;;AAzGF;EA2GE,WA/Ge,EAgHf;;AA5GF;EA+GE,iBAAgB;EAChB,sBAAqB;EACrB,cAAa,EAsBb;EAvIF;IAoHG,UAAS,EACT;EArHH;IAwHG,gBAAe;IACf,kBAAiB;IACjB,oBAAmB;IACnB,YAhIc,EAiId;EA5HH;IA+HG,gBAAe;IACf,mBAAkB;IAClB,YAvIc,EAwId;EAlIH;IAqIG,iBAAgB,EAChB;;AAtIH;EA0IE,cAAa,EACb","file":"gantt.scss","sourcesContent":["$bar-color: #b8c2cc;\r\n$bar-stroke: #8D99A6;\r\n$border-color: #e0e0e0;\r\n$light-bg: #f5f5f5;\r\n$light-border-color: #ebeff2;\r\n$light-yellow: yellow;\r\n$text-muted: #666;\r\n$text-light: #555;\r\n$text-color: #333;\r\n$blue: #a3a3ff;\r\n$handle-color: #ddd;\r\n\r\n.gantt {\r\n\r\n\t.grid-background {\r\n\t\tfill: none;\r\n\t}\r\n\t.grid-header {\r\n\t\tfill: #ffffff;\r\n\t\tstroke: $border-color;\r\n\t\tstroke-width: 1.4;\r\n\t}\r\n\t.grid-row {\r\n\t\tfill: #ffffff;\r\n\t}\r\n\t.grid-row:nth-child(even) {\r\n\t\tfill: $light-bg;\r\n\t}\r\n\t.row-line {\r\n\t\tstroke: $light-border-color;\r\n\t}\r\n\t.tick {\r\n\t\tstroke: $border-color;\r\n\t\tstroke-width: 0.2;\r\n\t\t&.thick {\r\n\t\t\tstroke-width: 0.4;\r\n\t\t}\r\n\t}\r\n\t.today-highlight {\r\n\t\tfill: $light-yellow;\r\n\t\topacity: 0.5;\r\n\t}\r\n\r\n\t#arrow {\r\n\t\tfill: none;\r\n\t\tstroke: $text-muted;\r\n\t\tstroke-width: 1.4;\r\n\t}\r\n\r\n\t.bar {\r\n\t\tfill: $bar-color;\r\n\t\tstroke: $bar-stroke;\r\n\t\tstroke-width: 0;\r\n\t\ttransition: stroke-width .3s ease;\r\n\t}\r\n\t.bar-progress {\r\n\t\tfill: $blue;\r\n\t}\r\n\t.bar-invalid {\r\n\t\tfill: transparent;\r\n\t\tstroke: $bar-stroke;\r\n\t\tstroke-width: 1;\r\n\t\tstroke-dasharray: 5;\r\n\r\n\t\t&~.bar-label {\r\n\t\t\tfill: $text-light;\r\n\t\t}\r\n\t}\r\n\t.bar-label {\r\n\t\tfill: #fff;\r\n\t\tdominant-baseline: central;\r\n\t\ttext-anchor: middle;\r\n\t\tfont-size: 12px;\r\n\t\tfont-weight: lighter;\r\n\r\n\t\t&.big {\r\n\t\t\tfill: $text-light;\r\n\t\t\ttext-anchor: start;\r\n\t\t}\r\n\t}\r\n\r\n\t.handle {\r\n\t\tfill: $handle-color;\r\n\t\tcursor: ew-resize;\r\n\t\topacity: 0;\r\n\t\tvisibility: hidden;\r\n\t\ttransition: opacity .3s ease;\r\n\t}\r\n\r\n\t.bar-wrapper {\r\n\t\tcursor: pointer;\r\n\r\n\t\t&:hover {\r\n\t\t\t.bar {\r\n\t\t\t\tstroke-width: 2;\r\n\t\t\t}\r\n\r\n\t\t\t.handle {\r\n\t\t\t\tvisibility: visible;\r\n\t\t\t\topacity: 1;\r\n\t\t\t}\r\n\t\t}\r\n\r\n\t\t&.active {\r\n\t\t\t.bar {\r\n\t\t\t\tstroke-width: 2;\r\n\t\t\t}\r\n\t\t}\r\n\t}\r\n\r\n\t.lower-text, .upper-text {\r\n\t\tfont-size: 12px;\r\n\t\t//text-anchor: middle;\r\n\t\t// text-align: left;\r\n\t}\r\n\t.upper-text {\r\n\t\tfill: $text-light;\r\n\t}\r\n\t.lower-text {\r\n\t\tfill: $text-color;\r\n\t}\r\n\r\n\t#details .details-container {\r\n\t\tbackground: #fff;\r\n\t\tdisplay: inline-block;\r\n\t\tpadding: 12px;\r\n\r\n\t\th5, p {\r\n\t\t\tmargin: 0;\r\n\t\t}\r\n\r\n\t\th5 {\r\n\t\t\tfont-size: 12px;\r\n\t\t\tfont-weight: bold;\r\n\t\t\tmargin-bottom: 10px;\r\n\t\t\tcolor: $text-light;\r\n\t\t}\r\n\r\n\t\tp {\r\n\t\t\tfont-size: 12px;\r\n\t\t\tmargin-bottom: 6px;\r\n\t\t\tcolor: $text-muted;\r\n\t\t}\r\n\r\n\t\tp:last-child {\r\n\t\t\tmargin-bottom: 0;\r\n\t\t}\r\n\t}\r\n\r\n\t.hide {\r\n\t\tdisplay: none;\r\n\t}\r\n}\r\n"],"sourceRoot":""}]);
 	
 	// exports
 
@@ -1179,6 +1180,564 @@ return /******/ (function(modules) { // webpackBootstrap
 
 /***/ },
 /* 5 */
+/***/ function(module, exports) {
+
+	'use strict';
+	
+	Object.defineProperty(exports, "__esModule", {
+		value: true
+	});
+	exports.default = Bar;
+	/* global Snap */
+	/*
+		Class: Bar
+	
+		Opts:
+			gt: Gantt object
+			task: task object
+	*/
+	
+	function Bar(gt, task) {
+		var radius = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 3;
+	
+	
+		var self = {};
+	
+		function init() {
+			set_defaults();
+			prepare();
+			draw();
+			bind();
+		}
+	
+		function set_defaults() {
+			self.action_completed = false;
+			self.task = task;
+			self.corner_radius = radius;
+		}
+	
+		function prepare() {
+			prepare_values();
+			prepare_plugins();
+		}
+	
+		function prepare_values() {
+			self.invalid = self.task.invalid;
+			self.height = gt.config.bar.height;
+			self.x = compute_x();
+			self.y = compute_y();
+			self.duration = (self.task._end.diff(self.task._start, 'hours') + 24) / gt.config.step;
+			self.width = gt.config.column_width * self.duration;
+			self.progress_width = gt.config.column_width * self.duration * (self.task.progress / 100) || 0;
+			self.group = gt.canvas.group().addClass('bar-wrapper').addClass(self.task.custom_class || '');
+			self.bar_group = gt.canvas.group().addClass('bar-group').appendTo(self.group);
+			self.handle_group = gt.canvas.group().addClass('handle-group').appendTo(self.group);
+		}
+	
+		function prepare_plugins() {
+			Snap.plugin(function (Snap, Element, Paper, global, Fragment) {
+				Element.prototype.getX = function () {
+					return +this.attr('x');
+				};
+				Element.prototype.getY = function () {
+					return +this.attr('y');
+				};
+				Element.prototype.getWidth = function () {
+					return +this.attr('width');
+				};
+				Element.prototype.getHeight = function () {
+					return +this.attr('height');
+				};
+				Element.prototype.getEndX = function () {
+					return this.getX() + this.getWidth();
+				};
+			});
+		}
+	
+		function draw() {
+			draw_bar();
+			draw_progress_bar();
+			draw_label();
+			draw_resize_handles();
+		}
+	
+		function draw_bar() {
+			self.$bar = gt.canvas.rect(self.x, self.y, self.width, self.height, self.corner_radius, self.corner_radius).addClass('bar').appendTo(self.bar_group);
+			if (self.invalid) {
+				self.$bar.addClass('bar-invalid');
+			}
+		}
+	
+		function draw_progress_bar() {
+			if (self.invalid) return;
+			self.$bar_progress = gt.canvas.rect(self.x, self.y, self.progress_width, self.height, self.corner_radius, self.corner_radius).addClass('bar-progress').appendTo(self.bar_group);
+		}
+	
+		function draw_label() {
+			gt.canvas.text(self.x + self.width / 2, self.y + self.height / 2, self.task.name).addClass('bar-label').appendTo(self.bar_group);
+			update_label_position();
+		}
+	
+		function draw_resize_handles() {
+			if (self.invalid) return;
+	
+			var bar = self.$bar,
+			    handle_width = 8;
+	
+			gt.canvas.rect(bar.getX() + bar.getWidth() - 9, bar.getY() + 1, handle_width, self.height - 2, self.corner_radius, self.corner_radius).addClass('handle right').appendTo(self.handle_group);
+			gt.canvas.rect(bar.getX() + 1, bar.getY() + 1, handle_width, self.height - 2, self.corner_radius, self.corner_radius).addClass('handle left').appendTo(self.handle_group);
+	
+			if (self.task.progress && self.task.progress < 100) {
+				gt.canvas.polygon(get_progress_polygon_points()).addClass('handle progress').appendTo(self.handle_group);
+			}
+		}
+	
+		function get_progress_polygon_points() {
+			var bar_progress = self.$bar_progress;
+			return [bar_progress.getEndX() - 5, bar_progress.getY() + bar_progress.getHeight(), bar_progress.getEndX() + 5, bar_progress.getY() + bar_progress.getHeight(), bar_progress.getEndX(), bar_progress.getY() + bar_progress.getHeight() - 8.66];
+		}
+	
+		function bind() {
+			if (self.invalid) return;
+			setup_click_event();
+			show_details();
+			bind_resize();
+			bind_drag();
+			bind_resize_progress();
+		}
+	
+		function show_details() {
+			var popover_group = gt.element_groups.details;
+			self.details_box = popover_group.select('.details-wrapper[data-task=\'' + self.task.id + '\']');
+	
+			if (!self.details_box) {
+				self.details_box = gt.canvas.group().addClass('details-wrapper hide').attr('data-task', self.task.id).appendTo(popover_group);
+	
+				render_details();
+	
+				var f = gt.canvas.filter(Snap.filter.shadow(0, 1, 1, '#666', 0.6));
+				self.details_box.attr({
+					filter: f
+				});
+			}
+	
+			self.group.click(function (e) {
+				if (self.action_completed) {
+					// just finished a move action, wait for a few seconds
+					return;
+				}
+				popover_group.selectAll('.details-wrapper').forEach(function (el) {
+					return el.addClass('hide');
+				});
+				self.details_box.removeClass('hide');
+			});
+		}
+	
+		function render_details() {
+			var _get_details_position = get_details_position(),
+			    x = _get_details_position.x,
+			    y = _get_details_position.y;
+	
+			self.details_box.transform('t' + x + ',' + y);
+			self.details_box.clear();
+	
+			var html = get_details_html();
+			var foreign_object = Snap.parse('<foreignObject width="5000" height="2000">\n\t\t\t\t<body xmlns="http://www.w3.org/1999/xhtml">\n\t\t\t\t\t' + html + '\n\t\t\t\t</body>\n\t\t\t\t</foreignObject>');
+			self.details_box.append(foreign_object);
+		}
+	
+		function get_details_html() {
+	
+			// custom html in config
+			if (gt.config.custom_popup_html) {
+				var _html = gt.config.custom_popup_html;
+				if (typeof _html === 'string') {
+					return _html;
+				}
+				if (isFunction(_html)) {
+					return _html(task);
+				}
+			}
+	
+			var start_date = self.task._start.format('MMM D');
+			var end_date = self.task._end.format('MMM D');
+			var heading = self.task.name + ': ' + start_date + ' - ' + end_date;
+	
+			var line_1 = 'Duration: ' + self.duration + ' days';
+			var line_2 = self.task.progress ? 'Progress: ' + self.task.progress : null;
+	
+			var html = '\n\t\t\t<div class="details-container">\n\t\t\t\t<h5>' + heading + '</h5>\n\t\t\t\t<p>' + line_1 + '</p>\n\t\t\t\t' + (line_2 ? '<p>' + line_2 + '</p>' : '') + '\n\t\t\t</div>\n\t\t';
+			return html;
+		}
+	
+		function get_details_position() {
+			return {
+				x: self.$bar.getEndX() + 2,
+				y: self.$bar.getY() - 10
+			};
+		}
+	
+		function bind_resize() {
+			var _get_handles = get_handles(),
+			    left = _get_handles.left,
+			    right = _get_handles.right;
+	
+			left.drag(onmove_left, onstart, onstop_left);
+			right.drag(onmove_right, onstart, onstop_right);
+	
+			function onmove_right(dx, dy) {
+				onmove_handle_right(dx, dy);
+			}
+			function onstop_right() {
+				onstop_handle_right();
+			}
+	
+			function onmove_left(dx, dy) {
+				onmove_handle_left(dx, dy);
+			}
+			function onstop_left() {
+				onstop_handle_left();
+			}
+		}
+	
+		function get_handles() {
+			return {
+				left: self.handle_group.select('.handle.left'),
+				right: self.handle_group.select('.handle.right')
+			};
+		}
+	
+		function bind_drag() {
+			self.bar_group.drag(onmove, onstart, onstop);
+		}
+	
+		function bind_resize_progress() {
+			var bar = self.$bar,
+			    bar_progress = self.$bar_progress,
+			    handle = self.group.select('.handle.progress');
+			handle && handle.drag(on_move, on_start, on_stop);
+	
+			function on_move(dx, dy) {
+				if (dx > bar_progress.max_dx) {
+					dx = bar_progress.max_dx;
+				}
+				if (dx < bar_progress.min_dx) {
+					dx = bar_progress.min_dx;
+				}
+	
+				bar_progress.attr('width', bar_progress.owidth + dx);
+				handle.attr('points', get_progress_polygon_points());
+				bar_progress.finaldx = dx;
+			}
+			function on_stop() {
+				if (!bar_progress.finaldx) return;
+				progress_changed();
+				set_action_completed();
+			}
+			function on_start() {
+				bar_progress.finaldx = 0;
+				bar_progress.owidth = bar_progress.getWidth();
+				bar_progress.min_dx = -bar_progress.getWidth();
+				bar_progress.max_dx = bar.getWidth() - bar_progress.getWidth();
+			}
+		}
+	
+		function onstart() {
+			var bar = self.$bar;
+			bar.ox = bar.getX();
+			bar.oy = bar.getY();
+			bar.owidth = bar.getWidth();
+			bar.finaldx = 0;
+			run_method_for_dependencies('onstart');
+		}
+		self.onstart = onstart;
+	
+		function onmove(dx, dy) {
+			var bar = self.$bar;
+			bar.finaldx = get_snap_position(dx);
+			update_bar_position({ x: bar.ox + bar.finaldx });
+			run_method_for_dependencies('onmove', [dx, dy]);
+		}
+		self.onmove = onmove;
+	
+		function onstop() {
+			var bar = self.$bar;
+			if (!bar.finaldx) return;
+			date_changed();
+			set_action_completed();
+			run_method_for_dependencies('onstop');
+		}
+		self.onstop = onstop;
+	
+		function onmove_handle_left(dx, dy) {
+			var bar = self.$bar;
+			bar.finaldx = get_snap_position(dx);
+			update_bar_position({
+				x: bar.ox + bar.finaldx,
+				width: bar.owidth - bar.finaldx
+			});
+			run_method_for_dependencies('onmove', [dx, dy]);
+		}
+		self.onmove_handle_left = onmove_handle_left;
+	
+		function onstop_handle_left() {
+			var bar = self.$bar;
+			if (bar.finaldx) date_changed();
+			set_action_completed();
+			run_method_for_dependencies('onstop');
+		}
+		self.onstop_handle_left = onstop_handle_left;
+	
+		function run_method_for_dependencies(fn, args) {
+			var dm = gt.dependency_map;
+			if (dm[self.task.id]) {
+				var _iteratorNormalCompletion = true;
+				var _didIteratorError = false;
+				var _iteratorError = undefined;
+	
+				try {
+					for (var _iterator = dm[self.task.id][Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+						var deptask = _step.value;
+	
+						var dt = gt.get_bar(deptask);
+						dt[fn].apply(dt, args);
+					}
+				} catch (err) {
+					_didIteratorError = true;
+					_iteratorError = err;
+				} finally {
+					try {
+						if (!_iteratorNormalCompletion && _iterator.return) {
+							_iterator.return();
+						}
+					} finally {
+						if (_didIteratorError) {
+							throw _iteratorError;
+						}
+					}
+				}
+			}
+		}
+	
+		function onmove_handle_right(dx, dy) {
+			var bar = self.$bar;
+			bar.finaldx = get_snap_position(dx);
+			update_bar_position({ width: bar.owidth + bar.finaldx });
+		}
+	
+		function onstop_handle_right() {
+			var bar = self.$bar;
+			if (bar.finaldx) date_changed();
+			set_action_completed();
+		}
+	
+		function update_bar_position(_ref) {
+			var _ref$x = _ref.x,
+			    x = _ref$x === undefined ? null : _ref$x,
+			    _ref$width = _ref.width,
+			    width = _ref$width === undefined ? null : _ref$width;
+	
+			var bar = self.$bar;
+			if (x) {
+				// get all x values of parent task
+				var xs = task.dependencies.map(function (dep) {
+					return gt.get_bar(dep).$bar.getX();
+				});
+				// child task must not go before parent
+				var valid_x = xs.reduce(function (prev, curr) {
+					return x >= curr;
+				}, x);
+				if (!valid_x) {
+					width = null;
+					return;
+				}
+				update_attr(bar, 'x', x);
+			}
+			if (width && width >= gt.config.column_width) {
+				update_attr(bar, 'width', width);
+			}
+			update_label_position();
+			update_handle_position();
+			update_progressbar_position();
+			update_arrow_position();
+			update_details_position();
+		}
+	
+		function setup_click_event() {
+			self.group.click(function () {
+				if (self.action_completed) {
+					// just finished a move action, wait for a few seconds
+					return;
+				}
+				if (self.group.hasClass('active')) {
+					gt.trigger_event('click', [self.task]);
+				}
+				gt.unselect_all();
+				self.group.toggleClass('active');
+			});
+		}
+	
+		function date_changed() {
+			var _compute_start_end_da = compute_start_end_date(),
+			    new_start_date = _compute_start_end_da.new_start_date,
+			    new_end_date = _compute_start_end_da.new_end_date;
+	
+			self.task._start = new_start_date;
+			self.task._end = new_end_date;
+			render_details();
+			gt.trigger_event('date_change', [self.task, new_start_date, new_end_date]);
+		}
+	
+		function progress_changed() {
+			var new_progress = compute_progress();
+			self.task.progress = new_progress;
+			render_details();
+			gt.trigger_event('progress_change', [self.task, new_progress]);
+		}
+	
+		function set_action_completed() {
+			self.action_completed = true;
+			setTimeout(function () {
+				return self.action_completed = false;
+			}, 2000);
+		}
+	
+		function compute_start_end_date() {
+			var bar = self.$bar;
+			var x_in_units = bar.getX() / gt.config.column_width;
+			var new_start_date = gt.gantt_start.clone().add(x_in_units * gt.config.step, 'hours');
+			var width_in_units = bar.getWidth() / gt.config.column_width;
+			var new_end_date = new_start_date.clone().add(width_in_units * gt.config.step, 'hours');
+			// lets say duration is 2 days
+			// start_date = May 24 00:00:00
+			// end_date = May 24 + 2 days = May 26 (incorrect)
+			// so subtract 1 second so that
+			// end_date = May 25 23:59:59
+			new_end_date.add('-1', 'seconds');
+			return { new_start_date: new_start_date, new_end_date: new_end_date };
+		}
+	
+		function compute_progress() {
+			var progress = self.$bar_progress.getWidth() / self.$bar.getWidth() * 100;
+			return parseInt(progress, 10);
+		}
+	
+		function compute_x() {
+			var x = self.task._start.diff(gt.gantt_start, 'hours') / gt.config.step * gt.config.column_width;
+	
+			if (gt.view_is('Month')) {
+				x = self.task._start.diff(gt.gantt_start, 'days') * gt.config.column_width / 30;
+			}
+			return x;
+		}
+	
+		function compute_y() {
+			return gt.config.header_height + gt.config.padding + self.task._index * (self.height + gt.config.padding);
+		}
+	
+		function get_snap_position(dx) {
+			var odx = dx,
+			    rem = void 0,
+			    position = void 0;
+	
+			if (gt.view_is('Week')) {
+				rem = dx % (gt.config.column_width / 7);
+				position = odx - rem + (rem < gt.config.column_width / 14 ? 0 : gt.config.column_width / 7);
+			} else if (gt.view_is('Month')) {
+				rem = dx % (gt.config.column_width / 30);
+				position = odx - rem + (rem < gt.config.column_width / 60 ? 0 : gt.config.column_width / 30);
+			} else {
+				rem = dx % gt.config.column_width;
+				position = odx - rem + (rem < gt.config.column_width / 2 ? 0 : gt.config.column_width);
+			}
+			return position;
+		}
+	
+		function update_attr(element, attr, value) {
+			value = +value;
+			if (!isNaN(value)) {
+				element.attr(attr, value);
+			}
+			return element;
+		}
+	
+		function update_progressbar_position() {
+			self.$bar_progress.attr('x', self.$bar.getX());
+			if (self.task.progress) {
+				self.$bar_progress.attr('width', self.$bar.getWidth() * (self.task.progress / 100));
+			}
+		}
+	
+		function update_label_position() {
+			var bar = self.$bar,
+			    label = self.group.select('.bar-label');
+			if (label.getBBox().width > bar.getWidth()) {
+				label.addClass('big').attr('x', bar.getX() + bar.getWidth() + 5);
+			} else {
+				label.removeClass('big').attr('x', bar.getX() + bar.getWidth() / 2);
+			}
+		}
+	
+		function update_handle_position() {
+			var bar = self.$bar;
+			self.handle_group.select('.handle.left').attr({
+				'x': bar.getX() + 1
+			});
+			self.handle_group.select('.handle.right').attr({
+				'x': bar.getEndX() - 9
+			});
+			var handle = self.group.select('.handle.progress');
+			handle && handle.attr('points', get_progress_polygon_points());
+		}
+	
+		function update_arrow_position() {
+			var _iteratorNormalCompletion2 = true;
+			var _didIteratorError2 = false;
+			var _iteratorError2 = undefined;
+	
+			try {
+				for (var _iterator2 = self.arrows[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
+					var arrow = _step2.value;
+	
+					arrow.update();
+				}
+			} catch (err) {
+				_didIteratorError2 = true;
+				_iteratorError2 = err;
+			} finally {
+				try {
+					if (!_iteratorNormalCompletion2 && _iterator2.return) {
+						_iterator2.return();
+					}
+				} finally {
+					if (_didIteratorError2) {
+						throw _iteratorError2;
+					}
+				}
+			}
+		}
+	
+		function update_details_position() {
+			var _get_details_position2 = get_details_position(),
+			    x = _get_details_position2.x,
+			    y = _get_details_position2.y;
+	
+			self.details_box && self.details_box.transform('t' + x + ',' + y);
+		}
+	
+		function isFunction(functionToCheck) {
+			var getType = {};
+			return functionToCheck && getType.toString.call(functionToCheck) === '[object Function]';
+		}
+	
+		init();
+	
+		return self;
+	}
+	module.exports = exports['default'];
+
+/***/ },
+/* 6 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -1188,7 +1747,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	});
 	exports.default = Octogon;
 	
-	var _Utils = __webpack_require__(6);
+	var _Utils = __webpack_require__(7);
 	
 	function Octogon(gt, task) {
 	
@@ -1771,7 +2330,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = exports['default'];
 
 /***/ },
-/* 6 */
+/* 7 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -1801,7 +2360,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 7 */
+/* 8 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -1901,7 +2460,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = exports['default'];
 
 /***/ },
-/* 8 */
+/* 9 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -1913,7 +2472,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.ClickChart = ClickChart;
 	function ScrollWheelInit(element) {
 		var display = document.getElementById(element);
-		__webpack_require__(9)(display, function (dx, dy, dz, ev) {
+		__webpack_require__(10)(display, function (dx, dy, dz, ev) {
 			// const display = document.getElementById('wheeldata');
 			// display.innerHTML = '<p>Scroll:' + [dx, dy, dz, ev] + '</p>';
 			if (dy > 0) {
@@ -1950,12 +2509,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	}
 
 /***/ },
-/* 9 */
+/* 10 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict'
 	
-	var toPX = __webpack_require__(10)
+	var toPX = __webpack_require__(11)
 	
 	module.exports = mouseWheelListen
 	
@@ -1996,12 +2555,12 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 10 */
+/* 11 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict'
 	
-	var parseUnit = __webpack_require__(11)
+	var parseUnit = __webpack_require__(12)
 	
 	module.exports = toPX
 	
@@ -2061,7 +2620,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	}
 
 /***/ },
-/* 11 */
+/* 12 */
 /***/ function(module, exports) {
 
 	module.exports = function parseUnit(str, out) {
@@ -2074,564 +2633,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	    out[1] = str.match(/[\d.\-\+]*\s*(.*)/)[1] || ''
 	    return out
 	}
-
-/***/ },
-/* 12 */
-/***/ function(module, exports) {
-
-	'use strict';
-	
-	Object.defineProperty(exports, "__esModule", {
-		value: true
-	});
-	exports.default = Bar;
-	/* global Snap */
-	/*
-		Class: Bar
-	
-		Opts:
-			gt: Gantt object
-			task: task object
-	*/
-	
-	function Bar(gt, task) {
-		var radius = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 3;
-	
-	
-		var self = {};
-	
-		function init() {
-			set_defaults();
-			prepare();
-			draw();
-			bind();
-		}
-	
-		function set_defaults() {
-			self.action_completed = false;
-			self.task = task;
-			self.corner_radius = radius;
-		}
-	
-		function prepare() {
-			prepare_values();
-			prepare_plugins();
-		}
-	
-		function prepare_values() {
-			self.invalid = self.task.invalid;
-			self.height = gt.config.bar.height;
-			self.x = compute_x();
-			self.y = compute_y();
-			self.duration = (self.task._end.diff(self.task._start, 'hours') + 24) / gt.config.step;
-			self.width = gt.config.column_width * self.duration;
-			self.progress_width = gt.config.column_width * self.duration * (self.task.progress / 100) || 0;
-			self.group = gt.canvas.group().addClass('bar-wrapper').addClass(self.task.custom_class || '');
-			self.bar_group = gt.canvas.group().addClass('bar-group').appendTo(self.group);
-			self.handle_group = gt.canvas.group().addClass('handle-group').appendTo(self.group);
-		}
-	
-		function prepare_plugins() {
-			Snap.plugin(function (Snap, Element, Paper, global, Fragment) {
-				Element.prototype.getX = function () {
-					return +this.attr('x');
-				};
-				Element.prototype.getY = function () {
-					return +this.attr('y');
-				};
-				Element.prototype.getWidth = function () {
-					return +this.attr('width');
-				};
-				Element.prototype.getHeight = function () {
-					return +this.attr('height');
-				};
-				Element.prototype.getEndX = function () {
-					return this.getX() + this.getWidth();
-				};
-			});
-		}
-	
-		function draw() {
-			draw_bar();
-			draw_progress_bar();
-			draw_label();
-			draw_resize_handles();
-		}
-	
-		function draw_bar() {
-			self.$bar = gt.canvas.rect(self.x, self.y, self.width, self.height, self.corner_radius, self.corner_radius).addClass('bar').appendTo(self.bar_group);
-			if (self.invalid) {
-				self.$bar.addClass('bar-invalid');
-			}
-		}
-	
-		function draw_progress_bar() {
-			if (self.invalid) return;
-			self.$bar_progress = gt.canvas.rect(self.x, self.y, self.progress_width, self.height, self.corner_radius, self.corner_radius).addClass('bar-progress').appendTo(self.bar_group);
-		}
-	
-		function draw_label() {
-			gt.canvas.text(self.x + self.width / 2, self.y + self.height / 2, self.task.name).addClass('bar-label').appendTo(self.bar_group);
-			update_label_position();
-		}
-	
-		function draw_resize_handles() {
-			if (self.invalid) return;
-	
-			var bar = self.$bar,
-			    handle_width = 8;
-	
-			gt.canvas.rect(bar.getX() + bar.getWidth() - 9, bar.getY() + 1, handle_width, self.height - 2, self.corner_radius, self.corner_radius).addClass('handle right').appendTo(self.handle_group);
-			gt.canvas.rect(bar.getX() + 1, bar.getY() + 1, handle_width, self.height - 2, self.corner_radius, self.corner_radius).addClass('handle left').appendTo(self.handle_group);
-	
-			if (self.task.progress && self.task.progress < 100) {
-				gt.canvas.polygon(get_progress_polygon_points()).addClass('handle progress').appendTo(self.handle_group);
-			}
-		}
-	
-		function get_progress_polygon_points() {
-			var bar_progress = self.$bar_progress;
-			return [bar_progress.getEndX() - 5, bar_progress.getY() + bar_progress.getHeight(), bar_progress.getEndX() + 5, bar_progress.getY() + bar_progress.getHeight(), bar_progress.getEndX(), bar_progress.getY() + bar_progress.getHeight() - 8.66];
-		}
-	
-		function bind() {
-			if (self.invalid) return;
-			setup_click_event();
-			show_details();
-			bind_resize();
-			bind_drag();
-			bind_resize_progress();
-		}
-	
-		function show_details() {
-			var popover_group = gt.element_groups.details;
-			self.details_box = popover_group.select('.details-wrapper[data-task=\'' + self.task.id + '\']');
-	
-			if (!self.details_box) {
-				self.details_box = gt.canvas.group().addClass('details-wrapper hide').attr('data-task', self.task.id).appendTo(popover_group);
-	
-				render_details();
-	
-				var f = gt.canvas.filter(Snap.filter.shadow(0, 1, 1, '#666', 0.6));
-				self.details_box.attr({
-					filter: f
-				});
-			}
-	
-			self.group.click(function (e) {
-				if (self.action_completed) {
-					// just finished a move action, wait for a few seconds
-					return;
-				}
-				popover_group.selectAll('.details-wrapper').forEach(function (el) {
-					return el.addClass('hide');
-				});
-				self.details_box.removeClass('hide');
-			});
-		}
-	
-		function render_details() {
-			var _get_details_position = get_details_position(),
-			    x = _get_details_position.x,
-			    y = _get_details_position.y;
-	
-			self.details_box.transform('t' + x + ',' + y);
-			self.details_box.clear();
-	
-			var html = get_details_html();
-			var foreign_object = Snap.parse('<foreignObject width="5000" height="2000">\n\t\t\t\t<body xmlns="http://www.w3.org/1999/xhtml">\n\t\t\t\t\t' + html + '\n\t\t\t\t</body>\n\t\t\t\t</foreignObject>');
-			self.details_box.append(foreign_object);
-		}
-	
-		function get_details_html() {
-	
-			// custom html in config
-			if (gt.config.custom_popup_html) {
-				var _html = gt.config.custom_popup_html;
-				if (typeof _html === 'string') {
-					return _html;
-				}
-				if (isFunction(_html)) {
-					return _html(task);
-				}
-			}
-	
-			var start_date = self.task._start.format('MMM D');
-			var end_date = self.task._end.format('MMM D');
-			var heading = self.task.name + ': ' + start_date + ' - ' + end_date;
-	
-			var line_1 = 'Duration: ' + self.duration + ' days';
-			var line_2 = self.task.progress ? 'Progress: ' + self.task.progress : null;
-	
-			var html = '\n\t\t\t<div class="details-container">\n\t\t\t\t<h5>' + heading + '</h5>\n\t\t\t\t<p>' + line_1 + '</p>\n\t\t\t\t' + (line_2 ? '<p>' + line_2 + '</p>' : '') + '\n\t\t\t</div>\n\t\t';
-			return html;
-		}
-	
-		function get_details_position() {
-			return {
-				x: self.$bar.getEndX() + 2,
-				y: self.$bar.getY() - 10
-			};
-		}
-	
-		function bind_resize() {
-			var _get_handles = get_handles(),
-			    left = _get_handles.left,
-			    right = _get_handles.right;
-	
-			left.drag(onmove_left, onstart, onstop_left);
-			right.drag(onmove_right, onstart, onstop_right);
-	
-			function onmove_right(dx, dy) {
-				onmove_handle_right(dx, dy);
-			}
-			function onstop_right() {
-				onstop_handle_right();
-			}
-	
-			function onmove_left(dx, dy) {
-				onmove_handle_left(dx, dy);
-			}
-			function onstop_left() {
-				onstop_handle_left();
-			}
-		}
-	
-		function get_handles() {
-			return {
-				left: self.handle_group.select('.handle.left'),
-				right: self.handle_group.select('.handle.right')
-			};
-		}
-	
-		function bind_drag() {
-			self.bar_group.drag(onmove, onstart, onstop);
-		}
-	
-		function bind_resize_progress() {
-			var bar = self.$bar,
-			    bar_progress = self.$bar_progress,
-			    handle = self.group.select('.handle.progress');
-			handle && handle.drag(on_move, on_start, on_stop);
-	
-			function on_move(dx, dy) {
-				if (dx > bar_progress.max_dx) {
-					dx = bar_progress.max_dx;
-				}
-				if (dx < bar_progress.min_dx) {
-					dx = bar_progress.min_dx;
-				}
-	
-				bar_progress.attr('width', bar_progress.owidth + dx);
-				handle.attr('points', get_progress_polygon_points());
-				bar_progress.finaldx = dx;
-			}
-			function on_stop() {
-				if (!bar_progress.finaldx) return;
-				progress_changed();
-				set_action_completed();
-			}
-			function on_start() {
-				bar_progress.finaldx = 0;
-				bar_progress.owidth = bar_progress.getWidth();
-				bar_progress.min_dx = -bar_progress.getWidth();
-				bar_progress.max_dx = bar.getWidth() - bar_progress.getWidth();
-			}
-		}
-	
-		function onstart() {
-			var bar = self.$bar;
-			bar.ox = bar.getX();
-			bar.oy = bar.getY();
-			bar.owidth = bar.getWidth();
-			bar.finaldx = 0;
-			run_method_for_dependencies('onstart');
-		}
-		self.onstart = onstart;
-	
-		function onmove(dx, dy) {
-			var bar = self.$bar;
-			bar.finaldx = get_snap_position(dx);
-			update_bar_position({ x: bar.ox + bar.finaldx });
-			run_method_for_dependencies('onmove', [dx, dy]);
-		}
-		self.onmove = onmove;
-	
-		function onstop() {
-			var bar = self.$bar;
-			if (!bar.finaldx) return;
-			date_changed();
-			set_action_completed();
-			run_method_for_dependencies('onstop');
-		}
-		self.onstop = onstop;
-	
-		function onmove_handle_left(dx, dy) {
-			var bar = self.$bar;
-			bar.finaldx = get_snap_position(dx);
-			update_bar_position({
-				x: bar.ox + bar.finaldx,
-				width: bar.owidth - bar.finaldx
-			});
-			run_method_for_dependencies('onmove', [dx, dy]);
-		}
-		self.onmove_handle_left = onmove_handle_left;
-	
-		function onstop_handle_left() {
-			var bar = self.$bar;
-			if (bar.finaldx) date_changed();
-			set_action_completed();
-			run_method_for_dependencies('onstop');
-		}
-		self.onstop_handle_left = onstop_handle_left;
-	
-		function run_method_for_dependencies(fn, args) {
-			var dm = gt.dependency_map;
-			if (dm[self.task.id]) {
-				var _iteratorNormalCompletion = true;
-				var _didIteratorError = false;
-				var _iteratorError = undefined;
-	
-				try {
-					for (var _iterator = dm[self.task.id][Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
-						var deptask = _step.value;
-	
-						var dt = gt.get_bar(deptask);
-						dt[fn].apply(dt, args);
-					}
-				} catch (err) {
-					_didIteratorError = true;
-					_iteratorError = err;
-				} finally {
-					try {
-						if (!_iteratorNormalCompletion && _iterator.return) {
-							_iterator.return();
-						}
-					} finally {
-						if (_didIteratorError) {
-							throw _iteratorError;
-						}
-					}
-				}
-			}
-		}
-	
-		function onmove_handle_right(dx, dy) {
-			var bar = self.$bar;
-			bar.finaldx = get_snap_position(dx);
-			update_bar_position({ width: bar.owidth + bar.finaldx });
-		}
-	
-		function onstop_handle_right() {
-			var bar = self.$bar;
-			if (bar.finaldx) date_changed();
-			set_action_completed();
-		}
-	
-		function update_bar_position(_ref) {
-			var _ref$x = _ref.x,
-			    x = _ref$x === undefined ? null : _ref$x,
-			    _ref$width = _ref.width,
-			    width = _ref$width === undefined ? null : _ref$width;
-	
-			var bar = self.$bar;
-			if (x) {
-				// get all x values of parent task
-				var xs = task.dependencies.map(function (dep) {
-					return gt.get_bar(dep).$bar.getX();
-				});
-				// child task must not go before parent
-				var valid_x = xs.reduce(function (prev, curr) {
-					return x >= curr;
-				}, x);
-				if (!valid_x) {
-					width = null;
-					return;
-				}
-				update_attr(bar, 'x', x);
-			}
-			if (width && width >= gt.config.column_width) {
-				update_attr(bar, 'width', width);
-			}
-			update_label_position();
-			update_handle_position();
-			update_progressbar_position();
-			update_arrow_position();
-			update_details_position();
-		}
-	
-		function setup_click_event() {
-			self.group.click(function () {
-				if (self.action_completed) {
-					// just finished a move action, wait for a few seconds
-					return;
-				}
-				if (self.group.hasClass('active')) {
-					gt.trigger_event('click', [self.task]);
-				}
-				gt.unselect_all();
-				self.group.toggleClass('active');
-			});
-		}
-	
-		function date_changed() {
-			var _compute_start_end_da = compute_start_end_date(),
-			    new_start_date = _compute_start_end_da.new_start_date,
-			    new_end_date = _compute_start_end_da.new_end_date;
-	
-			self.task._start = new_start_date;
-			self.task._end = new_end_date;
-			render_details();
-			gt.trigger_event('date_change', [self.task, new_start_date, new_end_date]);
-		}
-	
-		function progress_changed() {
-			var new_progress = compute_progress();
-			self.task.progress = new_progress;
-			render_details();
-			gt.trigger_event('progress_change', [self.task, new_progress]);
-		}
-	
-		function set_action_completed() {
-			self.action_completed = true;
-			setTimeout(function () {
-				return self.action_completed = false;
-			}, 2000);
-		}
-	
-		function compute_start_end_date() {
-			var bar = self.$bar;
-			var x_in_units = bar.getX() / gt.config.column_width;
-			var new_start_date = gt.gantt_start.clone().add(x_in_units * gt.config.step, 'hours');
-			var width_in_units = bar.getWidth() / gt.config.column_width;
-			var new_end_date = new_start_date.clone().add(width_in_units * gt.config.step, 'hours');
-			// lets say duration is 2 days
-			// start_date = May 24 00:00:00
-			// end_date = May 24 + 2 days = May 26 (incorrect)
-			// so subtract 1 second so that
-			// end_date = May 25 23:59:59
-			new_end_date.add('-1', 'seconds');
-			return { new_start_date: new_start_date, new_end_date: new_end_date };
-		}
-	
-		function compute_progress() {
-			var progress = self.$bar_progress.getWidth() / self.$bar.getWidth() * 100;
-			return parseInt(progress, 10);
-		}
-	
-		function compute_x() {
-			var x = self.task._start.diff(gt.gantt_start, 'hours') / gt.config.step * gt.config.column_width;
-	
-			if (gt.view_is('Month')) {
-				x = self.task._start.diff(gt.gantt_start, 'days') * gt.config.column_width / 30;
-			}
-			return x;
-		}
-	
-		function compute_y() {
-			return gt.config.header_height + gt.config.padding + self.task._index * (self.height + gt.config.padding);
-		}
-	
-		function get_snap_position(dx) {
-			var odx = dx,
-			    rem = void 0,
-			    position = void 0;
-	
-			if (gt.view_is('Week')) {
-				rem = dx % (gt.config.column_width / 7);
-				position = odx - rem + (rem < gt.config.column_width / 14 ? 0 : gt.config.column_width / 7);
-			} else if (gt.view_is('Month')) {
-				rem = dx % (gt.config.column_width / 30);
-				position = odx - rem + (rem < gt.config.column_width / 60 ? 0 : gt.config.column_width / 30);
-			} else {
-				rem = dx % gt.config.column_width;
-				position = odx - rem + (rem < gt.config.column_width / 2 ? 0 : gt.config.column_width);
-			}
-			return position;
-		}
-	
-		function update_attr(element, attr, value) {
-			value = +value;
-			if (!isNaN(value)) {
-				element.attr(attr, value);
-			}
-			return element;
-		}
-	
-		function update_progressbar_position() {
-			self.$bar_progress.attr('x', self.$bar.getX());
-			if (self.task.progress) {
-				self.$bar_progress.attr('width', self.$bar.getWidth() * (self.task.progress / 100));
-			}
-		}
-	
-		function update_label_position() {
-			var bar = self.$bar,
-			    label = self.group.select('.bar-label');
-			if (label.getBBox().width > bar.getWidth()) {
-				label.addClass('big').attr('x', bar.getX() + bar.getWidth() + 5);
-			} else {
-				label.removeClass('big').attr('x', bar.getX() + bar.getWidth() / 2);
-			}
-		}
-	
-		function update_handle_position() {
-			var bar = self.$bar;
-			self.handle_group.select('.handle.left').attr({
-				'x': bar.getX() + 1
-			});
-			self.handle_group.select('.handle.right').attr({
-				'x': bar.getEndX() - 9
-			});
-			var handle = self.group.select('.handle.progress');
-			handle && handle.attr('points', get_progress_polygon_points());
-		}
-	
-		function update_arrow_position() {
-			var _iteratorNormalCompletion2 = true;
-			var _didIteratorError2 = false;
-			var _iteratorError2 = undefined;
-	
-			try {
-				for (var _iterator2 = self.arrows[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
-					var arrow = _step2.value;
-	
-					arrow.update();
-				}
-			} catch (err) {
-				_didIteratorError2 = true;
-				_iteratorError2 = err;
-			} finally {
-				try {
-					if (!_iteratorNormalCompletion2 && _iterator2.return) {
-						_iterator2.return();
-					}
-				} finally {
-					if (_didIteratorError2) {
-						throw _iteratorError2;
-					}
-				}
-			}
-		}
-	
-		function update_details_position() {
-			var _get_details_position2 = get_details_position(),
-			    x = _get_details_position2.x,
-			    y = _get_details_position2.y;
-	
-			self.details_box && self.details_box.transform('t' + x + ',' + y);
-		}
-	
-		function isFunction(functionToCheck) {
-			var getType = {};
-			return functionToCheck && getType.toString.call(functionToCheck) === '[object Function]';
-		}
-	
-		init();
-	
-		return self;
-	}
-	module.exports = exports['default'];
 
 /***/ }
 /******/ ])

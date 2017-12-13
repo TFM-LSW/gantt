@@ -126,7 +126,7 @@ return /******/ (function(modules) { // webpackBootstrap
 				},
 				padding: 18,
 				view_mode: 'Day',
-				date_format: 'YYYY-MM-DD HH:mm:ss',
+				date_format: 'YYYY-MM-DD HH:mm:ss a',
 				custom_popup_html: null
 			};
 			self.config = Object.assign({}, defaults, config);
@@ -173,10 +173,10 @@ return /******/ (function(modules) { // webpackBootstrap
 		}
 	
 		function prepare_tasks() {
+			var _ref;
 	
 			// prepare tasks
 			self.tasks = self._tasks.map(function (run, i) {
-	
 				var run_items = run.map(function (item, k) {
 					// momentify
 					item._start = moment(item.start, self.config.date_format, true); // strict true
@@ -230,20 +230,18 @@ return /******/ (function(modules) { // webpackBootstrap
 				});
 				return run_items;
 			});
+	
+			self.flattenTasks = (_ref = []).concat.apply(_ref, _toConsumableArray(self.tasks)); // flatten multi-dimensional array
 		}
 	
 		function prepare_dependencies() {
-			var _ref;
-	
 			self.dependency_map = {};
-			var flattenTasks = (_ref = []).concat.apply(_ref, _toConsumableArray(self.tasks)); // flatten multi-dimensional array
-	
 			var _iteratorNormalCompletion = true;
 			var _didIteratorError = false;
 			var _iteratorError = undefined;
 	
 			try {
-				for (var _iterator = flattenTasks[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+				for (var _iterator = self.flattenTasks[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
 					var t = _step.value;
 					var _iteratorNormalCompletion2 = true;
 					var _didIteratorError2 = false;
@@ -286,21 +284,19 @@ return /******/ (function(modules) { // webpackBootstrap
 				}
 			}
 		}
-	
+		/*
+	 
+	 */
 		function prepare_dates() {
-	
 			self.gantt_start = self.gantt_end = null;
-			// for (let task of self.tasks) {
-			self.tasks.forEach(function (run) {
-				run.forEach(function (item, i) {
-					// set global start and end date
-					if (!self.gantt_start || item._start < self.gantt_start) {
-						self.gantt_start = item._start;
-					}
-					if (!self.gantt_end || item._end > self.gantt_end) {
-						self.gantt_end = item._end;
-					}
-				});
+			self.flattenTasks.forEach(function (item, i) {
+				// set global start and end date
+				if (!self.gantt_start || item._start < self.gantt_start) {
+					self.gantt_start = item._start;
+				}
+				if (!self.gantt_end || item._end > self.gantt_end) {
+					self.gantt_end = item._end;
+				}
 			});
 	
 			set_gantt_dates();
@@ -330,7 +326,11 @@ return /******/ (function(modules) { // webpackBootstrap
 			self._bars = [];
 			self._arrows = [];
 		}
-	
+		/*
+	 	TODO:
+	 	Sets the time padding to the first and last items to create a gantt range
+	 	We need to set this via 'Open Task Planner'
+	 */
 		function set_gantt_dates() {
 	
 			if (view_is(['Quarter Day', 'Half Day'])) {
@@ -344,7 +344,9 @@ return /******/ (function(modules) { // webpackBootstrap
 				self.gantt_end = self.gantt_end.clone().endOf('month').add(1, 'month');
 			}
 		}
-	
+		/*
+	 	Some
+	 */
 		function setup_dates() {
 	
 			self.dates = [];
@@ -432,11 +434,7 @@ return /******/ (function(modules) { // webpackBootstrap
 		}
 	
 		function get_min_date() {
-			var _ref2;
-	
-			var flattenTasks = (_ref2 = []).concat.apply(_ref2, _toConsumableArray(self.tasks)); // flatten multi-dimensional array
-	
-			var task = flattenTasks.reduce(function (acc, curr) {
+			var task = self.flattenTasks.reduce(function (acc, curr) {
 				// console.log(curr[0]);
 				return curr._start.isSameOrBefore(acc._start) ? curr : acc;
 			});
@@ -658,9 +656,6 @@ return /******/ (function(modules) { // webpackBootstrap
 		}
 	
 		function make_arrows() {
-			var _ref3;
-	
-			var flattenTasks = (_ref3 = []).concat.apply(_ref3, _toConsumableArray(self.tasks)); // flatten multi-dimensional array
 			self._arrows = [];
 			var _iteratorNormalCompletion6 = true;
 			var _didIteratorError6 = false;
@@ -688,7 +683,7 @@ return /******/ (function(modules) { // webpackBootstrap
 					self._arrows = self._arrows.concat(arrows);
 				};
 	
-				for (var _iterator6 = flattenTasks[Symbol.iterator](), _step6; !(_iteratorNormalCompletion6 = (_step6 = _iterator6.next()).done); _iteratorNormalCompletion6 = true) {
+				for (var _iterator6 = self.flattenTasks[Symbol.iterator](), _step6; !(_iteratorNormalCompletion6 = (_step6 = _iterator6.next()).done); _iteratorNormalCompletion6 = true) {
 					_loop();
 				}
 			} catch (err) {
@@ -710,8 +705,7 @@ return /******/ (function(modules) { // webpackBootstrap
 		function make_bars() {
 			self._bars = self.tasks.map(function (run) {
 				var run_items = run.map(function (item) {
-					console.log(item);
-					var bar = item.shape === 'Octogon' ? (0, _Octogon2.default)(self, item) : (0, _Bar2.default)(self, item, 6);
+					var bar = item.shape === 'Octogon' ? (0, _Octogon2.default)(self, item) : (0, _Bar2.default)(self, item, 6); // temp for demo
 					self.element_groups.bar.add(bar.group);
 					return bar;
 				});
@@ -720,9 +714,9 @@ return /******/ (function(modules) { // webpackBootstrap
 		}
 	
 		function map_arrows_on_bars() {
-			var _ref4;
+			var _ref2;
 	
-			var flattenBars = (_ref4 = []).concat.apply(_ref4, _toConsumableArray(self._bars));
+			var flattenBars = (_ref2 = []).concat.apply(_ref2, _toConsumableArray(self._bars));
 			var _iteratorNormalCompletion7 = true;
 			var _didIteratorError7 = false;
 			var _iteratorError7 = undefined;
@@ -805,18 +799,15 @@ return /******/ (function(modules) { // webpackBootstrap
 		}
 	
 		function get_task(id) {
-			var _ref5;
-	
-			var flattenTasks = (_ref5 = []).concat.apply(_ref5, _toConsumableArray(self.tasks)); // flatten multi-dimensional array
-			return flattenTasks.find(function (task) {
+			return self.flattenTasks.find(function (task) {
 				return task.id === id;
 			});
 		}
 	
 		function get_bar(id) {
-			var _ref6;
+			var _ref3;
 	
-			var flattenBars = (_ref6 = []).concat.apply(_ref6, _toConsumableArray(self._bars));
+			var flattenBars = (_ref3 = []).concat.apply(_ref3, _toConsumableArray(self._bars));
 			return flattenBars.find(function (bar) {
 				return bar.task.id === id;
 			});

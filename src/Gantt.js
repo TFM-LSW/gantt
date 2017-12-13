@@ -58,7 +58,7 @@ export default function Gantt(element, tasks, config) {
 			},
 			padding: 18,
 			view_mode: 'Day',
-			date_format: 'YYYY-MM-DD HH:mm:ss',
+			date_format: 'YYYY-MM-DD HH:mm:ss a',
 			custom_popup_html: null
 		};
 		self.config = Object.assign({}, defaults, config);
@@ -106,10 +106,8 @@ export default function Gantt(element, tasks, config) {
 	}
 
 	function prepare_tasks() {
-
 		// prepare tasks
 		self.tasks = self._tasks.map((run, i) => {
-
 			var run_items = run.map(function (item, k) {
 				// momentify
 				item._start = moment(item.start, self.config.date_format, true); // strict true
@@ -162,34 +160,32 @@ export default function Gantt(element, tasks, config) {
 			});
 			return run_items;
 		});
+
+		self.flattenTasks = [].concat(...self.tasks); // flatten multi-dimensional array
 	}
 
 	function prepare_dependencies() {
 		self.dependency_map = {};
-		const flattenTasks = [].concat(...self.tasks); // flatten multi-dimensional array
-
-		for (let t of flattenTasks) {
+		for (let t of self.flattenTasks) {
 			for (let d of t.dependencies) {
 				self.dependency_map[d] = self.dependency_map[d] || [];
 				self.dependency_map[d].push(t.id);
 			}
 		}
 	}
+	/*
 
+	*/
 	function prepare_dates() {
-
 		self.gantt_start = self.gantt_end = null;
-		// for (let task of self.tasks) {
-		self.tasks.forEach(function (run) {
-			run.forEach(function (item, i) {
-				// set global start and end date
-				if (!self.gantt_start || item._start < self.gantt_start) {
-					self.gantt_start = item._start;
-				}
-				if (!self.gantt_end || item._end > self.gantt_end) {
-					self.gantt_end = item._end;
-				}
-			});
+		self.flattenTasks.forEach(function (item, i) {
+			// set global start and end date
+			if (!self.gantt_start || item._start < self.gantt_start) {
+				self.gantt_start = item._start;
+			}
+			if (!self.gantt_end || item._end > self.gantt_end) {
+				self.gantt_end = item._end;
+			}
 		});
 
 		set_gantt_dates();
@@ -219,7 +215,11 @@ export default function Gantt(element, tasks, config) {
 		self._bars = [];
 		self._arrows = [];
 	}
-
+	/*
+		TODO:
+		Sets the time padding to the first and last items to create a gantt range
+		We need to set this via 'Open Task Planner'
+	*/
 	function set_gantt_dates() {
 
 		if (view_is(['Quarter Day', 'Half Day'])) {
@@ -233,7 +233,9 @@ export default function Gantt(element, tasks, config) {
 			self.gantt_end = self.gantt_end.clone().endOf('month').add(1, 'month');
 		}
 	}
-
+	/*
+		Some
+	*/
 	function setup_dates() {
 
 		self.dates = [];
@@ -303,9 +305,7 @@ export default function Gantt(element, tasks, config) {
 	}
 
 	function get_min_date() {
-		var flattenTasks = [].concat(...self.tasks); // flatten multi-dimensional array
-
-		const task = flattenTasks.reduce((acc, curr) => {
+		const task = self.flattenTasks.reduce((acc, curr) => {
 			// console.log(curr[0]);
 			return curr._start.isSameOrBefore(acc._start) ? curr : acc;
 		});
@@ -508,9 +508,8 @@ export default function Gantt(element, tasks, config) {
 	}
 
 	function make_arrows() {
-		var flattenTasks = [].concat(...self.tasks); // flatten multi-dimensional array
 		self._arrows = [];
-		for (let task of flattenTasks) {
+		for (let task of self.flattenTasks) {
 			// console.log(task);
 			let arrows = [];
 			arrows = task.dependencies.map(dep => {
@@ -532,8 +531,7 @@ export default function Gantt(element, tasks, config) {
 	function make_bars() {
 		self._bars = self.tasks.map((run) => {
 			var run_items = run.map((item) => {
-				console.log(item);
-				const bar = item.shape === 'Octogon' ? Octogon(self, item) : Bar(self, item, 6);
+				const bar = item.shape === 'Octogon' ? Octogon(self, item) : Bar(self, item, 6); // temp for demo
 				self.element_groups.bar.add(bar.group);
 				return bar;
 			});
@@ -579,8 +577,7 @@ export default function Gantt(element, tasks, config) {
 	}
 
 	function get_task(id) {
-		var flattenTasks = [].concat(...self.tasks); // flatten multi-dimensional array
-		return flattenTasks.find((task) => {
+		return self.flattenTasks.find((task) => {
 			return task.id === id;
 		});
 	}

@@ -7,7 +7,7 @@
 		task: task object
 */
 
-export default function Bar(gt, task) {
+export default function Bar(gt, task, radius = 3) {
 
 	const self = {};
 
@@ -21,6 +21,7 @@ export default function Bar(gt, task) {
 	function set_defaults() {
 		self.action_completed = false;
 		self.task = task;
+		self.corner_radius = radius;
 	}
 
 	function prepare() {
@@ -33,7 +34,6 @@ export default function Bar(gt, task) {
 		self.height = gt.config.bar.height;
 		self.x = compute_x();
 		self.y = compute_y();
-		self.corner_radius = 3;
 		self.duration = (self.task._end.diff(self.task._start, 'hours') + 24) / gt.config.step;
 		self.width = gt.config.column_width * self.duration;
 		self.progress_width = gt.config.column_width * self.duration * (self.task.progress / 100) || 0;
@@ -369,7 +369,6 @@ export default function Bar(gt, task) {
 				width = null;
 				return;
 			}
-			console.log(bar)
 			update_attr(bar, 'x', x);
 		}
 		if (width && width >= gt.config.column_width) {

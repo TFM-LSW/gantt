@@ -8,7 +8,7 @@
  */
 import './gantt.scss';
 
-// import Bar from './Bar';
+import Bar from './Bar';
 import Octogon from './Octogon';
 import Arrow from './Arrow';
 import { ScrollWheelInit, ClickChart } from './ScrollUtils';
@@ -532,7 +532,8 @@ export default function Gantt(element, tasks, config) {
 	function make_bars() {
 		self._bars = self.tasks.map((run) => {
 			var run_items = run.map((item) => {
-				const bar = Octogon(self, item);
+				console.log(item);
+				const bar = item.shape === 'Octogon' ? Octogon(self, item) : Bar(self, item, 6);
 				self.element_groups.bar.add(bar.group);
 				return bar;
 			});

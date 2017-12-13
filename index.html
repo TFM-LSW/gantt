@@ -59,12 +59,14 @@
 		var runs = [
 			[{
 				title: "Period 1",
+				shape: "Bar",
 				date: {
 					start: '2017-09-12 11:31:23',
 					end: '2017-09-12 18:31:23'
 				}
 			}, {
 				title: "Period 2",
+				shape: "Octogon",
 				date: {
 					start: '2017-09-15 11:31:23',
 					end: '2017-09-15 8:31:23'
@@ -90,6 +92,7 @@
 					start: start,
 					end: end,
 					name: item.title,
+					shape: item.shape,
 					id: 'Task ' + i + '_' + k/* ,
 					progress: parseInt(Math.random() * 100, 10) */
 				}

@@ -40,7 +40,7 @@ export default function Octogon(gt, task) {
 		self.x = compute_x();
 		self.y = compute_y();
 		self.corner_radius = 3;
-		self.duration = (self.task._end.diff(self.task._start, 'hours') + 24) / gt.config.step;
+		self.duration = (self.task._end.diff(self.task._start, 'hours')) / gt.config.step;
 		console.log(self.duration);
 		self.width = gt.config.column_width * self.duration;
 		self.progress_width = gt.config.column_width * self.duration * (self.task.progress / 100) || 0;
@@ -337,7 +337,8 @@ export default function Octogon(gt, task) {
 
 	function onmove(dx, dy) {
 		const bar = self.$bar;
-		bar.finaldx = get_snap_position(dx);
+		// bar.finaldx = get_snap_position(dx);
+		bar.finaldx = dx;
 		update_bar_position({ x: bar.ox + bar.finaldx });
 		run_method_for_dependencies('onmove', [dx, dy]);
 	}
@@ -354,7 +355,8 @@ export default function Octogon(gt, task) {
 
 	function onmove_handle_left(dx, dy) {
 		const bar = self.$bar;
-		bar.finaldx = get_snap_position(dx);
+		// bar.finaldx = get_snap_position(dx);
+		bar.finaldx = dx;
 		update_bar_position({
 			x: bar.ox + bar.finaldx,
 			width: bar.owidth - bar.finaldx
@@ -383,7 +385,8 @@ export default function Octogon(gt, task) {
 
 	function onmove_handle_right(dx, dy) {
 		const bar = self.$bar;
-		bar.finaldx = get_snap_position(dx);
+		// bar.finaldx = get_snap_position(dx);
+		bar.finaldx = dx;
 		update_bar_position({ width: bar.owidth + bar.finaldx });
 	}
 
@@ -493,9 +496,8 @@ export default function Octogon(gt, task) {
 			self.task._index * (self.height + gt.config.padding);
 	}
 
-	function get_snap_position(dx) {
+	/* function get_snap_position(dx) {
 		let odx = dx, rem, position;
-
 		if (gt.view_is('Week')) {
 			rem = dx % (gt.config.column_width / 7);
 			position = odx - rem +
@@ -510,7 +512,7 @@ export default function Octogon(gt, task) {
 				((rem < gt.config.column_width / 2) ? 0 : gt.config.column_width);
 		}
 		return position;
-	}
+	} */
 
 	function update_attr(element, attr, value) {
 		value = +value;

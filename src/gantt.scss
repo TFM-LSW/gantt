@@ -1,6 +1,6 @@
 $bar-color: #b8c2cc;
 $bar-stroke: #8D99A6;
-$border-color: #e0e0e0;
+$border-color: #8D99A6;
 $light-bg: #f5f5f5;
 $light-border-color: #ebeff2;
 $light-yellow: yellow;
@@ -31,9 +31,9 @@ $handle-color: #ddd;
 	}
 	.tick {
 		stroke: $border-color;
-		stroke-width: 0.2;
+		stroke-width: 0.5;
 		&.thick {
-			stroke-width: 0.4;
+			stroke-width: 1;
 		}
 	}
 	.today-highlight {

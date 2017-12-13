@@ -332,13 +332,27 @@ return /******/ (function(modules) { // webpackBootstrap
 	 	We need to set this via 'Open Task Planner'
 	 */
 		function set_gantt_dates() {
-	
-			if (view_is(['Quarter Day', 'Half Day'])) {
-				self.gantt_start = self.gantt_start.clone().subtract(7, 'day');
-				self.gantt_end = self.gantt_end.clone().add(7, 'day');
+			if (view_is(['Hour Sixth'])) {
+				self.gantt_start = self.gantt_start.clone().startOf('day').subtract(7, 'day');
+				self.gantt_end = self.gantt_end.clone().endOf('day').add(7, 'day');
+			} else if (view_is(['Hour Half'])) {
+				self.gantt_start = self.gantt_start.clone().startOf('day').subtract(7, 'day');
+				self.gantt_end = self.gantt_end.clone().endOf('day').add(7, 'day');
+			} else if (view_is(['Quarter Day'])) {
+				self.gantt_start = self.gantt_start.clone().startOf('day').subtract(7, 'day');
+				self.gantt_end = self.gantt_end.clone().endOf('day').add(7, 'day');
+			} else if (view_is(['day Day'])) {
+				self.gantt_start = self.gantt_start.clone().startOf('day').subtract(7, 'day');
+				self.gantt_end = self.gantt_end.clone().endOf('day').add(7, 'day');
+			} else if (view_is(['Quarter Day'])) {
+				self.gantt_start = self.gantt_start.clone().startOf('day').subtract(7, 'day');
+				self.gantt_end = self.gantt_end.clone().endOf('day').add(7, 'day');
+			} else if (view_is(['Half Day'])) {
+				self.gantt_start = self.gantt_start.clone().startOf('day').subtract(7, 'day');
+				self.gantt_end = self.gantt_end.clone().endOf('day').add(7, 'day');
 			} else if (view_is('Month')) {
-				self.gantt_start = self.gantt_start.clone().startOf('year');
-				self.gantt_end = self.gantt_end.clone().endOf('month').add(1, 'year');
+				self.gantt_start = self.gantt_start.clone().startOf('year').startOf('year');
+				self.gantt_end = self.gantt_end.clone().endOf('year').endOf('month');
 			} else {
 				self.gantt_start = self.gantt_start.clone().startOf('month').subtract(1, 'month');
 				self.gantt_end = self.gantt_end.clone().endOf('month').add(1, 'month');
@@ -395,7 +409,16 @@ return /******/ (function(modules) { // webpackBootstrap
 		function set_scale(scale) {
 			self.config.view_mode = scale;
 	
-			if (scale === 'Hour') {
+			if (scale === 'Minute') {
+				self.config.step = 1;
+				self.config.column_width = 20;
+			} else if (scale === 'Hour Sixth') {
+				self.config.step = 1 / 6;
+				self.config.column_width = 20;
+			} else if (scale === 'Hour Half') {
+				self.config.step = 0.5;
+				self.config.column_width = 20;
+			} else if (scale === 'Hour') {
 				self.config.step = 1;
 				self.config.column_width = 58;
 			} else if (scale === 'Day') {
@@ -411,7 +434,7 @@ return /******/ (function(modules) { // webpackBootstrap
 				self.config.step = 24 * 7;
 				self.config.column_width = 140;
 			} else if (scale === 'Month') {
-				self.config.step = 24 * 30;
+				self.config.step = 24 * 30; // TODO need to account for different shape months eg Feb 29 days..
 				self.config.column_width = 120;
 			}
 		}
@@ -564,8 +587,7 @@ return /******/ (function(modules) { // webpackBootstrap
 				for (var _iterator5 = get_dates_to_draw()[Symbol.iterator](), _step5; !(_iteratorNormalCompletion5 = (_step5 = _iterator5.next()).done); _iteratorNormalCompletion5 = true) {
 					var date = _step5.value;
 	
-					var xPos = date.lower_x - self.config.column_width / 2;
-					self.canvas.text(xPos, date.lower_y, date.lower_text).addClass('lower-text').appendTo(self.element_groups.date);
+					self.canvas.text(date.lower_x, date.lower_y, date.lower_text).addClass('lower-text').appendTo(self.element_groups.date);
 	
 					if (date.upper_text) {
 						var $upper_text = self.canvas.text(date.upper_x, date.upper_y, date.upper_text).addClass('upper-text').appendTo(self.element_groups.date);
@@ -604,18 +626,23 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 		function get_date_info(date, last_date, i) {
 			if (!last_date) {
-				last_date = date.clone().add(1, 'year');
+				last_date = date.clone().add(1, 'year').endOf('year');
 			}
 			var date_text = {
-				'Minute_lower': date.format('HH'),
+				'Minute_lower': date.format('mm'),
+				'Hour Sixth_lower': date.format('mm'),
+				'Hour Half_lower': date.format('mm'),
 				'Hour_lower': date.format('HH'),
 				'Quarter Day_lower': date.format('HH'),
 				'Half Day_lower': date.format('HH'),
 				'Day_lower': date.date() !== last_date.date() ? date.format('D') : '',
 				'Week_lower': date.month() !== last_date.month() ? date.format('D MMM') : date.format('D'),
 				'Month_lower': date.format('MMMM'),
-				'Minute_upper': date.date() !== last_date.date() ? date.format('D MMM') : '',
-				'Hour_upper': date.date() !== last_date.date() ? date.format('D MMM') : '',
+	
+				'Minute_upper': date.hour() !== last_date.hour() ? date.format('HH') : '',
+				'Hour Sixth_upper': date.hour() !== last_date.hour() ? date.format('HH') : '',
+				'Hour Half_upper': date.hour() !== last_date.hour() ? date.format('HH') : '',
+				'Hour_upper': date.hour() !== last_date.hour() ? date.format('D MMM') : '',
 				'Quarter Day_upper': date.date() !== last_date.date() ? date.format('D MMM') : '',
 				'Half Day_upper': date.date() !== last_date.date() ? date.month() !== last_date.month() ? date.format('D MMM') : date.format('D') : '',
 				'Day_upper': date.month() !== last_date.month() ? date.format('MMMM') : '',
@@ -630,22 +657,25 @@ return /******/ (function(modules) { // webpackBootstrap
 			};
 	
 			var x_pos = {
-				'Minute_lower': self.config.column_width * 1440 / 2,
+				'Minute_lower': 0, // (self.config.column_width * 1440) / 2,
 				'Minute_upper': 0,
-				'Hour_lower': self.config.column_width * 24 / 2,
+				'Hour Sixth_lower': 0, // (self.config.column_width * 24) / 2,
+				'Hour Sixth_upper': 0, // (self.config.column_width * 24) / 2,
+				'Hour Half_lower': 0, // (self.config.column_width * 24) / 2,
+				'Hour Half_upper': 0, // (self.config.column_width * 24) / 2,
+				'Hour_lower': 0, // (self.config.column_width * 24) / 2,
 				'Hour_upper': 0,
-				'Quarter Day_lower': self.config.column_width * 4 / 2,
+				'Quarter Day_lower': 0, // (self.config.column_width * 4) / 2,
 				'Quarter Day_upper': 0,
-				'Half Day_lower': self.config.column_width * 2 / 2,
+				'Half Day_lower': 0, // (self.config.column_width * 2) / 2,
 				'Half Day_upper': 0,
-				'Day_lower': self.config.column_width / 2,
-				'Day_upper': self.config.column_width * 30 / 2,
+				'Day_lower': 0, // self.config.column_width / 2,
+				'Day_upper': 0, // (self.config.column_width * 30) / 2,
 				'Week_lower': 0,
-				'Week_upper': self.config.column_width * 4 / 2,
-				'Month_lower': self.config.column_width / 2,
-				'Month_upper': self.config.column_width * 12 / 2
+				'Week_upper': 0, // (self.config.column_width * 4) / 2,
+				'Month_lower': 0, // self.config.column_width / 2,
+				'Month_upper': 0 // (self.config.column_width * 12) / 2
 			};
-	
 			return {
 				upper_text: date_text[self.config.view_mode + '_upper'],
 				lower_text: date_text[self.config.view_mode + '_lower'],
@@ -666,7 +696,6 @@ return /******/ (function(modules) { // webpackBootstrap
 				var _loop = function _loop() {
 					var task = _step6.value;
 	
-					// console.log(task);
 					var arrows = [];
 					arrows = task.dependencies.map(function (dep) {
 						var dependency = get_task(dep);
@@ -865,7 +894,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	
 	// module
-	exports.push([module.id, ".gantt .grid-background {\n  fill: none; }\n\n.gantt .grid-header {\n  fill: #ffffff;\n  stroke: #e0e0e0;\n  stroke-width: 1.4; }\n\n.gantt .grid-row {\n  fill: #ffffff; }\n\n.gantt .grid-row:nth-child(even) {\n  fill: #f5f5f5; }\n\n.gantt .row-line {\n  stroke: #ebeff2; }\n\n.gantt .tick {\n  stroke: #e0e0e0;\n  stroke-width: 0.2; }\n  .gantt .tick.thick {\n    stroke-width: 0.4; }\n\n.gantt .today-highlight {\n  fill: yellow;\n  opacity: 0.5; }\n\n.gantt #arrow {\n  fill: none;\n  stroke: #666;\n  stroke-width: 1.4; }\n\n.gantt .bar {\n  fill: #b8c2cc;\n  stroke: #8D99A6;\n  stroke-width: 0;\n  transition: stroke-width .3s ease; }\n\n.gantt .bar-progress {\n  fill: #a3a3ff; }\n\n.gantt .bar-invalid {\n  fill: transparent;\n  stroke: #8D99A6;\n  stroke-width: 1;\n  stroke-dasharray: 5; }\n  .gantt .bar-invalid ~ .bar-label {\n    fill: #555; }\n\n.gantt .bar-label {\n  fill: #fff;\n  dominant-baseline: central;\n  text-anchor: middle;\n  font-size: 12px;\n  font-weight: lighter; }\n  .gantt .bar-label.big {\n    fill: #555;\n    text-anchor: start; }\n\n.gantt .handle {\n  fill: #ddd;\n  cursor: ew-resize;\n  opacity: 0;\n  visibility: hidden;\n  transition: opacity .3s ease; }\n\n.gantt .bar-wrapper {\n  cursor: pointer; }\n  .gantt .bar-wrapper:hover .bar {\n    stroke-width: 2; }\n  .gantt .bar-wrapper:hover .handle {\n    visibility: visible;\n    opacity: 1; }\n  .gantt .bar-wrapper.active .bar {\n    stroke-width: 2; }\n\n.gantt .lower-text, .gantt .upper-text {\n  font-size: 12px; }\n\n.gantt .upper-text {\n  fill: #555; }\n\n.gantt .lower-text {\n  fill: #333; }\n\n.gantt #details .details-container {\n  background: #fff;\n  display: inline-block;\n  padding: 12px; }\n  .gantt #details .details-container h5, .gantt #details .details-container p {\n    margin: 0; }\n  .gantt #details .details-container h5 {\n    font-size: 12px;\n    font-weight: bold;\n    margin-bottom: 10px;\n    color: #555; }\n  .gantt #details .details-container p {\n    font-size: 12px;\n    margin-bottom: 6px;\n    color: #666; }\n  .gantt #details .details-container p:last-child {\n    margin-bottom: 0; }\n\n.gantt .hide {\n  display: none; }\n", "", {"version":3,"sources":["C:/Users/walters_l/Documents/Repos/Gantt-frappe/src/src\\gantt.scss"],"names":[],"mappings":"AAYA;EAGE,WAAU,EACV;;AAJF;EAME,cAAa;EACb,gBAjBoB;EAkBpB,kBAAiB,EACjB;;AATF;EAWE,cAAa,EACb;;AAZF;EAcE,cAvBgB,EAwBhB;;AAfF;EAiBE,gBAzB0B,EA0B1B;;AAlBF;EAoBE,gBA9BoB;EA+BpB,kBAAiB,EAIjB;EAzBF;IAuBG,kBAAiB,EACjB;;AAxBH;EA2BE,aAlCmB;EAmCnB,aAAY,EACZ;;AA7BF;EAgCE,WAAU;EACV,aAvCe;EAwCf,kBAAiB,EACjB;;AAnCF;EAsCE,cAlDiB;EAmDjB,gBAlDkB;EAmDlB,gBAAe;EACf,kCAAiC,EACjC;;AA1CF;EA4CE,cA/CY,EAgDZ;;AA7CF;EA+CE,kBAAiB;EACjB,gBA3DkB;EA4DlB,gBAAe;EACf,oBAAmB,EAKnB;EAvDF;IAqDG,WA1Dc,EA2Dd;;AAtDH;EAyDE,WAAU;EACV,2BAA0B;EAC1B,oBAAmB;EACnB,gBAAe;EACf,qBAAoB,EAMpB;EAnEF;IAgEG,WArEc;IAsEd,mBAAkB,EAClB;;AAlEH;EAsEE,WAxEiB;EAyEjB,kBAAiB;EACjB,WAAU;EACV,mBAAkB;EAClB,6BAA4B,EAC5B;;AA3EF;EA8EE,gBAAe,EAkBf;EAhGF;IAkFI,gBAAe,EACf;EAnFJ;IAsFI,oBAAmB;IACnB,WAAU,EACV;EAxFJ;IA6FI,gBAAe,EACf;;AA9FJ;EAmGE,gBAAe,EAGf;;AAtGF;EAwGE,WA7Ge,EA8Gf;;AAzGF;EA2GE,WA/Ge,EAgHf;;AA5GF;EA+GE,iBAAgB;EAChB,sBAAqB;EACrB,cAAa,EAsBb;EAvIF;IAoHG,UAAS,EACT;EArHH;IAwHG,gBAAe;IACf,kBAAiB;IACjB,oBAAmB;IACnB,YAhIc,EAiId;EA5HH;IA+HG,gBAAe;IACf,mBAAkB;IAClB,YAvIc,EAwId;EAlIH;IAqIG,iBAAgB,EAChB;;AAtIH;EA0IE,cAAa,EACb","file":"gantt.scss","sourcesContent":["$bar-color: #b8c2cc;\r\n$bar-stroke: #8D99A6;\r\n$border-color: #e0e0e0;\r\n$light-bg: #f5f5f5;\r\n$light-border-color: #ebeff2;\r\n$light-yellow: yellow;\r\n$text-muted: #666;\r\n$text-light: #555;\r\n$text-color: #333;\r\n$blue: #a3a3ff;\r\n$handle-color: #ddd;\r\n\r\n.gantt {\r\n\r\n\t.grid-background {\r\n\t\tfill: none;\r\n\t}\r\n\t.grid-header {\r\n\t\tfill: #ffffff;\r\n\t\tstroke: $border-color;\r\n\t\tstroke-width: 1.4;\r\n\t}\r\n\t.grid-row {\r\n\t\tfill: #ffffff;\r\n\t}\r\n\t.grid-row:nth-child(even) {\r\n\t\tfill: $light-bg;\r\n\t}\r\n\t.row-line {\r\n\t\tstroke: $light-border-color;\r\n\t}\r\n\t.tick {\r\n\t\tstroke: $border-color;\r\n\t\tstroke-width: 0.2;\r\n\t\t&.thick {\r\n\t\t\tstroke-width: 0.4;\r\n\t\t}\r\n\t}\r\n\t.today-highlight {\r\n\t\tfill: $light-yellow;\r\n\t\topacity: 0.5;\r\n\t}\r\n\r\n\t#arrow {\r\n\t\tfill: none;\r\n\t\tstroke: $text-muted;\r\n\t\tstroke-width: 1.4;\r\n\t}\r\n\r\n\t.bar {\r\n\t\tfill: $bar-color;\r\n\t\tstroke: $bar-stroke;\r\n\t\tstroke-width: 0;\r\n\t\ttransition: stroke-width .3s ease;\r\n\t}\r\n\t.bar-progress {\r\n\t\tfill: $blue;\r\n\t}\r\n\t.bar-invalid {\r\n\t\tfill: transparent;\r\n\t\tstroke: $bar-stroke;\r\n\t\tstroke-width: 1;\r\n\t\tstroke-dasharray: 5;\r\n\r\n\t\t&~.bar-label {\r\n\t\t\tfill: $text-light;\r\n\t\t}\r\n\t}\r\n\t.bar-label {\r\n\t\tfill: #fff;\r\n\t\tdominant-baseline: central;\r\n\t\ttext-anchor: middle;\r\n\t\tfont-size: 12px;\r\n\t\tfont-weight: lighter;\r\n\r\n\t\t&.big {\r\n\t\t\tfill: $text-light;\r\n\t\t\ttext-anchor: start;\r\n\t\t}\r\n\t}\r\n\r\n\t.handle {\r\n\t\tfill: $handle-color;\r\n\t\tcursor: ew-resize;\r\n\t\topacity: 0;\r\n\t\tvisibility: hidden;\r\n\t\ttransition: opacity .3s ease;\r\n\t}\r\n\r\n\t.bar-wrapper {\r\n\t\tcursor: pointer;\r\n\r\n\t\t&:hover {\r\n\t\t\t.bar {\r\n\t\t\t\tstroke-width: 2;\r\n\t\t\t}\r\n\r\n\t\t\t.handle {\r\n\t\t\t\tvisibility: visible;\r\n\t\t\t\topacity: 1;\r\n\t\t\t}\r\n\t\t}\r\n\r\n\t\t&.active {\r\n\t\t\t.bar {\r\n\t\t\t\tstroke-width: 2;\r\n\t\t\t}\r\n\t\t}\r\n\t}\r\n\r\n\t.lower-text, .upper-text {\r\n\t\tfont-size: 12px;\r\n\t\t//text-anchor: middle;\r\n\t\t// text-align: left;\r\n\t}\r\n\t.upper-text {\r\n\t\tfill: $text-light;\r\n\t}\r\n\t.lower-text {\r\n\t\tfill: $text-color;\r\n\t}\r\n\r\n\t#details .details-container {\r\n\t\tbackground: #fff;\r\n\t\tdisplay: inline-block;\r\n\t\tpadding: 12px;\r\n\r\n\t\th5, p {\r\n\t\t\tmargin: 0;\r\n\t\t}\r\n\r\n\t\th5 {\r\n\t\t\tfont-size: 12px;\r\n\t\t\tfont-weight: bold;\r\n\t\t\tmargin-bottom: 10px;\r\n\t\t\tcolor: $text-light;\r\n\t\t}\r\n\r\n\t\tp {\r\n\t\t\tfont-size: 12px;\r\n\t\t\tmargin-bottom: 6px;\r\n\t\t\tcolor: $text-muted;\r\n\t\t}\r\n\r\n\t\tp:last-child {\r\n\t\t\tmargin-bottom: 0;\r\n\t\t}\r\n\t}\r\n\r\n\t.hide {\r\n\t\tdisplay: none;\r\n\t}\r\n}\r\n"],"sourceRoot":""}]);
+	exports.push([module.id, ".gantt .grid-background {\n  fill: none; }\n\n.gantt .grid-header {\n  fill: #ffffff;\n  stroke: #8D99A6;\n  stroke-width: 1.4; }\n\n.gantt .grid-row {\n  fill: #ffffff; }\n\n.gantt .grid-row:nth-child(even) {\n  fill: #f5f5f5; }\n\n.gantt .row-line {\n  stroke: #ebeff2; }\n\n.gantt .tick {\n  stroke: #8D99A6;\n  stroke-width: 0.5; }\n  .gantt .tick.thick {\n    stroke-width: 1; }\n\n.gantt .today-highlight {\n  fill: yellow;\n  opacity: 0.5; }\n\n.gantt #arrow {\n  fill: none;\n  stroke: #666;\n  stroke-width: 1.4; }\n\n.gantt .bar {\n  fill: #b8c2cc;\n  stroke: #8D99A6;\n  stroke-width: 0;\n  transition: stroke-width .3s ease; }\n\n.gantt .bar-progress {\n  fill: #a3a3ff; }\n\n.gantt .bar-invalid {\n  fill: transparent;\n  stroke: #8D99A6;\n  stroke-width: 1;\n  stroke-dasharray: 5; }\n  .gantt .bar-invalid ~ .bar-label {\n    fill: #555; }\n\n.gantt .bar-label {\n  fill: #fff;\n  dominant-baseline: central;\n  text-anchor: middle;\n  font-size: 12px;\n  font-weight: lighter; }\n  .gantt .bar-label.big {\n    fill: #555;\n    text-anchor: start; }\n\n.gantt .handle {\n  fill: #ddd;\n  cursor: ew-resize;\n  opacity: 0;\n  visibility: hidden;\n  transition: opacity .3s ease; }\n\n.gantt .bar-wrapper {\n  cursor: pointer; }\n  .gantt .bar-wrapper:hover .bar {\n    stroke-width: 2; }\n  .gantt .bar-wrapper:hover .handle {\n    visibility: visible;\n    opacity: 1; }\n  .gantt .bar-wrapper.active .bar {\n    stroke-width: 2; }\n\n.gantt .lower-text, .gantt .upper-text {\n  font-size: 12px; }\n\n.gantt .upper-text {\n  fill: #555; }\n\n.gantt .lower-text {\n  fill: #333; }\n\n.gantt #details .details-container {\n  background: #fff;\n  display: inline-block;\n  padding: 12px; }\n  .gantt #details .details-container h5, .gantt #details .details-container p {\n    margin: 0; }\n  .gantt #details .details-container h5 {\n    font-size: 12px;\n    font-weight: bold;\n    margin-bottom: 10px;\n    color: #555; }\n  .gantt #details .details-container p {\n    font-size: 12px;\n    margin-bottom: 6px;\n    color: #666; }\n  .gantt #details .details-container p:last-child {\n    margin-bottom: 0; }\n\n.gantt .hide {\n  display: none; }\n", "", {"version":3,"sources":["C:/Users/walters_l/Documents/Repos/Gantt-frappe/src/src\\gantt.scss"],"names":[],"mappings":"AAYA;EAGE,WAAU,EACV;;AAJF;EAME,cAAa;EACb,gBAjBoB;EAkBpB,kBAAiB,EACjB;;AATF;EAWE,cAAa,EACb;;AAZF;EAcE,cAvBgB,EAwBhB;;AAfF;EAiBE,gBAzB0B,EA0B1B;;AAlBF;EAoBE,gBA9BoB;EA+BpB,kBAAiB,EAIjB;EAzBF;IAuBG,gBAAe,EACf;;AAxBH;EA2BE,aAlCmB;EAmCnB,aAAY,EACZ;;AA7BF;EAgCE,WAAU;EACV,aAvCe;EAwCf,kBAAiB,EACjB;;AAnCF;EAsCE,cAlDiB;EAmDjB,gBAlDkB;EAmDlB,gBAAe;EACf,kCAAiC,EACjC;;AA1CF;EA4CE,cA/CY,EAgDZ;;AA7CF;EA+CE,kBAAiB;EACjB,gBA3DkB;EA4DlB,gBAAe;EACf,oBAAmB,EAKnB;EAvDF;IAqDG,WA1Dc,EA2Dd;;AAtDH;EAyDE,WAAU;EACV,2BAA0B;EAC1B,oBAAmB;EACnB,gBAAe;EACf,qBAAoB,EAMpB;EAnEF;IAgEG,WArEc;IAsEd,mBAAkB,EAClB;;AAlEH;EAsEE,WAxEiB;EAyEjB,kBAAiB;EACjB,WAAU;EACV,mBAAkB;EAClB,6BAA4B,EAC5B;;AA3EF;EA8EE,gBAAe,EAkBf;EAhGF;IAkFI,gBAAe,EACf;EAnFJ;IAsFI,oBAAmB;IACnB,WAAU,EACV;EAxFJ;IA6FI,gBAAe,EACf;;AA9FJ;EAmGE,gBAAe,EAGf;;AAtGF;EAwGE,WA7Ge,EA8Gf;;AAzGF;EA2GE,WA/Ge,EAgHf;;AA5GF;EA+GE,iBAAgB;EAChB,sBAAqB;EACrB,cAAa,EAsBb;EAvIF;IAoHG,UAAS,EACT;EArHH;IAwHG,gBAAe;IACf,kBAAiB;IACjB,oBAAmB;IACnB,YAhIc,EAiId;EA5HH;IA+HG,gBAAe;IACf,mBAAkB;IAClB,YAvIc,EAwId;EAlIH;IAqIG,iBAAgB,EAChB;;AAtIH;EA0IE,cAAa,EACb","file":"gantt.scss","sourcesContent":["$bar-color: #b8c2cc;\r\n$bar-stroke: #8D99A6;\r\n$border-color: #8D99A6;\r\n$light-bg: #f5f5f5;\r\n$light-border-color: #ebeff2;\r\n$light-yellow: yellow;\r\n$text-muted: #666;\r\n$text-light: #555;\r\n$text-color: #333;\r\n$blue: #a3a3ff;\r\n$handle-color: #ddd;\r\n\r\n.gantt {\r\n\r\n\t.grid-background {\r\n\t\tfill: none;\r\n\t}\r\n\t.grid-header {\r\n\t\tfill: #ffffff;\r\n\t\tstroke: $border-color;\r\n\t\tstroke-width: 1.4;\r\n\t}\r\n\t.grid-row {\r\n\t\tfill: #ffffff;\r\n\t}\r\n\t.grid-row:nth-child(even) {\r\n\t\tfill: $light-bg;\r\n\t}\r\n\t.row-line {\r\n\t\tstroke: $light-border-color;\r\n\t}\r\n\t.tick {\r\n\t\tstroke: $border-color;\r\n\t\tstroke-width: 0.5;\r\n\t\t&.thick {\r\n\t\t\tstroke-width: 1;\r\n\t\t}\r\n\t}\r\n\t.today-highlight {\r\n\t\tfill: $light-yellow;\r\n\t\topacity: 0.5;\r\n\t}\r\n\r\n\t#arrow {\r\n\t\tfill: none;\r\n\t\tstroke: $text-muted;\r\n\t\tstroke-width: 1.4;\r\n\t}\r\n\r\n\t.bar {\r\n\t\tfill: $bar-color;\r\n\t\tstroke: $bar-stroke;\r\n\t\tstroke-width: 0;\r\n\t\ttransition: stroke-width .3s ease;\r\n\t}\r\n\t.bar-progress {\r\n\t\tfill: $blue;\r\n\t}\r\n\t.bar-invalid {\r\n\t\tfill: transparent;\r\n\t\tstroke: $bar-stroke;\r\n\t\tstroke-width: 1;\r\n\t\tstroke-dasharray: 5;\r\n\r\n\t\t&~.bar-label {\r\n\t\t\tfill: $text-light;\r\n\t\t}\r\n\t}\r\n\t.bar-label {\r\n\t\tfill: #fff;\r\n\t\tdominant-baseline: central;\r\n\t\ttext-anchor: middle;\r\n\t\tfont-size: 12px;\r\n\t\tfont-weight: lighter;\r\n\r\n\t\t&.big {\r\n\t\t\tfill: $text-light;\r\n\t\t\ttext-anchor: start;\r\n\t\t}\r\n\t}\r\n\r\n\t.handle {\r\n\t\tfill: $handle-color;\r\n\t\tcursor: ew-resize;\r\n\t\topacity: 0;\r\n\t\tvisibility: hidden;\r\n\t\ttransition: opacity .3s ease;\r\n\t}\r\n\r\n\t.bar-wrapper {\r\n\t\tcursor: pointer;\r\n\r\n\t\t&:hover {\r\n\t\t\t.bar {\r\n\t\t\t\tstroke-width: 2;\r\n\t\t\t}\r\n\r\n\t\t\t.handle {\r\n\t\t\t\tvisibility: visible;\r\n\t\t\t\topacity: 1;\r\n\t\t\t}\r\n\t\t}\r\n\r\n\t\t&.active {\r\n\t\t\t.bar {\r\n\t\t\t\tstroke-width: 2;\r\n\t\t\t}\r\n\t\t}\r\n\t}\r\n\r\n\t.lower-text, .upper-text {\r\n\t\tfont-size: 12px;\r\n\t\t//text-anchor: middle;\r\n\t\t// text-align: left;\r\n\t}\r\n\t.upper-text {\r\n\t\tfill: $text-light;\r\n\t}\r\n\t.lower-text {\r\n\t\tfill: $text-color;\r\n\t}\r\n\r\n\t#details .details-container {\r\n\t\tbackground: #fff;\r\n\t\tdisplay: inline-block;\r\n\t\tpadding: 12px;\r\n\r\n\t\th5, p {\r\n\t\t\tmargin: 0;\r\n\t\t}\r\n\r\n\t\th5 {\r\n\t\t\tfont-size: 12px;\r\n\t\t\tfont-weight: bold;\r\n\t\t\tmargin-bottom: 10px;\r\n\t\t\tcolor: $text-light;\r\n\t\t}\r\n\r\n\t\tp {\r\n\t\t\tfont-size: 12px;\r\n\t\t\tmargin-bottom: 6px;\r\n\t\t\tcolor: $text-muted;\r\n\t\t}\r\n\r\n\t\tp:last-child {\r\n\t\t\tmargin-bottom: 0;\r\n\t\t}\r\n\t}\r\n\r\n\t.hide {\r\n\t\tdisplay: none;\r\n\t}\r\n}\r\n"],"sourceRoot":""}]);
 	
 	// exports
 
@@ -1226,7 +1255,7 @@ return /******/ (function(modules) { // webpackBootstrap
 			self.height = gt.config.bar.height;
 			self.x = compute_x();
 			self.y = compute_y();
-			self.duration = (self.task._end.diff(self.task._start, 'hours') + 24) / gt.config.step;
+			self.duration = self.task._end.diff(self.task._start, 'hours') / gt.config.step;
 			self.width = gt.config.column_width * self.duration;
 			self.progress_width = gt.config.column_width * self.duration * (self.task.progress / 100) || 0;
 			self.group = gt.canvas.group().addClass('bar-wrapper').addClass(self.task.custom_class || '');
@@ -1454,7 +1483,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 		function onmove(dx, dy) {
 			var bar = self.$bar;
-			bar.finaldx = get_snap_position(dx);
+			// bar.finaldx = get_snap_position(dx);
+			bar.finaldx = dx;
 			update_bar_position({ x: bar.ox + bar.finaldx });
 			run_method_for_dependencies('onmove', [dx, dy]);
 		}
@@ -1471,7 +1501,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 		function onmove_handle_left(dx, dy) {
 			var bar = self.$bar;
-			bar.finaldx = get_snap_position(dx);
+			// bar.finaldx = get_snap_position(dx);
+			bar.finaldx = dx;
 			update_bar_position({
 				x: bar.ox + bar.finaldx,
 				width: bar.owidth - bar.finaldx
@@ -1521,7 +1552,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 		function onmove_handle_right(dx, dy) {
 			var bar = self.$bar;
-			bar.finaldx = get_snap_position(dx);
+			// bar.finaldx = get_snap_position(dx);
+			bar.finaldx = dx;
 			update_bar_position({ width: bar.owidth + bar.finaldx });
 		}
 	
@@ -1635,23 +1667,24 @@ return /******/ (function(modules) { // webpackBootstrap
 			return gt.config.header_height + gt.config.padding + self.task._index * (self.height + gt.config.padding);
 		}
 	
-		function get_snap_position(dx) {
-			var odx = dx,
-			    rem = void 0,
-			    position = void 0;
-	
-			if (gt.view_is('Week')) {
-				rem = dx % (gt.config.column_width / 7);
-				position = odx - rem + (rem < gt.config.column_width / 14 ? 0 : gt.config.column_width / 7);
-			} else if (gt.view_is('Month')) {
-				rem = dx % (gt.config.column_width / 30);
-				position = odx - rem + (rem < gt.config.column_width / 60 ? 0 : gt.config.column_width / 30);
-			} else {
-				rem = dx % gt.config.column_width;
-				position = odx - rem + (rem < gt.config.column_width / 2 ? 0 : gt.config.column_width);
-			}
-			return position;
-		}
+		/* function get_snap_position(dx) {
+	 	let odx = dx, rem, position;
+	 
+	 	if (gt.view_is('Week')) {
+	 		rem = dx % (gt.config.column_width / 7);
+	 		position = odx - rem +
+	 			((rem < gt.config.column_width / 14) ? 0 : gt.config.column_width / 7);
+	 	} else if (gt.view_is('Month')) {
+	 		rem = dx % (gt.config.column_width / 30);
+	 		position = odx - rem +
+	 			((rem < gt.config.column_width / 60) ? 0 : gt.config.column_width / 30);
+	 	} else {
+	 		rem = dx % gt.config.column_width;
+	 		position = odx - rem +
+	 			((rem < gt.config.column_width / 2) ? 0 : gt.config.column_width);
+	 	}
+	 	return position;
+	 } */
 	
 		function update_attr(element, attr, value) {
 			value = +value;
@@ -1777,7 +1810,7 @@ return /******/ (function(modules) { // webpackBootstrap
 			self.x = compute_x();
 			self.y = compute_y();
 			self.corner_radius = 3;
-			self.duration = (self.task._end.diff(self.task._start, 'hours') + 24) / gt.config.step;
+			self.duration = self.task._end.diff(self.task._start, 'hours') / gt.config.step;
 			console.log(self.duration);
 			self.width = gt.config.column_width * self.duration;
 			self.progress_width = gt.config.column_width * self.duration * (self.task.progress / 100) || 0;
@@ -2036,7 +2069,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 		function onmove(dx, dy) {
 			var bar = self.$bar;
-			bar.finaldx = get_snap_position(dx);
+			// bar.finaldx = get_snap_position(dx);
+			bar.finaldx = dx;
 			update_bar_position({ x: bar.ox + bar.finaldx });
 			run_method_for_dependencies('onmove', [dx, dy]);
 		}
@@ -2053,7 +2087,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 		function onmove_handle_left(dx, dy) {
 			var bar = self.$bar;
-			bar.finaldx = get_snap_position(dx);
+			// bar.finaldx = get_snap_position(dx);
+			bar.finaldx = dx;
 			update_bar_position({
 				x: bar.ox + bar.finaldx,
 				width: bar.owidth - bar.finaldx
@@ -2103,7 +2138,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 		function onmove_handle_right(dx, dy) {
 			var bar = self.$bar;
-			bar.finaldx = get_snap_position(dx);
+			// bar.finaldx = get_snap_position(dx);
+			bar.finaldx = dx;
 			update_bar_position({ width: bar.owidth + bar.finaldx });
 		}
 	
@@ -2218,23 +2254,23 @@ return /******/ (function(modules) { // webpackBootstrap
 			return gt.config.header_height + gt.config.padding + self.task._index * (self.height + gt.config.padding);
 		}
 	
-		function get_snap_position(dx) {
-			var odx = dx,
-			    rem = void 0,
-			    position = void 0;
-	
-			if (gt.view_is('Week')) {
-				rem = dx % (gt.config.column_width / 7);
-				position = odx - rem + (rem < gt.config.column_width / 14 ? 0 : gt.config.column_width / 7);
-			} else if (gt.view_is('Month')) {
-				rem = dx % (gt.config.column_width / 30);
-				position = odx - rem + (rem < gt.config.column_width / 60 ? 0 : gt.config.column_width / 30);
-			} else {
-				rem = dx % gt.config.column_width;
-				position = odx - rem + (rem < gt.config.column_width / 2 ? 0 : gt.config.column_width);
-			}
-			return position;
-		}
+		/* function get_snap_position(dx) {
+	 	let odx = dx, rem, position;
+	 	if (gt.view_is('Week')) {
+	 		rem = dx % (gt.config.column_width / 7);
+	 		position = odx - rem +
+	 			((rem < gt.config.column_width / 14) ? 0 : gt.config.column_width / 7);
+	 	} else if (gt.view_is('Month')) {
+	 		rem = dx % (gt.config.column_width / 30);
+	 		position = odx - rem +
+	 			((rem < gt.config.column_width / 60) ? 0 : gt.config.column_width / 30);
+	 	} else {
+	 		rem = dx % gt.config.column_width;
+	 		position = odx - rem +
+	 			((rem < gt.config.column_width / 2) ? 0 : gt.config.column_width);
+	 	}
+	 	return position;
+	 } */
 	
 		function update_attr(element, attr, value) {
 			value = +value;

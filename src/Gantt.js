@@ -221,13 +221,27 @@ export default function Gantt(element, tasks, config) {
 		We need to set this via 'Open Task Planner'
 	*/
 	function set_gantt_dates() {
-
-		if (view_is(['Quarter Day', 'Half Day'])) {
-			self.gantt_start = self.gantt_start.clone().subtract(7, 'day');
-			self.gantt_end = self.gantt_end.clone().add(7, 'day');
+		if (view_is(['Hour Sixth'])) {
+			self.gantt_start = self.gantt_start.clone().startOf('day').subtract(7, 'day');
+			self.gantt_end = self.gantt_end.clone().endOf('day').add(7, 'day');
+		} else if (view_is(['Hour Half'])) {
+			self.gantt_start = self.gantt_start.clone().startOf('day').subtract(7, 'day');
+			self.gantt_end = self.gantt_end.clone().endOf('day').add(7, 'day');
+		} else if (view_is(['Quarter Day'])) {
+			self.gantt_start = self.gantt_start.clone().startOf('day').subtract(7, 'day');
+			self.gantt_end = self.gantt_end.clone().endOf('day').add(7, 'day');
+		} else if (view_is(['day Day'])) {
+			self.gantt_start = self.gantt_start.clone().startOf('day').subtract(7, 'day');
+			self.gantt_end = self.gantt_end.clone().endOf('day').add(7, 'day');
+		} else if (view_is(['Quarter Day'])) {
+			self.gantt_start = self.gantt_start.clone().startOf('day').subtract(7, 'day');
+			self.gantt_end = self.gantt_end.clone().endOf('day').add(7, 'day');
+		} else if (view_is(['Half Day'])) {
+			self.gantt_start = self.gantt_start.clone().startOf('day').subtract(7, 'day');
+			self.gantt_end = self.gantt_end.clone().endOf('day').add(7, 'day');
 		} else if (view_is('Month')) {
-			self.gantt_start = self.gantt_start.clone().startOf('year');
-			self.gantt_end = self.gantt_end.clone().endOf('month').add(1, 'year');
+			self.gantt_start = self.gantt_start.clone().startOf('year').startOf('year');
+			self.gantt_end = self.gantt_end.clone().endOf('year').endOf('month');
 		} else {
 			self.gantt_start = self.gantt_start.clone().startOf('month').subtract(1, 'month');
 			self.gantt_end = self.gantt_end.clone().endOf('month').add(1, 'month');
@@ -265,7 +279,16 @@ export default function Gantt(element, tasks, config) {
 	function set_scale(scale) {
 		self.config.view_mode = scale;
 
-		if (scale === 'Hour') {
+		if (scale === 'Minute') {
+			self.config.step = 1;
+			self.config.column_width = 20;
+		} else if (scale === 'Hour Sixth') {
+			self.config.step = 1 / 6;
+			self.config.column_width = 20;
+		} else if (scale === 'Hour Half') {
+			self.config.step = 0.5;
+			self.config.column_width = 20;
+		} else if (scale === 'Hour') {
 			self.config.step = 1;
 			self.config.column_width = 58;
 		} else if (scale === 'Day') {
@@ -281,7 +304,7 @@ export default function Gantt(element, tasks, config) {
 			self.config.step = 24 * 7;
 			self.config.column_width = 140;
 		} else if (scale === 'Month') {
-			self.config.step = 24 * 30;
+			self.config.step = 24 * 30; // TODO need to account for different shape months eg Feb 29 days..
 			self.config.column_width = 120;
 		}
 	}
@@ -423,8 +446,7 @@ export default function Gantt(element, tasks, config) {
 
 	function make_dates() {
 		for (let date of get_dates_to_draw()) {
-			const xPos = date.lower_x - (self.config.column_width / 2);
-			self.canvas.text(xPos, date.lower_y, date.lower_text)
+			self.canvas.text(date.lower_x, date.lower_y, date.lower_text)
 				.addClass('lower-text')
 				.appendTo(self.element_groups.date);
 
@@ -453,10 +475,12 @@ export default function Gantt(element, tasks, config) {
 
 	function get_date_info(date, last_date, i) {
 		if (!last_date) {
-			last_date = date.clone().add(1, 'year');
+			last_date = date.clone().add(1, 'year').endOf('year');
 		}
 		const date_text = {
-			'Minute_lower': date.format('HH'),
+			'Minute_lower': date.format('mm'),
+			'Hour Sixth_lower': date.format('mm'),
+			'Hour Half_lower': date.format('mm'),
 			'Hour_lower': date.format('HH'),
 			'Quarter Day_lower': date.format('HH'),
 			'Half Day_lower': date.format('HH'),
@@ -464,8 +488,11 @@ export default function Gantt(element, tasks, config) {
 			'Week_lower': date.month() !== last_date.month() ?
 				date.format('D MMM') : date.format('D'),
 			'Month_lower': date.format('MMMM'),
-			'Minute_upper': date.date() !== last_date.date() ? date.format('D MMM') : '',
-			'Hour_upper': date.date() !== last_date.date() ? date.format('D MMM') : '',
+
+			'Minute_upper': date.hour() !== last_date.hour() ? date.format('HH') : '',
+			'Hour Sixth_upper': date.hour() !== last_date.hour() ? date.format('HH') : '',
+			'Hour Half_upper': date.hour() !== last_date.hour() ? date.format('HH') : '',
+			'Hour_upper': date.hour() !== last_date.hour() ? date.format('D MMM') : '',
 			'Quarter Day_upper': date.date() !== last_date.date() ? date.format('D MMM') : '',
 			'Half Day_upper': date.date() !== last_date.date() ?
 				date.month() !== last_date.month() ?
@@ -482,22 +509,25 @@ export default function Gantt(element, tasks, config) {
 		};
 
 		const x_pos = {
-			'Minute_lower': (self.config.column_width * 1440) / 2,
+			'Minute_lower': 0, // (self.config.column_width * 1440) / 2,
 			'Minute_upper': 0,
-			'Hour_lower': (self.config.column_width * 24) / 2,
+			'Hour Sixth_lower': 0, // (self.config.column_width * 24) / 2,
+			'Hour Sixth_upper': 0, // (self.config.column_width * 24) / 2,
+			'Hour Half_lower': 0, // (self.config.column_width * 24) / 2,
+			'Hour Half_upper': 0, // (self.config.column_width * 24) / 2,
+			'Hour_lower': 0, // (self.config.column_width * 24) / 2,
 			'Hour_upper': 0,
-			'Quarter Day_lower': (self.config.column_width * 4) / 2,
+			'Quarter Day_lower': 0, // (self.config.column_width * 4) / 2,
 			'Quarter Day_upper': 0,
-			'Half Day_lower': (self.config.column_width * 2) / 2,
+			'Half Day_lower': 0, // (self.config.column_width * 2) / 2,
 			'Half Day_upper': 0,
-			'Day_lower': self.config.column_width / 2,
-			'Day_upper': (self.config.column_width * 30) / 2,
+			'Day_lower': 0,// self.config.column_width / 2,
+			'Day_upper': 0, // (self.config.column_width * 30) / 2,
 			'Week_lower': 0,
-			'Week_upper': (self.config.column_width * 4) / 2,
-			'Month_lower': self.config.column_width / 2,
-			'Month_upper': (self.config.column_width * 12) / 2
+			'Week_upper': 0, // (self.config.column_width * 4) / 2,
+			'Month_lower': 0, // self.config.column_width / 2,
+			'Month_upper': 0 // (self.config.column_width * 12) / 2
 		};
-
 		return {
 			upper_text: date_text[`${self.config.view_mode}_upper`],
 			lower_text: date_text[`${self.config.view_mode}_lower`],
@@ -511,7 +541,6 @@ export default function Gantt(element, tasks, config) {
 	function make_arrows() {
 		self._arrows = [];
 		for (let task of self.flattenTasks) {
-			// console.log(task);
 			let arrows = [];
 			arrows = task.dependencies.map(dep => {
 				const dependency = get_task(dep);

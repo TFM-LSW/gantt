@@ -32,6 +32,10 @@
 		button {
 			margin-right: 10px;
 		}
+		h3 {
+			color:rgb(138, 138, 138);
+			font-family: Arial, Helvetica, sans-serif;
+		}
 	</style>
 	<script src="node_modules/moment/min/moment.min.js"></script>
 	<script src="node_modules/snapsvg/dist/snap.svg-min.js"></script>
@@ -40,12 +44,14 @@
 
 <body>
 	<div class="container">
-		<h2>Interactive Gantt Chart (ES6)</h2>
+		<h3>Interactive Gantt Chart (ES6)</h3>
 		<div class="gantt-container" id="gc">
 			<svg id="gantt" width="400" height="600"></svg>
 		</div>
 		<nav>
 			<button onclick="changeView('Minute')">Minutes</button>
+			<button onclick="changeView('Hour Sixth')">10 Minutes</button>
+			<button onclick="changeView('Hour Half')">30 Minutes</button>
 			<button onclick="changeView('Hour')">Hour</button>
 			<button onclick="changeView('Quarter Day')">Quarter Day</button>
 			<button onclick="changeView('Half Day')">Half Day</button>
@@ -56,20 +62,22 @@
 		</nav>
 	</div>
 	<script>
+
+		// Also consider  start: { year :2010, month :3, day :5, hour :15, minute :10, second :3, millisecond :123}
 		var runs = [
 			[{
 				title: "Period 1",
 				shape: "Bar",
 				date: {
-					start: '2017-09-12 11:31:23',
-					end: '2017-09-14 00:31:23'
+					start: '2017-09-12 03:31:23',
+					end: '2017-09-12 04:38:23'
 				}
 			}, {
 				title: "Period 2",
 				shape: "Octogon",
 				date: {
-					start: '2017-09-17 11:31:23',
-					end: '2017-09-18 8:31:23'
+					start: '2017-09-22 11:31:23',
+					end: '2017-09-23 8:31:23'
 				}
 			}]
 			/* [{ title: "Redesign website", range: [0, 1], date: { start: '',  end: '' }}, { title: "Redesign website 2", range: [5, 7]} ],
@@ -122,19 +130,22 @@
 			},
 			on_view_change: function (mode) {
 				console.log(mode);
-			}/* ,
+			},
 			custom_popup_html: function (task) {
 				// the task object will contain the updated
 				// dates and progress value
-				const end_date = task._end.format('MMM D');
+				console.log(task);
+				const start_date = task._start.format("MMM Do YYYY, h:mm:ss a");
+				const end_date = task._end.format("MMM Do YYYY, h:mm:ss a");
 				return `
 					<div class="details-container">
 					<h5>${task.name}</h5>
-					<p>Expected to finish by ${end_date}</p>
-					<p>${task.progress}% completed!</p>
+					<p><strong>Starts:</strong> ${start_date}</p>
+					<p><strong>Finishes:</strong> ${end_date}</p>
+					<!--<p>${task.progress}% completed!</p>-->
 					</div>
 				`;
-			} */
+			}
 		});
 		console.log(gantt_chart);
 

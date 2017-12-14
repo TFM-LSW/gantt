@@ -41,13 +41,11 @@ export default function Octogon(gt, task) {
 		self.y = compute_y();
 		self.corner_radius = 3;
 		self.duration = (self.task._end.diff(self.task._start, 'hours')) / gt.config.step;
-		console.log(self.duration);
 		self.width = gt.config.column_width * self.duration;
 		self.progress_width = gt.config.column_width * self.duration * (self.task.progress / 100) || 0;
 		self.group = gt.canvas.group().addClass('bar-wrapper').addClass(self.task.custom_class || '');
 		self.bar_group = gt.canvas.group().addClass('bar-group').appendTo(self.group);
 		self.handle_group = gt.canvas.group().addClass('handle-group').appendTo(self.group);
-
 		self.join = 10;
 		self.joinheight = self.height - (self.join * 2);
 	}

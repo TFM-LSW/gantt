@@ -49,7 +49,6 @@ export default function Gantt(element, tasks, config) {
 
 		// ScrollWheelInit('gc');
 		// ClickChart('gc');
-
 		const display = document.getElementById('gc');
 		display.addEventListener('click', clicked);
 	}
@@ -222,7 +221,7 @@ export default function Gantt(element, tasks, config) {
 		clear();
 		setup_groups();
 		make_grid();
-		// make_dates();
+		make_dates();
 		make_bars();
 		make_arrows();
 		map_arrows_on_bars();
@@ -303,8 +302,8 @@ export default function Gantt(element, tasks, config) {
 		self.config.view_mode = scale;
 
 		if (scale === 'Minute') {
-			self.config.step = 1 / 1440;
-			self.config.column_width = 30;
+			self.config.step = 1 / 60;
+			self.config.column_width = 20;
 		} else if (scale === 'Hour Sixth') {
 			self.config.step = 1 / 6;
 			self.config.column_width = 20;
@@ -482,7 +481,7 @@ export default function Gantt(element, tasks, config) {
 				if ($upper_text.getBBox().x2 > self.element_groups.grid.getBBox().width) {
 					$upper_text.remove();
 				}
-			}*/
+			} */
 		}
 	}
 
@@ -501,7 +500,7 @@ export default function Gantt(element, tasks, config) {
 			last_date = date.clone().add(1, 'year').endOf('year');
 		}
 		const date_text = {
-			'Minute_lower': date.format('ss\''),
+			'Minute_lower': date.format('mm\''),
 			'Hour Sixth_lower': date.format('mm\''),
 			'Hour Half_lower': date.format('mm\''),
 			'Hour_lower': date.format('HH'),

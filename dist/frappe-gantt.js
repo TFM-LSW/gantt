@@ -125,7 +125,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 			// ScrollWheelInit('gc');
 			// ClickChart('gc');
-	
 			var display = document.getElementById('gc');
 			display.addEventListener('click', clicked);
 		}
@@ -331,7 +330,7 @@ return /******/ (function(modules) { // webpackBootstrap
 			clear();
 			setup_groups();
 			make_grid();
-			// make_dates();
+			make_dates();
 			make_bars();
 			make_arrows();
 			map_arrows_on_bars();
@@ -431,8 +430,8 @@ return /******/ (function(modules) { // webpackBootstrap
 			self.config.view_mode = scale;
 	
 			if (scale === 'Minute') {
-				self.config.step = 1 / 1440;
-				self.config.column_width = 30;
+				self.config.step = 1 / 60;
+				self.config.column_width = 20;
 			} else if (scale === 'Hour Sixth') {
 				self.config.step = 1 / 6;
 				self.config.column_width = 20;
@@ -619,7 +618,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    	if ($upper_text.getBBox().x2 > self.element_groups.grid.getBBox().width) {
 	    		$upper_text.remove();
 	    	}
-	    }*/
+	    } */
 				}
 			} catch (err) {
 				_didIteratorError5 = true;
@@ -652,7 +651,7 @@ return /******/ (function(modules) { // webpackBootstrap
 				last_date = date.clone().add(1, 'year').endOf('year');
 			}
 			var date_text = {
-				'Minute_lower': date.format('ss\''),
+				'Minute_lower': date.format('mm\''),
 				'Hour Sixth_lower': date.format('mm\''),
 				'Hour Half_lower': date.format('mm\''),
 				'Hour_lower': date.format('HH'),
@@ -1833,13 +1832,11 @@ return /******/ (function(modules) { // webpackBootstrap
 			self.y = compute_y();
 			self.corner_radius = 3;
 			self.duration = self.task._end.diff(self.task._start, 'hours') / gt.config.step;
-			console.log(self.duration);
 			self.width = gt.config.column_width * self.duration;
 			self.progress_width = gt.config.column_width * self.duration * (self.task.progress / 100) || 0;
 			self.group = gt.canvas.group().addClass('bar-wrapper').addClass(self.task.custom_class || '');
 			self.bar_group = gt.canvas.group().addClass('bar-group').appendTo(self.group);
 			self.handle_group = gt.canvas.group().addClass('handle-group').appendTo(self.group);
-	
 			self.join = 10;
 			self.joinheight = self.height - self.join * 2;
 		}

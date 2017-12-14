@@ -93,6 +93,22 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 		var self = {};
 	
+		function clicked(evt) {
+			var target = evt.target;
+			var dim = target.getBoundingClientRect();
+			var x = evt.clientX - dim.left;
+			if (target.className.baseVal === 'grid-row') {
+				// var y = evt.clientY - dim.top;
+				var xPercent = x / target.width.baseVal.value * 100;
+				var datePosition = Math.round(self.dates.length / 100 * xPercent);
+				console.log('-- string: ' + self.dates[datePosition]._d.toString());
+				console.log('Minutes: ' + self.dates[datePosition]._d.getMinutes());
+				console.log('DAY: ' + self.dates[datePosition]._d.getDate());
+				console.log('MONTH: ' + self.dates[datePosition]._d.getMonth());
+				console.log('YEAR: ' + self.dates[datePosition]._d.getFullYear());
+			}
+		}
+	
 		function init() {
 			set_defaults();
 	
@@ -107,8 +123,11 @@ return /******/ (function(modules) { // webpackBootstrap
 			// initialize with default view mode
 			change_view_mode(self.config.view_mode);
 	
-			(0, _ScrollUtils.ScrollWheelInit)('gc');
-			(0, _ScrollUtils.ClickChart)('gc');
+			// ScrollWheelInit('gc');
+			// ClickChart('gc');
+	
+			var display = document.getElementById('gc');
+			display.addEventListener('click', clicked);
 		}
 	
 		function set_defaults() {
@@ -312,7 +331,7 @@ return /******/ (function(modules) { // webpackBootstrap
 			clear();
 			setup_groups();
 			make_grid();
-			make_dates();
+			// make_dates();
 			make_bars();
 			make_arrows();
 			map_arrows_on_bars();
@@ -376,7 +395,6 @@ return /******/ (function(modules) { // webpackBootstrap
 				}
 				self.dates.push(cur_date);
 			}
-			console.log(self.dates);
 		}
 	
 		function setup_groups() {
@@ -469,9 +487,9 @@ return /******/ (function(modules) { // webpackBootstrap
 		function make_grid() {
 			make_grid_background();
 			make_grid_rows();
-			make_grid_header();
-			make_grid_ticks();
-			make_grid_highlights();
+			// make_grid_header();
+			// make_grid_ticks();
+			// make_grid_highlights();
 		}
 	
 		function make_grid_background() {
@@ -589,16 +607,19 @@ return /******/ (function(modules) { // webpackBootstrap
 				for (var _iterator5 = get_dates_to_draw()[Symbol.iterator](), _step5; !(_iteratorNormalCompletion5 = (_step5 = _iterator5.next()).done); _iteratorNormalCompletion5 = true) {
 					var date = _step5.value;
 	
-					self.canvas.text(date.lower_x, date.lower_y, date.lower_text).addClass('lower-text').appendTo(self.element_groups.date);
-	
-					if (date.upper_text) {
-						var $upper_text = self.canvas.text(date.upper_x, date.upper_y, date.upper_text).addClass('upper-text').appendTo(self.element_groups.date);
-	
-						// remove out-of-bound dates
-						if ($upper_text.getBBox().x2 > self.element_groups.grid.getBBox().width) {
-							$upper_text.remove();
-						}
-					}
+					console.log(date);
+					/* self.canvas.text(date.lower_x, date.lower_y, date.lower_text)
+	    	.addClass('lower-text')
+	    	.appendTo(self.element_groups.date);
+	    		if (date.upper_text) {
+	    	const $upper_text = self.canvas.text(date.upper_x, date.upper_y, date.upper_text)
+	    		.addClass('upper-text')
+	    		.appendTo(self.element_groups.date);
+	    			// remove out-of-bound dates
+	    	if ($upper_text.getBBox().x2 > self.element_groups.grid.getBBox().width) {
+	    		$upper_text.remove();
+	    	}
+	    }*/
 				}
 			} catch (err) {
 				_didIteratorError5 = true;

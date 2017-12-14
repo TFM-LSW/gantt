@@ -17,6 +17,22 @@ export default function Gantt(element, tasks, config) {
 
 	const self = {};
 
+	function clicked(evt) {
+		var target = evt.target;
+		var dim = target.getBoundingClientRect();
+		var x = evt.clientX - dim.left;
+		if (target.className.baseVal === 'grid-row') {
+			// var y = evt.clientY - dim.top;
+			const xPercent = ((x / target.width.baseVal.value) * 100);
+			const datePosition = Math.round((self.dates.length / 100) * xPercent);
+			console.log('-- string: ' + self.dates[datePosition]._d.toString());
+			console.log('Minutes: ' + self.dates[datePosition]._d.getMinutes());
+			console.log('DAY: ' + self.dates[datePosition]._d.getDate());
+			console.log('MONTH: ' + self.dates[datePosition]._d.getMonth());
+			console.log('YEAR: ' + self.dates[datePosition]._d.getFullYear());
+		}
+	}
+
 	function init() {
 		set_defaults();
 
@@ -31,8 +47,11 @@ export default function Gantt(element, tasks, config) {
 		// initialize with default view mode
 		change_view_mode(self.config.view_mode);
 
-		ScrollWheelInit('gc');
-		ClickChart('gc');
+		// ScrollWheelInit('gc');
+		// ClickChart('gc');
+
+		const display = document.getElementById('gc');
+		display.addEventListener('click', clicked);
 	}
 
 	function set_defaults() {
@@ -203,7 +222,7 @@ export default function Gantt(element, tasks, config) {
 		clear();
 		setup_groups();
 		make_grid();
-		make_dates();
+		// make_dates();
 		make_bars();
 		make_arrows();
 		map_arrows_on_bars();
@@ -269,7 +288,6 @@ export default function Gantt(element, tasks, config) {
 			}
 			self.dates.push(cur_date);
 		}
-		console.log(self.dates);
 	}
 
 	function setup_groups() {
@@ -342,9 +360,9 @@ export default function Gantt(element, tasks, config) {
 	function make_grid() {
 		make_grid_background();
 		make_grid_rows();
-		make_grid_header();
-		make_grid_ticks();
-		make_grid_highlights();
+		// make_grid_header();
+		// make_grid_ticks();
+		// make_grid_highlights();
 	}
 
 	function make_grid_background() {
@@ -450,7 +468,8 @@ export default function Gantt(element, tasks, config) {
 
 	function make_dates() {
 		for (let date of get_dates_to_draw()) {
-			self.canvas.text(date.lower_x, date.lower_y, date.lower_text)
+			console.log(date);
+			/* self.canvas.text(date.lower_x, date.lower_y, date.lower_text)
 				.addClass('lower-text')
 				.appendTo(self.element_groups.date);
 
@@ -463,7 +482,7 @@ export default function Gantt(element, tasks, config) {
 				if ($upper_text.getBBox().x2 > self.element_groups.grid.getBBox().width) {
 					$upper_text.remove();
 				}
-			}
+			}*/
 		}
 	}
 

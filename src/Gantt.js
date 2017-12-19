@@ -7,6 +7,8 @@
  * 	config: configuration options, optional
  */
 import './gantt.scss';
+import stringifyDate from 'json-stringify-date';
+// import {formatWithJDF} from 'moment-jdateformatparser';
 
 import Bar from './Bar';
 import Octogon from './Octogon';
@@ -16,6 +18,9 @@ import { ScrollWheelInit, ClickChart } from './ScrollUtils';
 export default function Gantt(element, tasks, config) {
 
 	const self = {};
+	var display = document.getElementById('gc');
+	display.addEventListener('click', clicked);
+	// console.log(display);
 
 	function clicked(evt) {
 		var target = evt.target;
@@ -49,8 +54,6 @@ export default function Gantt(element, tasks, config) {
 
 		// ScrollWheelInit('gc');
 		// ClickChart('gc');
-		const display = document.getElementById('gc');
-		display.addEventListener('click', clicked);
 	}
 
 	function set_defaults() {
@@ -285,6 +288,7 @@ export default function Gantt(element, tasks, config) {
 					cur_date.clone().add(1, 'month') :
 					cur_date.clone().add(self.config.step, 'hours');
 			}
+			// console.log(cur_date);
 			self.dates.push(cur_date);
 		}
 	}
@@ -359,7 +363,7 @@ export default function Gantt(element, tasks, config) {
 	function make_grid() {
 		make_grid_background();
 		make_grid_rows();
-		// make_grid_header();
+		make_grid_header();
 		// make_grid_ticks();
 		// make_grid_highlights();
 	}
@@ -466,9 +470,31 @@ export default function Gantt(element, tasks, config) {
 	}
 
 	function make_dates() {
-		for (let date of get_dates_to_draw()) {
-			console.log(date);
-			/* self.canvas.text(date.lower_x, date.lower_y, date.lower_text)
+		var worker = new Worker('./buildTimeline.js');
+		/* worker.addEventListener('message', function (e) {
+			console.log('Worker said: ', e.data);
+		}, false); */
+		worker.addEventListener('message', function (e) {
+			console.log('Worker said: ', e.data);
+		}, false);
+		// worker.postMessage('Hello World'); // Send data to our worker.
+		// console.log(JSON.stringify(self.dates[0]));
+		// console.log(stringifyDate.stringify(self.dates[0]));
+		// console.log(self.dates);
+		// worker.postMessage([{ some: 'val'}, { some: 'val'}]); // Send data to our worker.
+		// worker.postMessage(self.dates); // Send data to our worker.
+		/* for (let date of get_dates_to_draw()) {
+			console.log(display);
+			const newDiv = document.createElement('div');
+			const marker = document.createTextNode(date.lower_text);
+			newDiv.appendChild(marker);
+			display.appendChild(newDiv);
+			newDiv.style.position = 'absolute';
+			newDiv.style.display = 'block';
+			newDiv.style.top = date.lower_y;
+			newDiv.style.left = date.lower_x;
+
+			self.canvas.text(date.lower_x, date.lower_y, date.lower_text)
 				.addClass('lower-text')
 				.appendTo(self.element_groups.date);
 
@@ -481,8 +507,8 @@ export default function Gantt(element, tasks, config) {
 				if ($upper_text.getBBox().x2 > self.element_groups.grid.getBBox().width) {
 					$upper_text.remove();
 				}
-			} */
-		}
+			}
+		} */
 	}
 
 	function get_dates_to_draw() {

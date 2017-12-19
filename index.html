@@ -38,6 +38,7 @@
 		}
 	</style>
 	<script src="node_modules/moment/min/moment.min.js"></script>
+	<script src="node_modules/moment-jdateformatparser/moment-jdateformatparser.min.js"></script>
 	<script src="node_modules/snapsvg/dist/snap.svg-min.js"></script>
 	<script src="dist/frappe-gantt.js"></script>
 </head>
@@ -45,6 +46,7 @@
 <body>
 	<div class="container">
 		<h3>Interactive Gantt Chart (ES6)</h3>
+		<small id="time"></small>
 		<div class="gantt-container" id="gc">
 			<svg id="gantt" width="400" height="600"></svg>
 		</div>
@@ -155,6 +157,12 @@
 		function showContext() {
 			console.log('showing context');
 		}
+
+		function JDFFormatter () {
+			const d = new Date();
+			document.getElementById('time').textContent = moment(d).formatWithJDF("yyyy.MM.dd.HH.mm.ss");
+		}
+		setInterval(JDFFormatter, 1);
 	</script>
 </body>
 

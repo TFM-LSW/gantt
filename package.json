@@ -24,6 +24,7 @@
     "sass-loader": "^4.1.0",
     "style-loader": "^0.13.1",
     "webpack": "1.12.9",
+    "webpack-dev-server": "^2.9.7",
     "yargs": "3.32.0"
   },
   "repository": {
@@ -45,7 +46,9 @@
   },
   "homepage": "https://github.com/frappe/gantt",
   "dependencies": {
+    "json-stringify-date": "^0.1.4",
     "moment": "^2.19.4",
+    "moment-jdateformatparser": "^1.1.0",
     "mouse-wheel": "^1.2.0",
     "snapsvg": "^0.5.1"
   }

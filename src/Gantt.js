@@ -8,6 +8,7 @@
  */
 import './gantt.scss';
 import stringifyDate from 'json-stringify-date';
+import jsonParser from 'moment-json-parser';
 // import {formatWithJDF} from 'moment-jdateformatparser';
 
 import Bar from './Bar';
@@ -288,7 +289,7 @@ export default function Gantt(element, tasks, config) {
 					cur_date.clone().add(1, 'month') :
 					cur_date.clone().add(self.config.step, 'hours');
 			}
-			// console.log(cur_date);
+			// console.log(cur_date.toString());
 			self.dates.push(cur_date);
 		}
 	}
@@ -363,7 +364,7 @@ export default function Gantt(element, tasks, config) {
 	function make_grid() {
 		make_grid_background();
 		make_grid_rows();
-		make_grid_header();
+		// make_grid_header();
 		// make_grid_ticks();
 		// make_grid_highlights();
 	}
@@ -471,44 +472,51 @@ export default function Gantt(element, tasks, config) {
 
 	function make_dates() {
 		var worker = new Worker('./buildTimeline.js');
-		/* worker.addEventListener('message', function (e) {
-			console.log('Worker said: ', e.data);
-		}, false); */
-		worker.addEventListener('message', function (e) {
-			console.log('Worker said: ', e.data);
-		}, false);
-		// worker.postMessage('Hello World'); // Send data to our worker.
-		// console.log(JSON.stringify(self.dates[0]));
-		// console.log(stringifyDate.stringify(self.dates[0]));
-		// console.log(self.dates);
-		// worker.postMessage([{ some: 'val'}, { some: 'val'}]); // Send data to our worker.
-		// worker.postMessage(self.dates); // Send data to our worker.
-		/* for (let date of get_dates_to_draw()) {
-			console.log(display);
-			const newDiv = document.createElement('div');
-			const marker = document.createTextNode(date.lower_text);
-			newDiv.appendChild(marker);
-			display.appendChild(newDiv);
-			newDiv.style.position = 'absolute';
-			newDiv.style.display = 'block';
-			newDiv.style.top = date.lower_y;
-			newDiv.style.left = date.lower_x;
-
-			self.canvas.text(date.lower_x, date.lower_y, date.lower_text)
-				.addClass('lower-text')
-				.appendTo(self.element_groups.date);
-
-			if (date.upper_text) {
-				const $upper_text = self.canvas.text(date.upper_x, date.upper_y, date.upper_text)
-					.addClass('upper-text')
-					.appendTo(self.element_groups.date);
-
-				// remove out-of-bound dates
-				if ($upper_text.getBBox().x2 > self.element_groups.grid.getBBox().width) {
-					$upper_text.remove();
-				}
+		let dataDates;
+		function createTimelineDOM() {
+			if (document.getElementById('headerdiv')) {
+				document.getElementById('headerdiv').parentNode.removeChild(document.getElementById('headerdiv'));
 			}
-		} */
+			const header = document.createElement('div');
+			// header.style.backgroundColor = '#FF0000';
+			header.id = 'headerdiv';
+			header.style.width = '100%'; // this is
+			header.style.height = '100%';
+			header.style.display = 'block';
+			header.style.position = 'absolute';
+			header.style.zIndex = -1;
+			header.style.top = 0;
+			header.style.left = 0;
+			header.style.padding = 0;
+			header.style.margin = 0;
+			display.appendChild(header);
+			for (let date of dataDates) {
+				const newDiv = document.createElement('div');
+				const marker = document.createTextNode(date.lower_text);
+				newDiv.style.position = 'absolute';
+				newDiv.style.display = 'block';
+				newDiv.style.fontFamily = 'Arial';
+				newDiv.style.fontSize = '12px';
+				newDiv.style.top = (date.lower_y - 10) + 'px';
+				newDiv.style.left = date.lower_x + 'px';
+				newDiv.appendChild(marker);
+				header.appendChild(newDiv);
+				console.log('added');
+			}
+			/* const header = document.createElement('canvas');
+			var ctx = header.getContext("2d");
+			ctx.font = "12px Arial";
+			ctx.id = 'headerdiv';
+			for (let date of dataDates) {
+				ctx.fillText("Hello World",10,50);
+			}
+			display.appendChild(header); */
+		}
+		worker.addEventListener('message', function (e) {
+			dataDates = JSON.parse(e.data);
+			createTimelineDOM();
+		}, false);
+		worker.postMessage(JSON.stringify({ dates: self.dates, config: self.config }));
 	}
 
 	function get_dates_to_draw() {

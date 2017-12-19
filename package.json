@@ -49,6 +49,7 @@
     "json-stringify-date": "^0.1.4",
     "moment": "^2.19.4",
     "moment-jdateformatparser": "^1.1.0",
+    "moment-json-parser": "^0.9.1",
     "mouse-wheel": "^1.2.0",
     "snapsvg": "^0.5.1"
   }

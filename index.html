@@ -17,6 +17,7 @@
 
 		.gantt-container {
 			overflow: scroll;
+			position: relative;
 		}
 
 		/* custom class */
@@ -46,7 +47,7 @@
 <body>
 	<div class="container">
 		<h3>Interactive Gantt Chart (ES6)</h3>
-		<small id="time"></small>
+		<small id="time" style="display: block; margin-bottom: 12px"></small>
 		<div class="gantt-container" id="gc">
 			<svg id="gantt" width="400" height="600"></svg>
 		</div>

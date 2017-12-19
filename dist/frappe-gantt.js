@@ -67,6 +67,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	var _jsonStringifyDate2 = _interopRequireDefault(_jsonStringifyDate);
 	
+	var _momentJsonParser = __webpack_require__(129);
+	
+	var _momentJsonParser2 = _interopRequireDefault(_momentJsonParser);
+	
 	var _Bar = __webpack_require__(130);
 	
 	var _Bar2 = _interopRequireDefault(_Bar);
@@ -398,7 +402,7 @@ return /******/ (function(modules) { // webpackBootstrap
 				} else {
 					cur_date = view_is('Month') ? cur_date.clone().add(1, 'month') : cur_date.clone().add(self.config.step, 'hours');
 				}
-				// console.log(cur_date);
+				// console.log(cur_date.toString());
 				self.dates.push(cur_date);
 			}
 		}
@@ -493,7 +497,7 @@ return /******/ (function(modules) { // webpackBootstrap
 		function make_grid() {
 			make_grid_background();
 			make_grid_rows();
-			make_grid_header();
+			// make_grid_header();
 			// make_grid_ticks();
 			// make_grid_highlights();
 		}
@@ -606,41 +610,72 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 		function make_dates() {
 			var worker = new Worker('./buildTimeline.js');
-			/* worker.addEventListener('message', function (e) {
-	  	console.log('Worker said: ', e.data);
-	  }, false); */
+			var dataDates = void 0;
+			function createTimelineDOM() {
+				if (document.getElementById('headerdiv')) {
+					document.getElementById('headerdiv').parentNode.removeChild(document.getElementById('headerdiv'));
+				}
+				var header = document.createElement('div');
+				// header.style.backgroundColor = '#FF0000';
+				header.id = 'headerdiv';
+				header.style.width = '100%'; // this is
+				header.style.height = '100%';
+				header.style.display = 'block';
+				header.style.position = 'absolute';
+				header.style.zIndex = -1;
+				header.style.top = 0;
+				header.style.left = 0;
+				header.style.padding = 0;
+				header.style.margin = 0;
+				display.appendChild(header);
+				var _iteratorNormalCompletion5 = true;
+				var _didIteratorError5 = false;
+				var _iteratorError5 = undefined;
+	
+				try {
+					for (var _iterator5 = dataDates[Symbol.iterator](), _step5; !(_iteratorNormalCompletion5 = (_step5 = _iterator5.next()).done); _iteratorNormalCompletion5 = true) {
+						var date = _step5.value;
+	
+						var newDiv = document.createElement('div');
+						var marker = document.createTextNode(date.lower_text);
+						newDiv.style.position = 'absolute';
+						newDiv.style.display = 'block';
+						newDiv.style.fontFamily = 'Arial';
+						newDiv.style.fontSize = '12px';
+						newDiv.style.top = date.lower_y - 10 + 'px';
+						newDiv.style.left = date.lower_x + 'px';
+						newDiv.appendChild(marker);
+						header.appendChild(newDiv);
+						console.log('added');
+					}
+					/* const header = document.createElement('canvas');
+	    var ctx = header.getContext("2d");
+	    ctx.font = "12px Arial";
+	    ctx.id = 'headerdiv';
+	    for (let date of dataDates) {
+	    	ctx.fillText("Hello World",10,50);
+	    }
+	    display.appendChild(header); */
+				} catch (err) {
+					_didIteratorError5 = true;
+					_iteratorError5 = err;
+				} finally {
+					try {
+						if (!_iteratorNormalCompletion5 && _iterator5.return) {
+							_iterator5.return();
+						}
+					} finally {
+						if (_didIteratorError5) {
+							throw _iteratorError5;
+						}
+					}
+				}
+			}
 			worker.addEventListener('message', function (e) {
-				console.log('Worker said: ', e.data);
+				dataDates = JSON.parse(e.data);
+				createTimelineDOM();
 			}, false);
-			// worker.postMessage('Hello World'); // Send data to our worker.
-			// console.log(JSON.stringify(self.dates[0]));
-			// console.log(stringifyDate.stringify(self.dates[0]));
-			// console.log(self.dates);
-			// worker.postMessage([{ some: 'val'}, { some: 'val'}]); // Send data to our worker.
-			// worker.postMessage(self.dates); // Send data to our worker.
-			/* for (let date of get_dates_to_draw()) {
-	  	console.log(display);
-	  	const newDiv = document.createElement('div');
-	  	const marker = document.createTextNode(date.lower_text);
-	  	newDiv.appendChild(marker);
-	  	display.appendChild(newDiv);
-	  	newDiv.style.position = 'absolute';
-	  	newDiv.style.display = 'block';
-	  	newDiv.style.top = date.lower_y;
-	  	newDiv.style.left = date.lower_x;
-	  			self.canvas.text(date.lower_x, date.lower_y, date.lower_text)
-	  		.addClass('lower-text')
-	  		.appendTo(self.element_groups.date);
-	  			if (date.upper_text) {
-	  		const $upper_text = self.canvas.text(date.upper_x, date.upper_y, date.upper_text)
-	  			.addClass('upper-text')
-	  			.appendTo(self.element_groups.date);
-	  				// remove out-of-bound dates
-	  		if ($upper_text.getBBox().x2 > self.element_groups.grid.getBBox().width) {
-	  			$upper_text.remove();
-	  		}
-	  	}
-	  } */
+			worker.postMessage(JSON.stringify({ dates: self.dates, config: self.config }));
 		}
 	
 		function get_dates_to_draw() {
@@ -716,13 +751,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 		function make_arrows() {
 			self._arrows = [];
-			var _iteratorNormalCompletion5 = true;
-			var _didIteratorError5 = false;
-			var _iteratorError5 = undefined;
+			var _iteratorNormalCompletion6 = true;
+			var _didIteratorError6 = false;
+			var _iteratorError6 = undefined;
 	
 			try {
 				var _loop = function _loop() {
-					var task = _step5.value;
+					var task = _step6.value;
 	
 					var arrows = [];
 					arrows = task.dependencies.map(function (dep) {
@@ -741,20 +776,20 @@ return /******/ (function(modules) { // webpackBootstrap
 					self._arrows = self._arrows.concat(arrows);
 				};
 	
-				for (var _iterator5 = self.flattenTasks[Symbol.iterator](), _step5; !(_iteratorNormalCompletion5 = (_step5 = _iterator5.next()).done); _iteratorNormalCompletion5 = true) {
+				for (var _iterator6 = self.flattenTasks[Symbol.iterator](), _step6; !(_iteratorNormalCompletion6 = (_step6 = _iterator6.next()).done); _iteratorNormalCompletion6 = true) {
 					_loop();
 				}
 			} catch (err) {
-				_didIteratorError5 = true;
-				_iteratorError5 = err;
+				_didIteratorError6 = true;
+				_iteratorError6 = err;
 			} finally {
 				try {
-					if (!_iteratorNormalCompletion5 && _iterator5.return) {
-						_iterator5.return();
+					if (!_iteratorNormalCompletion6 && _iterator6.return) {
+						_iterator6.return();
 					}
 				} finally {
-					if (_didIteratorError5) {
-						throw _iteratorError5;
+					if (_didIteratorError6) {
+						throw _iteratorError6;
 					}
 				}
 			}
@@ -775,33 +810,33 @@ return /******/ (function(modules) { // webpackBootstrap
 			var _ref2;
 	
 			var flattenBars = (_ref2 = []).concat.apply(_ref2, _toConsumableArray(self._bars));
-			var _iteratorNormalCompletion6 = true;
-			var _didIteratorError6 = false;
-			var _iteratorError6 = undefined;
+			var _iteratorNormalCompletion7 = true;
+			var _didIteratorError7 = false;
+			var _iteratorError7 = undefined;
 	
 			try {
 				var _loop2 = function _loop2() {
-					var bar = _step6.value;
+					var bar = _step7.value;
 	
 					bar.arrows = self._arrows.filter(function (arrow) {
 						return arrow.from_task.task.id === bar.task.id || arrow.to_task.task.id === bar.task.id;
 					});
 				};
 	
-				for (var _iterator6 = flattenBars[Symbol.iterator](), _step6; !(_iteratorNormalCompletion6 = (_step6 = _iterator6.next()).done); _iteratorNormalCompletion6 = true) {
+				for (var _iterator7 = flattenBars[Symbol.iterator](), _step7; !(_iteratorNormalCompletion7 = (_step7 = _iterator7.next()).done); _iteratorNormalCompletion7 = true) {
 					_loop2();
 				}
 			} catch (err) {
-				_didIteratorError6 = true;
-				_iteratorError6 = err;
+				_didIteratorError7 = true;
+				_iteratorError7 = err;
 			} finally {
 				try {
-					if (!_iteratorNormalCompletion6 && _iterator6.return) {
-						_iterator6.return();
+					if (!_iteratorNormalCompletion7 && _iterator7.return) {
+						_iterator7.return();
 					}
 				} finally {
-					if (_didIteratorError6) {
-						throw _iteratorError6;
+					if (_didIteratorError7) {
+						throw _iteratorError7;
 					}
 				}
 			}
@@ -827,27 +862,27 @@ return /******/ (function(modules) { // webpackBootstrap
 			if (typeof modes === 'string') {
 				return self.config.view_mode === modes;
 			} else if (Array.isArray(modes)) {
-				var _iteratorNormalCompletion7 = true;
-				var _didIteratorError7 = false;
-				var _iteratorError7 = undefined;
+				var _iteratorNormalCompletion8 = true;
+				var _didIteratorError8 = false;
+				var _iteratorError8 = undefined;
 	
 				try {
-					for (var _iterator7 = modes[Symbol.iterator](), _step7; !(_iteratorNormalCompletion7 = (_step7 = _iterator7.next()).done); _iteratorNormalCompletion7 = true) {
-						var mode = _step7.value;
+					for (var _iterator8 = modes[Symbol.iterator](), _step8; !(_iteratorNormalCompletion8 = (_step8 = _iterator8.next()).done); _iteratorNormalCompletion8 = true) {
+						var mode = _step8.value;
 	
 						if (self.config.view_mode === mode) return true;
 					}
 				} catch (err) {
-					_didIteratorError7 = true;
-					_iteratorError7 = err;
+					_didIteratorError8 = true;
+					_iteratorError8 = err;
 				} finally {
 					try {
-						if (!_iteratorNormalCompletion7 && _iterator7.return) {
-							_iterator7.return();
+						if (!_iteratorNormalCompletion8 && _iterator8.return) {
+							_iterator8.return();
 						}
 					} finally {
-						if (_didIteratorError7) {
-							throw _iteratorError7;
+						if (_didIteratorError8) {
+							throw _iteratorError8;
 						}
 					}
 				}
@@ -17819,7 +17854,70 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 129 */,
+/* 129 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+	var moment = __webpack_require__(7);
+	
+	var reISO = /^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2}):(\d{2}(?:\.{0,1}\d*))(?:Z|(\+|-)([\d|:]*))?$/;
+	
+	var parseSaved;
+	
+	/**
+	 * Wrapper around the JSON.parse() function that adds a date
+	 * filtering extension. Returns all dates as real JavaScript dates.
+	 * @param {String} json
+	 * @param {Function} next use when you want to do some other parsing as well
+	 * @returns {*}
+	 */
+	function parseWithMoment(json, next) {
+	    /// <summary>
+	    ///
+	    /// </summary>
+	    /// <param name="json" type="string">JSON to be parsed</param>
+	    /// <returns type="any">parsed value or object</returns>
+	    var parse = parseSaved ? parseSaved : JSON.parse;
+	
+	    return parse(json, function(key, value) {
+	        var parsedValue = value;
+	        if (typeof value === 'string') {
+	            var a = reISO.exec(value);
+	            if (a) {
+	                parsedValue = moment(value);
+	            }
+	        }
+	        if (next !== undefined) {
+	            return next(key, parsedValue);
+	        } else {
+	            return parsedValue;
+	        }
+	    });
+	}
+	
+	/**
+	 * Globally enables JSON date parsing for JSON.parse(). Replaces the default JSON.parse() method and adds
+	 * @param {boolean} enable will reset default when called with false
+	 */
+	parseWithMoment.overrideDefault = function(enable) {
+	
+	    // if any parameter is passed reset
+	    if (enable === false) {
+	        if (parseSaved) {
+	            JSON.parse = parseSaved;
+	            parseSaved = null;
+	        }
+	    } else {
+	        if (!parseSaved) {
+	            parseSaved = JSON.parse;
+	            JSON.parse = parseWithMoment;
+	        }
+	    }
+	};
+	
+	module.exports = parseWithMoment;
+
+/***/ },
 /* 130 */
 /***/ function(module, exports) {
 

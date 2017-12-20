@@ -656,8 +656,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	   } */
 			}
 			worker.addEventListener('message', function (e) {
+				console.log('------------ Service worker done -------------');
 				dataDates = JSON.parse(e.data);
 				createTimelineDOM();
+				console.log('------------ createTimelineDOM done -------------');
 			}, false);
 			worker.postMessage(JSON.stringify({ dates: self.dates, config: self.config }));
 		}
@@ -19377,26 +19379,23 @@ return /******/ (function(modules) { // webpackBootstrap
 	var ganttWidth = 100;
 	var canvases = [];
 	var ctxArr = [];
-	var colours = ['red', 'blue', 'green', 'yellow', 'purple'];
-	function createCanvas(id) {
-		var width = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : ganttWidth;
+	
+	function createCanvas(id, width) {
 		var height = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 60;
 	
 		var cnvs = document.createElement('canvas');
 		cnvs.id = id;
-		cnvs.width = ganttWidth >= maxWidth ? maxWidth : ganttWidth;
+		cnvs.width = width;
 		cnvs.height = height;
-		cnvs.style.backgroundColor = colours[id - 1] || 'red';
-		/* cnvs.style.position = 'absolute';
-	 cnvs.style.display = 'block';
-	 cnvs.style.left = ((id - 1) * cnvs.width);
-	 cnvs.style.top = 0; */
+		// cnvs.style.backgroundColor = 'red';
 		return cnvs;
 	}
+	
 	function removeCanvas() {
 		var lastEntry = canvases.pop();
 		lastEntry.parentElement.removeChild(lastEntry);
 	}
+	
 	function drawCanvasTime(dataDates) {
 		while (canvases.length) {
 			removeCanvas();
@@ -19406,11 +19405,22 @@ return /******/ (function(modules) { // webpackBootstrap
 		ganttWidth = gantt.clientWidth;
 		header.style.width = ganttWidth + 'px';
 	
-		// figure out widths of subsequent canvases...
+		// figure how many subsequent canvases and the width of the last...
 		var requiredCanvases = Math.ceil(ganttWidth / maxWidth);
+		var remainingWidth = void 0;
+		if (requiredCanvases > 1) {
+			remainingWidth = ganttWidth % maxWidth;
+		}
+	
 		var count = 1;
+		var tWidth = ganttWidth >= maxWidth ? maxWidth : ganttWidth;
 		while (canvases.length < requiredCanvases) {
-			var c = createCanvas(count);
+			if (count === requiredCanvases) {
+				if (requiredCanvases > 1) {
+					tWidth = remainingWidth;
+				}
+			}
+			var c = createCanvas(count, tWidth);
 			canvases.push(c);
 			header.appendChild(c);
 			count++;
@@ -19430,6 +19440,7 @@ return /******/ (function(modules) { // webpackBootstrap
 		for (i in ctxArr) {
 			ctx = ctxArr[i];
 			ctx.font = '11px Arial';
+			ctx.fillStyle = '#fff';
 		}
 		var _iteratorNormalCompletion = true;
 		var _didIteratorError = false;
@@ -19447,7 +19458,7 @@ return /******/ (function(modules) { // webpackBootstrap
 					textOffset = canvasWidth - textWidth;
 					ctx.fillText(date.lower_text, date.lower_x - xOffset, date.lower_y);
 				} else {
-					ctx.fillText('|', date.lower_x - xOffset, date.lower_y - 20);
+					// ctx.fillText('|', date.lower_x - xOffset, date.lower_y - 20); // TEST
 					ctx.fillText(date.lower_text, date.lower_x - xOffset, date.lower_y);
 					xOffset += canvasWidth;
 					ctxID++;

@@ -106,6 +106,5 @@ self.addEventListener('message', function (e) {
         // console.log(date.toString());
         dateArr.push(date);
     }
-    console.log('------------ done -------------');
     self.postMessage(JSON.stringify(dateArr));
 }, false);

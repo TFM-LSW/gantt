@@ -515,8 +515,10 @@ export default function Gantt(element, tasks, config) {
 			} */
 		}
 		worker.addEventListener('message', function (e) {
+			console.log('------------ Service worker done -------------');
 			dataDates = JSON.parse(e.data);
 			createTimelineDOM();
+			console.log('------------ createTimelineDOM done -------------');
 		}, false);
 		worker.postMessage(JSON.stringify({ dates: self.dates, config: self.config }));
 	}

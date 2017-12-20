@@ -3,29 +3,21 @@ const maxWidth = 32767;
 let ganttWidth = 100;
 let canvases = [];
 let ctxArr = [];
-const colours = [
-	'red',
-	'blue',
-	'green',
-	'yellow',
-	'purple'
-];
-function createCanvas(id, width = ganttWidth, height = 60) {
+
+function createCanvas(id, width, height = 60) {
 	const cnvs = document.createElement('canvas');
 	cnvs.id = id;
-	cnvs.width = ganttWidth >= maxWidth ? maxWidth : ganttWidth;
+	cnvs.width = width;
 	cnvs.height = height;
-	cnvs.style.backgroundColor = colours[id - 1] || 'red';
-	/* cnvs.style.position = 'absolute';
-	cnvs.style.display = 'block';
-	cnvs.style.left = ((id - 1) * cnvs.width);
-	cnvs.style.top = 0; */
+	// cnvs.style.backgroundColor = 'red';
 	return cnvs;
 }
+
 function removeCanvas() {
 	const lastEntry = canvases.pop();
 	lastEntry.parentElement.removeChild(lastEntry);
 }
+
 export default function drawCanvasTime(dataDates) {
 	while (canvases.length) {
 		removeCanvas();
@@ -35,11 +27,22 @@ export default function drawCanvasTime(dataDates) {
 	ganttWidth = gantt.clientWidth;
 	header.style.width = ganttWidth + 'px';
 
-	// figure out widths of subsequent canvases...
+	// figure how many subsequent canvases and the width of the last...
 	const requiredCanvases = Math.ceil(ganttWidth / maxWidth);
+	let remainingWidth;
+	if (requiredCanvases > 1) {
+		remainingWidth = (ganttWidth % maxWidth);
+	}
+
 	let count = 1;
+	let tWidth = (ganttWidth >= maxWidth) ? maxWidth : ganttWidth;
 	while (canvases.length < requiredCanvases) {
-		const c = createCanvas(count);
+		if (count === requiredCanvases) {
+			if (requiredCanvases > 1) {
+				tWidth = remainingWidth;
+			}
+		}
+		const c = createCanvas(count, tWidth);
 		canvases.push(c);
 		header.appendChild(c);
 		count++;
@@ -51,6 +54,7 @@ export default function drawCanvasTime(dataDates) {
 	for (i in ctxArr) {
 		ctx = ctxArr[i];
 		ctx.font = '11px Arial';
+		ctx.fillStyle = '#fff';
 	}
 	for (let date of dataDates) {
 		ctx = ctxArr[ctxID];
@@ -61,7 +65,7 @@ export default function drawCanvasTime(dataDates) {
 			textOffset = canvasWidth - textWidth;
 			ctx.fillText(date.lower_text, date.lower_x - xOffset, date.lower_y);
 		} else {
-			ctx.fillText('|', date.lower_x - xOffset, date.lower_y - 20);
+			// ctx.fillText('|', date.lower_x - xOffset, date.lower_y - 20); // TEST
 			ctx.fillText(date.lower_text, date.lower_x - xOffset, date.lower_y);
 			xOffset += canvasWidth;
 			ctxID++;

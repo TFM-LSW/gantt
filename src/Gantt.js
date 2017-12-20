@@ -15,6 +15,7 @@ import Bar from './Bar';
 import Octogon from './Octogon';
 import Arrow from './Arrow';
 import { ScrollWheelInit, ClickChart } from './ScrollUtils';
+import drawCanvasTime from './canvas/MultiCanvas';
 
 export default function Gantt(element, tasks, config) {
 
@@ -29,6 +30,7 @@ export default function Gantt(element, tasks, config) {
 		var x = evt.clientX - dim.left;
 		if (target.className.baseVal === 'grid-row') {
 			// var y = evt.clientY - dim.top;
+			console.log('X: ' + x);
 			const xPercent = ((x / target.width.baseVal.value) * 100);
 			const datePosition = Math.round((self.dates.length / 100) * xPercent);
 			console.log('-- string: ' + self.dates[datePosition]._d.toString());
@@ -311,7 +313,7 @@ export default function Gantt(element, tasks, config) {
 			self.config.column_width = 20;
 		} else if (scale === 'Hour Sixth') {
 			self.config.step = 1 / 6;
-			self.config.column_width = 20;
+			self.config.column_width = 40;
 		} else if (scale === 'Hour Half') {
 			self.config.step = 0.5;
 			self.config.column_width = 20;
@@ -474,7 +476,14 @@ export default function Gantt(element, tasks, config) {
 		var worker = new Worker('./buildTimeline.js');
 		let dataDates;
 		function createTimelineDOM() {
-			if (document.getElementById('headerdiv')) {
+			/*
+				CANVAS TEXT
+			*/
+			drawCanvasTime(dataDates);
+			/*
+				HTML TEXT
+			*/
+			/* if (document.getElementById('headerdiv')) {
 				document.getElementById('headerdiv').parentNode.removeChild(document.getElementById('headerdiv'));
 			}
 			const header = document.createElement('div');
@@ -497,20 +506,13 @@ export default function Gantt(element, tasks, config) {
 				newDiv.style.display = 'block';
 				newDiv.style.fontFamily = 'Arial';
 				newDiv.style.fontSize = '12px';
+				newDiv.style.textRendering = 'optimizeSpeed'; // Need IE polyfill
 				newDiv.style.top = (date.lower_y - 10) + 'px';
 				newDiv.style.left = date.lower_x + 'px';
 				newDiv.appendChild(marker);
 				header.appendChild(newDiv);
 				console.log('added');
-			}
-			/* const header = document.createElement('canvas');
-			var ctx = header.getContext("2d");
-			ctx.font = "12px Arial";
-			ctx.id = 'headerdiv';
-			for (let date of dataDates) {
-				ctx.fillText("Hello World",10,50);
-			}
-			display.appendChild(header); */
+			} */
 		}
 		worker.addEventListener('message', function (e) {
 			dataDates = JSON.parse(e.data);

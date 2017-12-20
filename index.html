@@ -37,6 +37,16 @@
 			color:rgb(138, 138, 138);
 			font-family: Arial, Helvetica, sans-serif;
 		}
+		#timebar, #timeheader {
+			z-index: -1;
+			position: absolute;
+			display: flex;
+			left: 0;
+			top: 0;
+			width: 100px;
+			height: 60px;
+			background-color: white;
+		}
 	</style>
 	<script src="node_modules/moment/min/moment.min.js"></script>
 	<script src="node_modules/moment-jdateformatparser/moment-jdateformatparser.min.js"></script>
@@ -50,6 +60,7 @@
 		<small id="time" style="display: block; margin-bottom: 12px"></small>
 		<div class="gantt-container" id="gc">
 			<svg id="gantt" width="400" height="600"></svg>
+			<header id="timeheader"></header>
 		</div>
 		<nav>
 			<button onclick="changeView('Minute')">Minutes</button>

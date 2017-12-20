@@ -85,6 +85,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	var _ScrollUtils = __webpack_require__(134);
 	
+	var _MultiCanvas = __webpack_require__(138);
+	
+	var _MultiCanvas2 = _interopRequireDefault(_MultiCanvas);
+	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
 	function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } } /* global moment, Snap */
@@ -111,6 +115,7 @@ return /******/ (function(modules) { // webpackBootstrap
 			var x = evt.clientX - dim.left;
 			if (target.className.baseVal === 'grid-row') {
 				// var y = evt.clientY - dim.top;
+				console.log('X: ' + x);
 				var xPercent = x / target.width.baseVal.value * 100;
 				var datePosition = Math.round(self.dates.length / 100 * xPercent);
 				console.log('-- string: ' + self.dates[datePosition]._d.toString());
@@ -445,7 +450,7 @@ return /******/ (function(modules) { // webpackBootstrap
 				self.config.column_width = 20;
 			} else if (scale === 'Hour Sixth') {
 				self.config.step = 1 / 6;
-				self.config.column_width = 20;
+				self.config.column_width = 40;
 			} else if (scale === 'Hour Half') {
 				self.config.step = 0.5;
 				self.config.column_width = 20;
@@ -612,64 +617,43 @@ return /******/ (function(modules) { // webpackBootstrap
 			var worker = new Worker('./buildTimeline.js');
 			var dataDates = void 0;
 			function createTimelineDOM() {
-				if (document.getElementById('headerdiv')) {
-					document.getElementById('headerdiv').parentNode.removeChild(document.getElementById('headerdiv'));
-				}
-				var header = document.createElement('div');
-				// header.style.backgroundColor = '#FF0000';
-				header.id = 'headerdiv';
-				header.style.width = '100%'; // this is
-				header.style.height = '100%';
-				header.style.display = 'block';
-				header.style.position = 'absolute';
-				header.style.zIndex = -1;
-				header.style.top = 0;
-				header.style.left = 0;
-				header.style.padding = 0;
-				header.style.margin = 0;
-				display.appendChild(header);
-				var _iteratorNormalCompletion5 = true;
-				var _didIteratorError5 = false;
-				var _iteratorError5 = undefined;
-	
-				try {
-					for (var _iterator5 = dataDates[Symbol.iterator](), _step5; !(_iteratorNormalCompletion5 = (_step5 = _iterator5.next()).done); _iteratorNormalCompletion5 = true) {
-						var date = _step5.value;
-	
-						var newDiv = document.createElement('div');
-						var marker = document.createTextNode(date.lower_text);
-						newDiv.style.position = 'absolute';
-						newDiv.style.display = 'block';
-						newDiv.style.fontFamily = 'Arial';
-						newDiv.style.fontSize = '12px';
-						newDiv.style.top = date.lower_y - 10 + 'px';
-						newDiv.style.left = date.lower_x + 'px';
-						newDiv.appendChild(marker);
-						header.appendChild(newDiv);
-						console.log('added');
-					}
-					/* const header = document.createElement('canvas');
-	    var ctx = header.getContext("2d");
-	    ctx.font = "12px Arial";
-	    ctx.id = 'headerdiv';
-	    for (let date of dataDates) {
-	    	ctx.fillText("Hello World",10,50);
-	    }
-	    display.appendChild(header); */
-				} catch (err) {
-					_didIteratorError5 = true;
-					_iteratorError5 = err;
-				} finally {
-					try {
-						if (!_iteratorNormalCompletion5 && _iterator5.return) {
-							_iterator5.return();
-						}
-					} finally {
-						if (_didIteratorError5) {
-							throw _iteratorError5;
-						}
-					}
-				}
+				/*
+	   	CANVAS TEXT
+	   */
+				(0, _MultiCanvas2.default)(dataDates);
+				/*
+	   	HTML TEXT
+	   */
+				/* if (document.getElementById('headerdiv')) {
+	   	document.getElementById('headerdiv').parentNode.removeChild(document.getElementById('headerdiv'));
+	   }
+	   const header = document.createElement('div');
+	   // header.style.backgroundColor = '#FF0000';
+	   header.id = 'headerdiv';
+	   header.style.width = '100%'; // this is
+	   header.style.height = '100%';
+	   header.style.display = 'block';
+	   header.style.position = 'absolute';
+	   header.style.zIndex = -1;
+	   header.style.top = 0;
+	   header.style.left = 0;
+	   header.style.padding = 0;
+	   header.style.margin = 0;
+	   display.appendChild(header);
+	   for (let date of dataDates) {
+	   	const newDiv = document.createElement('div');
+	   	const marker = document.createTextNode(date.lower_text);
+	   	newDiv.style.position = 'absolute';
+	   	newDiv.style.display = 'block';
+	   	newDiv.style.fontFamily = 'Arial';
+	   	newDiv.style.fontSize = '12px';
+	   	newDiv.style.textRendering = 'optimizeSpeed'; // Need IE polyfill
+	   	newDiv.style.top = (date.lower_y - 10) + 'px';
+	   	newDiv.style.left = date.lower_x + 'px';
+	   	newDiv.appendChild(marker);
+	   	header.appendChild(newDiv);
+	   	console.log('added');
+	   } */
 			}
 			worker.addEventListener('message', function (e) {
 				dataDates = JSON.parse(e.data);
@@ -751,13 +735,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 		function make_arrows() {
 			self._arrows = [];
-			var _iteratorNormalCompletion6 = true;
-			var _didIteratorError6 = false;
-			var _iteratorError6 = undefined;
+			var _iteratorNormalCompletion5 = true;
+			var _didIteratorError5 = false;
+			var _iteratorError5 = undefined;
 	
 			try {
 				var _loop = function _loop() {
-					var task = _step6.value;
+					var task = _step5.value;
 	
 					var arrows = [];
 					arrows = task.dependencies.map(function (dep) {
@@ -776,20 +760,20 @@ return /******/ (function(modules) { // webpackBootstrap
 					self._arrows = self._arrows.concat(arrows);
 				};
 	
-				for (var _iterator6 = self.flattenTasks[Symbol.iterator](), _step6; !(_iteratorNormalCompletion6 = (_step6 = _iterator6.next()).done); _iteratorNormalCompletion6 = true) {
+				for (var _iterator5 = self.flattenTasks[Symbol.iterator](), _step5; !(_iteratorNormalCompletion5 = (_step5 = _iterator5.next()).done); _iteratorNormalCompletion5 = true) {
 					_loop();
 				}
 			} catch (err) {
-				_didIteratorError6 = true;
-				_iteratorError6 = err;
+				_didIteratorError5 = true;
+				_iteratorError5 = err;
 			} finally {
 				try {
-					if (!_iteratorNormalCompletion6 && _iterator6.return) {
-						_iterator6.return();
+					if (!_iteratorNormalCompletion5 && _iterator5.return) {
+						_iterator5.return();
 					}
 				} finally {
-					if (_didIteratorError6) {
-						throw _iteratorError6;
+					if (_didIteratorError5) {
+						throw _iteratorError5;
 					}
 				}
 			}
@@ -810,33 +794,33 @@ return /******/ (function(modules) { // webpackBootstrap
 			var _ref2;
 	
 			var flattenBars = (_ref2 = []).concat.apply(_ref2, _toConsumableArray(self._bars));
-			var _iteratorNormalCompletion7 = true;
-			var _didIteratorError7 = false;
-			var _iteratorError7 = undefined;
+			var _iteratorNormalCompletion6 = true;
+			var _didIteratorError6 = false;
+			var _iteratorError6 = undefined;
 	
 			try {
 				var _loop2 = function _loop2() {
-					var bar = _step7.value;
+					var bar = _step6.value;
 	
 					bar.arrows = self._arrows.filter(function (arrow) {
 						return arrow.from_task.task.id === bar.task.id || arrow.to_task.task.id === bar.task.id;
 					});
 				};
 	
-				for (var _iterator7 = flattenBars[Symbol.iterator](), _step7; !(_iteratorNormalCompletion7 = (_step7 = _iterator7.next()).done); _iteratorNormalCompletion7 = true) {
+				for (var _iterator6 = flattenBars[Symbol.iterator](), _step6; !(_iteratorNormalCompletion6 = (_step6 = _iterator6.next()).done); _iteratorNormalCompletion6 = true) {
 					_loop2();
 				}
 			} catch (err) {
-				_didIteratorError7 = true;
-				_iteratorError7 = err;
+				_didIteratorError6 = true;
+				_iteratorError6 = err;
 			} finally {
 				try {
-					if (!_iteratorNormalCompletion7 && _iterator7.return) {
-						_iterator7.return();
+					if (!_iteratorNormalCompletion6 && _iterator6.return) {
+						_iterator6.return();
 					}
 				} finally {
-					if (_didIteratorError7) {
-						throw _iteratorError7;
+					if (_didIteratorError6) {
+						throw _iteratorError6;
 					}
 				}
 			}
@@ -862,27 +846,27 @@ return /******/ (function(modules) { // webpackBootstrap
 			if (typeof modes === 'string') {
 				return self.config.view_mode === modes;
 			} else if (Array.isArray(modes)) {
-				var _iteratorNormalCompletion8 = true;
-				var _didIteratorError8 = false;
-				var _iteratorError8 = undefined;
+				var _iteratorNormalCompletion7 = true;
+				var _didIteratorError7 = false;
+				var _iteratorError7 = undefined;
 	
 				try {
-					for (var _iterator8 = modes[Symbol.iterator](), _step8; !(_iteratorNormalCompletion8 = (_step8 = _iterator8.next()).done); _iteratorNormalCompletion8 = true) {
-						var mode = _step8.value;
+					for (var _iterator7 = modes[Symbol.iterator](), _step7; !(_iteratorNormalCompletion7 = (_step7 = _iterator7.next()).done); _iteratorNormalCompletion7 = true) {
+						var mode = _step7.value;
 	
 						if (self.config.view_mode === mode) return true;
 					}
 				} catch (err) {
-					_didIteratorError8 = true;
-					_iteratorError8 = err;
+					_didIteratorError7 = true;
+					_iteratorError7 = err;
 				} finally {
 					try {
-						if (!_iteratorNormalCompletion8 && _iterator8.return) {
-							_iterator8.return();
+						if (!_iteratorNormalCompletion7 && _iterator7.return) {
+							_iterator7.return();
 						}
 					} finally {
-						if (_didIteratorError8) {
-							throw _iteratorError8;
+						if (_didIteratorError7) {
+							throw _iteratorError7;
 						}
 					}
 				}
@@ -19377,6 +19361,129 @@ return /******/ (function(modules) { // webpackBootstrap
 	    out[1] = str.match(/[\d.\-\+]*\s*(.*)/)[1] || ''
 	    return out
 	}
+
+/***/ },
+/* 138 */
+/***/ function(module, exports) {
+
+	'use strict';
+	
+	Object.defineProperty(exports, "__esModule", {
+		value: true
+	});
+	exports.default = drawCanvasTime;
+	/* global moment, Snap */
+	var maxWidth = 32767;
+	var ganttWidth = 100;
+	var canvases = [];
+	var ctxArr = [];
+	var colours = ['red', 'blue', 'green', 'yellow', 'purple'];
+	function createCanvas(id) {
+		var width = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : ganttWidth;
+		var height = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 60;
+	
+		var cnvs = document.createElement('canvas');
+		cnvs.id = id;
+		cnvs.width = ganttWidth >= maxWidth ? maxWidth : ganttWidth;
+		cnvs.height = height;
+		cnvs.style.backgroundColor = colours[id - 1] || 'red';
+		/* cnvs.style.position = 'absolute';
+	 cnvs.style.display = 'block';
+	 cnvs.style.left = ((id - 1) * cnvs.width);
+	 cnvs.style.top = 0; */
+		return cnvs;
+	}
+	function removeCanvas() {
+		var lastEntry = canvases.pop();
+		lastEntry.parentElement.removeChild(lastEntry);
+	}
+	function drawCanvasTime(dataDates) {
+		while (canvases.length) {
+			removeCanvas();
+		}
+		var gantt = document.getElementById('gantt');
+		var header = document.getElementById('timeheader');
+		ganttWidth = gantt.clientWidth;
+		header.style.width = ganttWidth + 'px';
+	
+		// figure out widths of subsequent canvases...
+		var requiredCanvases = Math.ceil(ganttWidth / maxWidth);
+		var count = 1;
+		while (canvases.length < requiredCanvases) {
+			var c = createCanvas(count);
+			canvases.push(c);
+			header.appendChild(c);
+			count++;
+		}
+	
+		ctxArr = canvases.map(function (cv) {
+			return cv.getContext('2d');
+		});
+	
+		var i = void 0,
+		    ctx = void 0,
+		    canvasWidth = void 0,
+		    textWidth = void 0,
+		    textOffset = void 0,
+		    xOffset = 0,
+		    ctxID = 0;
+		for (i in ctxArr) {
+			ctx = ctxArr[i];
+			ctx.font = '11px Arial';
+		}
+		var _iteratorNormalCompletion = true;
+		var _didIteratorError = false;
+		var _iteratorError = undefined;
+	
+		try {
+			for (var _iterator = dataDates[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+				var date = _step.value;
+	
+				ctx = ctxArr[ctxID];
+				canvasWidth = ctx.canvas.width;
+				textWidth = ctx.measureText(date.lower_text).width;
+	
+				if (xOffset + canvasWidth > date.lower_x + textWidth) {
+					textOffset = canvasWidth - textWidth;
+					ctx.fillText(date.lower_text, date.lower_x - xOffset, date.lower_y);
+				} else {
+					ctx.fillText('|', date.lower_x - xOffset, date.lower_y - 20);
+					ctx.fillText(date.lower_text, date.lower_x - xOffset, date.lower_y);
+					xOffset += canvasWidth;
+					ctxID++;
+					if (ctxArr[ctxID]) {
+						ctxArr[ctxID].fillText(date.lower_text, date.lower_x - xOffset, date.lower_y);
+					}
+				}
+			}
+		} catch (err) {
+			_didIteratorError = true;
+			_iteratorError = err;
+		} finally {
+			try {
+				if (!_iteratorNormalCompletion && _iterator.return) {
+					_iterator.return();
+				}
+			} finally {
+				if (_didIteratorError) {
+					throw _iteratorError;
+				}
+			}
+		}
+	}
+	// https://stackoverflow.com/questions/6081483/maximum-size-of-a-canvas-element
+	/* 	header.width = ganttWidth > 32767 ? 32767 : gantt.clientWidth;
+		let ctx = header.getContext('2d');
+		// maximum canvas width and height: Chrome = 32767, IE = 8192
+		ctx.clearRect(0, 0, header.clientWidth, 60);
+		ctx.font = '11px Arial';
+		for (let date of dataDates) {
+			// console.log(date.lower_x);
+			ctx.fillText(date.lower_text, date.lower_x, date.lower_y);
+		}
+		console.log('----- done rendering canvas text -----------'); */
+
+	module.exports = exports['default'];
 
 /***/ }
 /******/ ])
